@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title data-i="title">The lifecycle of one submission — AI Data+</title>
+<style>
+  :root{
+    --navy:#13294B; --ink:#3A4A63; --mute:#8A97AA; --line:#D3DEEA; --sky:#EAF2F8;
+    --orange:#E8752A; --orange-2:#F1A26C; --orange-3:#FCE9DC;
+    --purple:#6B2C91; --purple-2:#EFE6F5; --green:#2E9E6B; --green-2:#E3F4EB; --red:#D9534F;
+    --font:"Aptos Display","Aptos","Segoe UI Variable Display","Segoe UI",system-ui,-apple-system,sans-serif;
+    --k:1;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:#fff;color:var(--navy);font-family:var(--font);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+
+  .bg{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
+  .bg i{position:absolute;width:64vmax;height:64vmax;border-radius:50%;filter:blur(100px);opacity:.38;will-change:transform;transition:background 1.2s ease}
+  .bg i:nth-child(1){left:-24vmax;top:-18vmax;background:#FCE9DC}
+  .bg i:nth-child(2){right:-28vmax;bottom:-26vmax;background:#EAF2F8}
+  .bg:after{content:"";position:absolute;inset:0;background-image:radial-gradient(#13294B .9px,transparent 1px);background-size:30px 30px;opacity:.05}
+  .top{display:flex;justify-content:space-between;align-items:baseline;padding:22px 40px;font-size:14px;color:var(--ink)}
+  .top .mark{font-weight:800;font-style:italic;color:var(--orange);font-size:18px}
+  .top .langs{display:flex;gap:16px;align-items:baseline}
+  .top .langs a{color:var(--orange);font-weight:700;text-decoration:none;border:1.5px solid var(--orange-2);border-radius:999px;padding:3px 10px;font-size:13px}
+  .top .mark small{font-style:normal;font-weight:500;color:var(--ink);margin-left:12px;font-size:14px}
+
+  .intro{max-width:1200px;margin:0 auto;padding:14vh 40px 22vh}
+  .intro h1{font-size:clamp(44px,7vw,104px);line-height:.95;letter-spacing:-.035em;margin:0 0 24px;font-weight:800;text-wrap:balance}
+  .intro p{font-size:clamp(18px,1.5vw,21px);line-height:1.45;color:var(--ink);max-width:600px;margin:0 0 30px;text-wrap:pretty}
+  .intro .hint{display:inline-flex;align-items:center;gap:10px;font-size:15px;color:var(--mute)}
+  .intro .hint svg{width:16px;height:16px;animation:nudge 1.6s ease-in-out infinite}
+  @keyframes nudge{0%,100%{transform:translateY(0)}50%{transform:translateY(5px)}}
+
+  /* ---------- the track ---------- */
+  #track{max-width:1200px;margin:0 auto;padding:0 40px 22vh;display:grid;grid-template-columns:1fr 560px;gap:40px;position:relative}
+  .stations,.side{min-width:0}
+  .st{height:130vh;display:flex;flex-direction:column;justify-content:center;max-width:440px;transition:opacity .35s,transform .5s cubic-bezier(.2,.7,.2,1)}
+  .st h2{font-size:clamp(32px,3.6vw,46px);line-height:1.02;letter-spacing:-.03em;margin:0 0 16px;font-weight:800;text-wrap:balance}
+  .st p{font-size:17px;line-height:1.5;color:var(--ink);margin:0 0 18px;text-wrap:pretty}
+  .st .mod{display:inline-block;font-size:13px;background:var(--sky);border-radius:999px;padding:5px 12px;font-weight:600;color:var(--navy);white-space:nowrap}
+  .st .mod.purple{background:var(--purple-2);color:var(--purple)}
+  .st .mod.orange{background:var(--orange-3);color:#B4531A}
+  .st .note{font-size:13px;color:var(--mute);margin-top:14px;line-height:1.45;text-wrap:pretty}
+  .st .note b{color:var(--purple);font-weight:600}
+  .st.dim{opacity:.32;transform:translateY(10px)}
+
+  .side{position:relative}
+  .pipe{position:absolute;left:50%;top:-12vh;bottom:-12vh;width:3px;margin-left:-1.5px;background:var(--line);border-radius:3px;z-index:0;-webkit-mask-image:linear-gradient(to bottom,transparent,#000 14%,#000 86%,transparent);mask-image:linear-gradient(to bottom,transparent,#000 14%,#000 86%,transparent)}
+  .pipe .fill{position:absolute;left:0;top:0;width:100%;height:0;background:var(--orange);border-radius:3px}
+  .dot{position:absolute;left:50%;width:16px;height:16px;margin:-8px 0 0 -8px;border-radius:50%;background:#fff;border:3px solid var(--line);transition:border-color .3s,background .3s;z-index:0}
+  .dot.on{border-color:var(--orange);background:var(--orange)}
+  
+  
+
+  .hold{position:sticky;top:0;height:100vh;z-index:1;overflow:clip}
+  .tno{width:520px;height:800px;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) scale(var(--k))}
+  .obj{position:absolute;left:0;top:0;width:0;height:0;will-change:transform,opacity}
+  .obj>.in{position:absolute;left:0;top:0;transform:translate(-50%,-50%)}
+
+  /* pieces (same visual language as the full version) */
+  .fold-back{position:absolute;inset:0;top:22px;background:var(--orange-2);border-radius:14px}
+  .fold-tab{position:absolute;left:0;top:0;width:100px;height:32px;background:var(--orange-2);border-radius:12px 12px 0 0}
+  .fold-front{position:absolute;left:0;right:0;bottom:0;height:118px;background:var(--orange);border-radius:12px;box-shadow:0 10px 30px rgba(232,117,42,.28);color:#fff;padding:20px 22px}
+  .fold-front .t{font-size:32px;font-weight:800;letter-spacing:-.03em;line-height:1}
+  .fold-front .s{font-size:12px;opacity:.9;margin-top:6px;white-space:nowrap}
+
+  .file .doc{width:64px;height:78px;margin:0 auto;background:#fff;border:2px solid var(--navy);border-radius:6px;position:relative;box-shadow:0 6px 18px rgba(19,41,75,.12);transition:border-color .3s}
+  .file .lines{position:absolute;left:9px;right:9px;top:24px}
+  .file .lines i{display:block;height:4px;background:var(--line);border-radius:2px;margin-bottom:6px}
+  .file .lines i:nth-child(2){width:70%}.file .lines i:nth-child(3){width:85%}
+  .file .ext{position:absolute;left:-6px;bottom:8px;font-size:9px;font-weight:800;color:#fff;padding:2px 5px;border-radius:4px}
+  .ext-pdf{background:#C8443A}.ext-xlsx{background:#1F7A45}.ext-docx{background:#2A5CB8}.ext-msg{background:#5C6B80}.ext-pptx{background:#C25A1A}
+  .file .fname{font-size:11px;text-align:center;margin-top:6px;color:var(--ink);white-space:nowrap;font-weight:500;transition:opacity .2s}
+  .file.tagged .fname,.file.q .fname{opacity:0}
+  .file.tagged.core .doc{border-color:var(--orange)}
+  .file.tagged.other .doc{border-color:var(--mute)}
+  .file.tagged.other .doc{box-shadow:none}
+
+  .lbl{position:relative;width:100%;text-align:center;font-size:14px;font-weight:800}
+  .lbl small{display:block;font-size:11px;font-weight:500;color:var(--mute);margin-top:2px}
+  .lbl.core{color:var(--orange)}.lbl.other{color:var(--mute)}
+
+  .agent{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:8px;border-radius:999px;background:#fff;border:2px solid var(--navy);font-size:13px;font-weight:800;box-shadow:0 10px 26px rgba(19,41,75,.14);white-space:nowrap}
+  .agent small{font-weight:600;color:var(--mute);font-size:11px}
+  .agent.purple{border-color:var(--purple);color:var(--purple)}
+  .agent.green{border-color:var(--green);color:#1F7A45}
+
+  .chk{position:absolute;inset:0;display:flex;gap:10px;align-items:center;justify-content:center;border-radius:999px;border:1.5px dashed var(--purple);color:var(--purple);font-size:12px;font-weight:700;background:#fff;white-space:nowrap}
+  .chk svg{width:16px;height:16px}
+
+  .rec{position:absolute;inset:0;background:#fff;border:2px solid var(--navy);border-radius:14px;overflow:hidden;box-shadow:0 14px 40px rgba(19,41,75,.14)}
+  .rec .h{background:var(--navy);color:#fff;padding:8px 14px;font-size:14px;font-weight:800;display:flex;justify-content:space-between;align-items:baseline}
+  .rec .h small{font-weight:500;opacity:.75;font-size:11px}
+  .rec .r{display:flex;justify-content:space-between;align-items:center;height:28px;padding:0 14px;font-size:12px;border-bottom:1px solid var(--line);position:relative}
+  .rec .r:last-child{border-bottom:0}
+  .rec .r .k{color:var(--ink)}
+  .rec .r .v{font-weight:800;opacity:0;transform:translateY(-6px);transition:opacity .25s,transform .25s}
+  .rec .r .d{width:70px;height:6px;border-radius:3px;border:1.5px dashed var(--line)}
+  .rec .r.filled .v{opacity:1;transform:none}
+  .rec .r.filled .d{opacity:0;position:absolute}
+  .rec .r.filled{background:linear-gradient(90deg,transparent,var(--orange-3))}
+
+  .gate{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;border-radius:14px;border:1.5px dashed var(--purple);background:#fff;white-space:nowrap;padding:4px 14px}
+  .gate .g1{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:800;color:var(--purple)}
+  .gate .lights{display:inline-flex;gap:5px}
+  .gate .lights i{width:11px;height:11px;border-radius:50%}
+  .gate .lights i.r{background:#F3C4C2}.gate .lights i.a{background:#F8E0B0}.gate .lights i.g{background:var(--green);box-shadow:0 0 0 3px var(--green-2)}
+  .gate small{font-weight:600;color:var(--ink);font-size:11px}
+  .rec .pass{position:absolute;right:10px;top:6px;background:var(--green);color:#fff;font-size:11px;font-weight:800;padding:3px 9px;border-radius:999px;opacity:0;transform:scale(.6);transition:opacity .25s,transform .3s cubic-bezier(.34,1.56,.64,1)}
+  .rec.pass .pass{opacity:1;transform:scale(1)}
+  .rec.pass .h small{opacity:0}
+  .bot{position:relative;width:100%;text-align:center}
+  .bot .ico{width:84px;height:84px;margin:0 auto;border-radius:22px;background:#fff;box-shadow:0 0 0 8px #fff,0 12px 28px rgba(19,41,75,.14)}
+  .bot .illu{width:120px;height:112px;margin:0 auto;filter:drop-shadow(0 10px 18px rgba(19,41,75,.14))}
+  .bot.side .lab{position:absolute;left:calc(50% + 76px);top:50%;transform:translateY(-50%);width:200px;text-align:left}
+  .bot.side .lab b,.bot.side .lab small{display:block;background:none;box-shadow:none;margin:0;text-wrap:balance}
+  .bot.side .lab small{margin-top:4px}
+  .bot .illu svg{width:100%;height:100%;display:block;overflow:visible}
+  .bot .ico svg{width:100%;height:100%;display:block}
+  .bot b{display:inline-block;font-size:17px;letter-spacing:-.01em;margin-top:6px;line-height:1.1;background:#fff;box-shadow:0 0 0 5px #fff;border-radius:4px}
+  .bot small{display:inline-block;font-size:12px;color:var(--mute);font-weight:600;margin-top:5px;white-space:normal;line-height:1.3;background:#fff;box-shadow:0 0 0 5px #fff;border-radius:4px}
+  .bot.purple b{color:var(--purple)} .bot.green b{color:#1F7A45}
+  .gt{position:relative;width:100%}
+  .gt svg{width:100%;height:auto;display:block;overflow:visible}
+  .gt.gtb{filter:drop-shadow(0 8px 14px rgba(19,41,75,.18))}
+  .gt .beam{fill:url(#gb-grey);transition:opacity .3s}
+  .gt.green .beam{fill:url(#gb-green)} .gt.amber .beam{fill:url(#gb-amber)}
+  .gt .sweep{stroke:#9FB3C8;opacity:.6;animation:gsweep 2.2s linear infinite}
+  .gt.green .sweep{stroke:#2E9E6B} .gt.amber .sweep{stroke:#E8A83B}
+  .gt .lr,.gt .la,.gt .lg{fill:#DCE4EE;transition:fill .25s}
+  .gt.green .lg{fill:#2E9E6B} .gt.amber .la{fill:#E8A83B}
+  .gt small{display:block;text-align:center;font-size:11px;color:var(--mute);font-weight:600;letter-spacing:.02em;margin-top:-6px}
+  .gt .held{position:absolute;left:50%;top:100%;margin-top:6px;transform:translateX(-50%);font-size:11px;font-weight:700;color:#9A6A10;background:#FBF0DA;padding:2px 9px;border-radius:999px;white-space:nowrap;opacity:0;transition:opacity .3s}
+  .gt.amber .held{opacity:1}
+  @keyframes gsweep{0%{transform:translateY(0);opacity:0}12%{opacity:.7}88%{opacity:.5}100%{transform:translateY(84px);opacity:0}}
+  .chip{position:absolute;inset:0;display:flex;justify-content:space-between;align-items:center;padding:0 12px;background:var(--orange);color:#fff;border-radius:999px;font-size:12px;font-weight:700;box-shadow:0 8px 20px rgba(232,117,42,.35);white-space:nowrap}
+  .chip .k{opacity:.85;font-weight:500;margin-right:10px}
+
+  .sheet{position:absolute;inset:0;background:#fff;border:2px solid var(--navy);border-radius:8px;padding:12px 12px 10px;box-shadow:0 10px 26px rgba(19,41,75,.14);display:flex;flex-direction:column}
+  .sheet .h{font-size:13px;font-weight:800;line-height:1.1}
+  .sheet .l{margin-top:10px;flex:1}
+  .sheet .l i{display:block;height:5px;border-radius:3px;background:var(--line);margin-bottom:7px}
+  .sheet .l i:nth-child(1){width:60%}.sheet .l i:nth-child(3){width:80%}.sheet .l i:nth-child(4){width:45%}
+  .sheet .f{font-size:10px;color:var(--mute);line-height:1.25}
+  .sheet.analysis{border-color:var(--orange)}.sheet.analysis .h{color:var(--orange)}
+  .sheet.entry .l i{background:var(--sky);border:1px solid var(--line)}
+
+  .bot.switch .illu{width:60px;height:80px;filter:drop-shadow(0 8px 14px rgba(19,41,75,.18))}
+  .bot.switch .lab{left:calc(50% + 46px);width:190px;top:14px;transform:none}
+  .k-sort .armw,.k-sort .arm{transform-box:view-box;transform-origin:30px 30px}
+  .k-sort .arm{transition:transform .28s cubic-bezier(.34,1.56,.64,1)}
+  @keyframes wiggle{0%,100%{transform:rotate(-4deg)}50%{transform:rotate(4deg)}}
+  .k-sort .armw{animation:wiggle 3.2s ease-in-out infinite}
+  .bot.lens-on-files .illu{width:112px;height:112px;filter:drop-shadow(0 8px 14px rgba(107,44,145,.22))}
+  .bot.lens-on-files .lab{left:calc(50% + 62px);width:150px}
+  .who .srv{width:60px;height:56px;margin:0 auto 8px;border-radius:12px;background:var(--navy);position:relative;padding:12px 10px;display:flex;flex-direction:column;gap:8px;box-shadow:0 10px 24px rgba(19,41,75,.22)}
+  .who .srv i{display:block;height:6px;border-radius:3px;background:rgba(255,255,255,.35)}
+  .who .srv:after{content:"";position:absolute;right:10px;top:12px;width:6px;height:6px;border-radius:50%;background:var(--green)}
+  .who.sysc .srv{animation:floaty-s 5s ease-in-out infinite;animation-delay:-2.5s}
+  .who{position:relative;width:100%;text-align:center}
+  .who .fig{width:56px;height:56px;margin:0 auto 8px;position:relative}
+  .who .fig:before{content:"";position:absolute;left:17px;top:2px;width:22px;height:22px;border-radius:50%;background:var(--navy)}
+  .who .fig:after{content:"";position:absolute;left:5px;top:28px;width:46px;height:28px;border-radius:23px 23px 6px 6px;background:var(--navy)}
+  .who b{display:block;font-size:15px}
+  .who span{display:block;font-size:12px;color:var(--ink);line-height:1.3;margin-top:3px;white-space:nowrap}
+
+  .sys{position:relative;width:100%;background:var(--navy);color:#fff;border-radius:14px;padding:12px 14px;text-align:center}
+  .sys b{font-size:16px;display:block}
+  .sys span{font-size:11px;opacity:.85;display:block;margin-top:3px;line-height:1.3}
+
+  .outro{max-width:1200px;margin:0 auto;padding:4vh 40px 12vh}
+  .outro p{font-size:clamp(22px,2.6vw,34px);line-height:1.2;letter-spacing:-.02em;font-weight:800;max-width:720px;margin:0 0 14px;text-wrap:balance}
+  .outro small{font-size:13px;color:var(--mute)}
+
+
+  /* ---------- idle motion: keeps a settled stage alive ---------- */
+  @keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+  @keyframes floaty-s{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+  @keyframes tilt{0%,100%{transform:rotate(-1deg)}50%{transform:rotate(1deg)}}
+  @keyframes lens{0%,100%{transform:translate(0,0)}35%{transform:translate(-18px,-10px)}70%{transform:translate(-8px,-30px)}}
+  @keyframes press{0%,78%,100%{transform:translateY(0)}86%,90%{transform:translateY(9px)}}
+  @keyframes dash{to{stroke-dashoffset:-24}}
+  @keyframes halo{0%,100%{box-shadow:0 0 0 6px var(--orange-3)}50%{box-shadow:0 0 0 13px rgba(252,233,220,.45)}}
+  @keyframes drift{0%,100%{margin-left:0;margin-top:0}50%{margin-left:3vw;margin-top:2vh}}
+  .fold-back,.fold-tab,.fold-front{animation:floaty 5.5s ease-in-out infinite}
+  .file>.in>*{animation:floaty-s 4.2s ease-in-out infinite;animation-delay:var(--d,0s)}
+  
+  .illu svg.k-read .lens{transform-box:fill-box;transform-origin:center;animation:lens 5s ease-in-out infinite}
+  .illu svg.k-write .stamp{animation:press 4.5s ease-in-out infinite}
+  .rec{animation:floaty-s 6s ease-in-out infinite}
+  .sheet{animation:floaty 5s ease-in-out infinite}
+  .sheet.entry{animation-delay:-2.2s}
+  .who .fig{animation:floaty-s 5s ease-in-out infinite}
+  .dot.now{animation:halo 2.4s ease-in-out infinite}
+  .bg i{animation:drift 22s ease-in-out infinite}
+  .bg i:nth-child(2){animation-delay:-11s}
+  .flow{position:relative;width:100%;height:100%}
+  .flow svg{width:40px;height:110px;display:block;fill:none;stroke:var(--green);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+  .flow .ln{stroke-dasharray:6 6;animation:dash 1.1s linear infinite}
+  .flow span{position:absolute;left:34px;top:44px;font-size:11px;font-weight:700;color:var(--green);white-space:nowrap}
+  @media (prefers-reduced-motion:reduce){.fold-back,.fold-tab,.fold-front,.file>.in>*,.illu svg.k-sort,.illu svg.k-read .lens,.illu svg.k-write .stamp,.rec,.sheet,.who .fig,.dot.now,.bg i,.flow .ln{animation:none}}
+  @media (prefers-reduced-motion:reduce){.intro .hint svg{animation:none}.st{transition:none}}
+  @media (max-width:980px){
+    .top,.intro,.outro{padding-left:22px;padding-right:22px}
+    #track{grid-template-columns:1fr;gap:0;padding:0 22px}
+    .side{order:-1;position:sticky;top:0;height:58vh;z-index:2;background:#fff}
+    .hold{position:static;height:58vh}
+    .pipe,.dot{display:none}
+    .stations{position:relative;z-index:1}
+    .st{height:auto;min-height:60vh;padding:6vh 0}
+  }
+
+  /* ---------- Chinese typography ---------- */
+  html[lang="zh-Hans"] body{font-family:"Aptos Display","Aptos","Segoe UI","PingFang SC","Microsoft YaHei","Noto Sans SC",system-ui,sans-serif}
+  html[lang="zh-Hans"] .intro h1{font-size:clamp(40px,6vw,88px);line-height:1.12;letter-spacing:.01em}
+  html[lang="zh-Hans"] .intro p{line-height:1.7}
+  html[lang="zh-Hans"] .st h2{font-size:clamp(30px,3.2vw,42px);line-height:1.2;letter-spacing:.01em}
+  html[lang="zh-Hans"] .st p{line-height:1.7}
+  html[lang="zh-Hans"] body{line-break:strict}
+  html[lang="zh-Hans"] .st .mod{white-space:nowrap}
+  html[lang="zh-Hans"] .outro p{font-size:clamp(22px,2.4vw,32px);line-height:1.4;letter-spacing:.01em}
+  html[lang="zh-Hans"] .chip{font-size:12px}
+  .top .langs{display:flex;gap:16px;align-items:baseline}
+  .top .langs button{font:inherit;color:var(--orange);font-weight:700;background:#fff;border:1.5px solid var(--orange-2);border-radius:999px;padding:3px 11px;font-size:13px;cursor:pointer}
+  .top .langs button:hover{background:var(--orange-3)}
+  .top .langs button:focus-visible{outline:2px solid var(--purple);outline-offset:3px}
+  /* scanner idle motion */
+  @keyframes sweep{0%{transform:translateY(0);opacity:0}10%{opacity:.8}90%{opacity:.6}100%{transform:translateY(56px);opacity:0}}
+  @keyframes beam{0%,100%{opacity:.55}50%{opacity:1}}
+  .illu svg.k-sort .sweep{animation:sweep 2.6s ease-in-out infinite}
+  .illu svg.k-sort .beam{animation:beam 2.6s ease-in-out infinite}
+  @media (prefers-reduced-motion:reduce){.k-sort .armw,.gt .sweep{animation:none}}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <linearGradient id="gb-grey" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9FB3C8" stop-opacity=".35"/><stop offset="1" stop-color="#9FB3C8" stop-opacity="0"/></linearGradient>
+  <linearGradient id="gb-green" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2E9E6B" stop-opacity=".62"/><stop offset="1" stop-color="#2E9E6B" stop-opacity="0"/></linearGradient>
+  <linearGradient id="gb-amber" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#E8A83B" stop-opacity=".65"/><stop offset="1" stop-color="#E8A83B" stop-opacity="0"/></linearGradient>
+  <linearGradient id="beamg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#E8752A" stop-opacity=".42"/><stop offset="1" stop-color="#E8752A" stop-opacity="0"/></linearGradient>
+</defs></svg>
+<div class="bg" aria-hidden="true"><i></i><i></i></div>
+<div class="top">
+  <div class="mark">AI Data+ <small>Ageas + TPRe</small></div>
+  <div class="langs"><span data-i="toplabel">The lifecycle of one submission</span><button type="button" id="langBtn" aria-label="Switch language">中文</button></div>
+</div>
+
+<section class="intro">
+  <h1 data-i="h1">The lifecycle of<br>one submission.</h1>
+  <p data-i="intro">Each treaty renewal arrives as a submission pack: a slip, schedules, spreadsheets, emails, a deck. Today its numbers are keyed in by hand, two months after the decision. This is how AI Data+ turns that pack into structured data before the&nbsp;decision.</p>
+  <div class="hint"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v11M3.5 8.5 8 13l4.5-4.5"/></svg> <span data-i="hint">Scroll to view the lifecycle of one submission</span></div>
+</section>
+
+<div id="track">
+  <div class="stations" id="stations">
+    <section class="st">
+      <h2 data-i="s1h">One submission pack,<br>many formats.</h2>
+      <p data-i="s1p">A submission arrives as a slip, schedules, spreadsheets, emails and a deck. The figures the underwriter needs are spread across all of them, with no common&nbsp;structure.</p>
+      <span class="mod orange" data-i="s1m">One pack, five formats, no structure</span>
+    </section>
+    <section class="st">
+      <h2 data-i="s2h">Find the core files.</h2>
+      <p data-i="s2p">The Submission Agent reads every file and picks out the ones that actually carry the data: the slip, the EPI schedule, the loss history, the wording. The rest stay with the treaty as supporting&nbsp;material.</p>
+      <span class="mod" data-i="s2m">Module A — Submission Agent</span>
+      <div class="note" data-i="s2n"><b>Red / amber / green gate:</b> only green passes to the next step. During development a Validation Flywheel reviews every call and feeds the corrections back into the agent.</div>
+    </section>
+    <section class="st">
+      <h2 data-i="s3h">Extract the facts.</h2>
+      <p data-i="s3p">The Facts Agent reads the core files against the agreed Shopping List and fills one structured TreatyRecord per treaty. Every figure is located in a document, never invented. A recipe per cedant tells it where to look, and sharpens with each treaty&nbsp;reviewed.</p>
+      <span class="mod purple" data-i="s3m">Module B — Facts Agent</span>
+      <div class="note" data-i="s3n"><b>Red / amber / green gate:</b> only green records pass to the next step. During development a Validation Flywheel reviews every record and feeds the corrections back into the agent.</div>
+    </section>
+    <section class="st">
+      <h2 data-i="s4h">Structured data,<br>ready to use.</h2>
+      <p data-i="s4p">From the TreatyRecord the Template Agent produces what the underwriter needs: an Analysis Report to compare and decide on, and an Entry Report that goes straight into TPR, with nothing&nbsp;re-keyed.</p>
+      <span class="mod" data-i="s4m">Module C — Template Agent</span>
+    </section>
+    <section class="st">
+      <h2 data-i="s5h">Data before the decision.</h2>
+      <p data-i="s5p">The underwriter opens a structured, comparable view of the treaty at the start of underwriting. TPR is filled by RPA or API at the end — instead of two months of keying after the&nbsp;decision.</p>
+      <span class="mod orange" data-i="s5m">Underwriter · TPR system</span>
+      <div class="note" data-i="s5n">Values shown on the record are illustrative.</div>
+    </section>
+  </div>
+
+  <div class="side" id="side">
+    <div class="pipe"><div class="fill" id="fill"></div></div>
+    <div class="hold"><div class="tno" id="tno"></div></div>
+  </div>
+</div>
+
+<section class="outro">
+  <p data-i="outro">Same pack, same files. Structured before the decision instead of keyed in two months after&nbsp;it.</p>
+  <small data-i="foot">AI Data+ · Ageas + TPRe · September 2026 · Record values are&nbsp;illustrative.</small>
+</section>
+
+<script>
+(function(){
+  /* ================= copy in both languages ================= */
+  const I18N={
+    en:{
+      title:'The lifecycle of one submission — AI Data+', toplabel:'The lifecycle of one submission', btn:'中文',
+      h1:'The lifecycle of<br>one submission.',
+      intro:'Each treaty renewal arrives as a submission pack: a slip, schedules, spreadsheets, emails, a deck. Today its numbers are keyed in by hand, two months after the decision. This is how AI Data+ turns that pack into structured data before the&nbsp;decision.',
+      hint:'Scroll to view the lifecycle of one submission',
+      s1h:'One submission pack,<br>many formats.', s1p:'A submission arrives as a slip, schedules, spreadsheets, emails and a deck. The figures the underwriter needs are spread across all of them, with no common&nbsp;structure.', s1m:'One pack, five formats, no structure',
+      s2h:'Find the core files.', s2p:'The Submission Agent reads every file and picks out the ones that actually carry the data: the slip, the EPI schedule, the loss history, the wording. The rest stay with the treaty as supporting&nbsp;material.', s2m:'Module A — Submission Agent', s2n:'<b>Red / amber / green gate:</b> only green passes to the next step. During development a Validation Flywheel reviews every call and feeds the corrections back into the agent.',
+      s3h:'Extract the facts.', s3p:'The Facts Agent reads the core files against the agreed Shopping List and fills one structured TreatyRecord per treaty. Every figure is located in a document, never invented. A recipe per cedant tells it where to look, and sharpens with each treaty&nbsp;reviewed.', s3m:'Module B — Facts Agent', s3n:'<b>Red / amber / green gate:</b> only green records pass to the next step. During development a Validation Flywheel reviews every record and feeds the corrections back into the agent.',
+      s4h:'Structured data,<br>ready to use.', s4p:'From the TreatyRecord the Template Agent produces what the underwriter needs: an Analysis Report to compare and decide on, and an Entry Report that goes straight into TPR, with nothing&nbsp;re-keyed.', s4m:'Module C — Template Agent',
+      s5h:'Data before the decision.', s5p:'The underwriter opens a structured, comparable view of the treaty at the start of underwriting. TPR is filled by RPA or API at the end — instead of two months of keying after the&nbsp;decision.', s5m:'Underwriter · TPR system', s5n:'Values shown on the record are illustrative.',
+      outro:'Same pack, same files. Structured before the decision instead of keyed in two months after&nbsp;it.', foot:'AI Data+ · Ageas + TPRe · September 2026 · Record values are&nbsp;illustrative.',
+      folder:'Submission', folderSub:'the pack for one treaty, one year',
+      files:['Slip 2027.pdf','EPI schedule.xlsx','Loss history.xlsx','Wording.docx','Cover email.msg','Broker note.msg','Renewal deck.pptx','Company profile.pdf'],
+      a1:'Submission Agent', a1s:'Module A · definitive rules + LLM', core:'Core files', coreS:'carry the data', sup:'Supporting', supS:'stay with the treaty',
+      a2:'Facts Agent', a2s:'Module B · Shopping List + recipe per cedant', rec:'TreatyRecord', recS:'one per treaty',
+      rows:[['EPI','USD 12.4m'],['Cession','25%'],['Commission','32.5%'],['Profit commission','15%'],['Event limit','USD 15m'],['Period','1 Jan – 31 Dec 2027']],
+      a3:'Template Agent', a3s:'Module C · report generation', shA:'Analysis Report', shAs:'for the underwriting decision', shE:'Entry Report', shEs:'shaped for TPR input',
+      uw:'Underwriter', uwS:'reads it in the treaty folder', tpr:'TPR system', tprS:'filled in automatically', rpa:'RPA / API',
+      gate:'gate · only green passes', held:'amber — held for a human check'
+    },
+    zh:{
+      title:'一份分保资料的生命周期 — AI Data+', toplabel:'一份分保资料的生命周期', btn:'EN',
+      h1:'一份分保资料的<br>生命周期',
+      intro:'每一份合约续转，都会收到一整套分保资料：条款单、附表、电子表格、邮件、演示文稿。如今，这些数字要等到核保决策之后，再花上两个月手工录入。AI Data+ 的做法是：在决策之前，就把这套资料变成结构化数据。',
+      hint:'向下滚动，跟随一份分保资料走完全程',
+      s1h:'一套资料，<br>多种格式', s1p:'分保资料由条款单、附表、电子表格、邮件和演示文稿组成。核保所需的数字散落其中，没有统一的结构。', s1m:'一套资料 · 五种格式 · 没有结构',
+      s2h:'找出核心文件', s2p:'文件分拣智能体（Submission Agent）逐一读取全部文件，挑出真正承载数据的核心文件：条款单、保费表、赔付记录、合约条文。其余文件作为辅助材料，随合约一并保留。', s2m:'模块 A — 文件分拣智能体', s2n:'<b>红 / 黄 / 绿三级闸门：</b>只有绿灯的结果才进入下一步。开发阶段由验证飞轮逐条复核，并把修正结果回馈给智能体。',
+      s3h:'提取关键事实', s3p:'数据提取智能体（Facts Agent）依据双方确认的数据清单（Shopping List）读取核心文件，为每份合约生成一条结构化的合约记录。每一个数字都能在原文中找到出处，绝不凭空生成。每家分出公司各有一套提取配方（recipe），指引它去哪里找，并随着复核的合约增多而不断改进。', s3m:'模块 B — 数据提取智能体', s3n:'<b>红 / 黄 / 绿三级闸门：</b>只有绿灯的记录才进入下一步。开发阶段由验证飞轮逐条复核，并把修正结果回馈给智能体。',
+      s4h:'结构化数据，<br>即刻可用', s4p:'报表生成智能体（Template Agent）基于合约记录生成核保所需的两份输出：用于比较和决策的分析报告，以及可自动录入 TPR 系统的录入报告——无需再手工录入。', s4m:'模块 C — 报表生成智能体',
+      s5h:'数据先于决策', s5p:'核保开始时，核保人就能看到结构化、可比较的合约数据；核保结束后，由 RPA 或 API 自动写入 TPR 系统——不再需要决策之后两个月的手工录入。', s5m:'核保人 · TPR 系统', s5n:'记录中的数值仅为示意。',
+      outro:'同一套资料，同样的文件。在决策之前完成结构化，而不是在决策之后花两个月录入。', foot:'AI Data+ · Ageas + TPRe · 2026 年 9 月 · 记录中的数值仅为示意',
+      folder:'分保资料', folderSub:'一份合约 · 一个年度',
+      files:['条款单 2027.pdf','保费表.xlsx','赔付记录.xlsx','合约条文.docx','邮件正文.msg','经纪人备注.msg','续转介绍.pptx','公司简介.pdf'],
+      a1:'文件分拣智能体', a1s:'模块 A · 确定性规则 + 大模型', core:'核心文件', coreS:'承载数据', sup:'辅助材料', supS:'随合约保留',
+      a2:'数据提取智能体', a2s:'模块 B · 数据清单 + 分出公司专属配方', rec:'合约记录', recS:'每份合约一条',
+      rows:[['预估保费 EPI','1,240 万美元'],['分保比例','25%'],['手续费','32.5%'],['盈余佣金','15%'],['事故限额','1,500 万美元'],['合约期间','2027 年 1 月 – 12 月']],
+      a3:'报表生成智能体', a3s:'模块 C · 生成分析报告与录入报告', shA:'分析报告', shAs:'供核保决策', shE:'录入报告', shEs:'按 TPR 录入格式',
+      uw:'核保人', uwS:'在合约文件夹中查看', tpr:'TPR 系统', tprS:'录入报告自动写入', rpa:'RPA / API',
+      gate:'闸门 · 只放行绿灯', held:'黄灯 — 暂停，转人工复核'
+    }
+  };
+  let stored=null; try{stored=localStorage.getItem('aidp.lang');}catch(e){}
+  let lang=(new URLSearchParams(location.search).get('lang')||stored||'en');
+  if(lang!=='zh') lang='en';
+  let L=I18N[lang];
+
+  /* ================= engine ================= */
+  const tno=document.getElementById('tno'), track=document.getElementById('stations'), side=document.getElementById('side');
+  const sts=[...document.querySelectorAll('.st')];
+  const N=5;
+  const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+  const EASE={io:t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2,out:t=>1-Math.pow(1-t,3),
+    ob:t=>{const c=1.70158,d=c+1;return 1+d*Math.pow(t-1,3)+c*Math.pow(t-1,2);}};
+  const KEYS=['x','y','s','r','o'];
+  function build(fr){let prev={x:0,y:0,s:1,r:0,o:1};return fr.map(f=>{const g=Object.assign({},prev,f);prev=Object.assign({},g);delete prev.e;return g;});}
+  function sample(fr,p){
+    if(p<=fr[0].p) return fr[0]; const last=fr[fr.length-1]; if(p>=last.p) return last;
+    let i=0; while(fr[i+1].p<=p) i++; const a=fr[i],b=fr[i+1];
+    let t=(p-a.p)/(b.p-a.p); t=(EASE[b.e]||EASE.io)(t);
+    const o={}; for(const k of KEYS) o[k]=a[k]+(b[k]-a[k])*t; return o;
+  }
+  let objs=[], camFrames=null, files=[], gate1=[], gate2=[], g1=null, g2=null, g1b=null, g2b=null, rec=null, rows=[], chips=[], sw=null;
+  function obj(html,w,h,frames,cls,z){
+    const el=document.createElement('div'); el.className='obj'+(cls?' '+cls:''); if(z) el.style.zIndex=z;
+    el.innerHTML='<div class="in" style="width:'+w+'px'+(h?';height:'+h+'px':'')+'">'+html+'</div>';
+    tno.appendChild(el); const o={el,inner:el.firstElementChild,fr:build(frames)}; objs.push(o); return o;
+  }
+
+  /* ================= illustrations ================= */
+  function illu(kind){
+    if(kind==='sort') return '<svg class="k-sort" viewBox="0 0 60 80" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">'+
+      '<g class="armw"><g class="arm"><path d="M30 30v40" stroke="#13294B" stroke-width="7" stroke-linecap="round"/><circle cx="30" cy="70" r="6.5" fill="#E8752A"/></g></g>'+
+      '<circle cx="30" cy="30" r="13" fill="#fff" stroke="#13294B" stroke-width="3"/><circle cx="30" cy="30" r="4" fill="#13294B"/>'+
+      '</svg>';
+    if(kind==='read') return '<svg class="k-read" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">'+
+      '<g class="lens"><circle cx="48" cy="48" r="34" fill="#fff" fill-opacity=".42" stroke="#6B2C91" stroke-width="4.5"/>'+
+      '<rect x="24" y="44" width="48" height="8" rx="4" fill="#E8752A" opacity=".9"/>'+
+      '<circle cx="48" cy="48" r="34" fill="none" stroke="#fff" stroke-width="10" stroke-opacity=".3"/>'+
+      '<path d="M28 32c5-9 15-13 24-11" stroke="#fff" stroke-width="3.5" stroke-linecap="round" opacity=".95"/>'+
+      '<path d="M74 74l32 32" stroke="#6B2C91" stroke-width="12" stroke-linecap="round"/></g>'+
+      '</svg>';
+    return '<svg class="k-write" viewBox="0 0 160 150" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">'+
+      '<ellipse cx="80" cy="140" rx="52" ry="7" fill="#13294B" opacity=".08"/>'+
+      '<rect x="30" y="52" width="100" height="82" rx="8" fill="#fff" stroke="#13294B" stroke-width="2.5"/>'+
+      '<rect x="42" y="64" width="44" height="8" rx="2" fill="#13294B"/>'+
+      '<path d="M42 84h76M42 98h76M42 112h50" stroke="#D3DEEA" stroke-width="5" stroke-linecap="round"/>'+
+      '<circle cx="106" cy="112" r="12" fill="#E3F4EB" stroke="#2E9E6B" stroke-width="2.5"/><path d="M100 112l4 4 8-8" fill="none" stroke="#2E9E6B" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>'+
+      '<g class="stamp"><rect x="66" y="4" width="28" height="22" rx="6" fill="#2E9E6B"/><rect x="48" y="24" width="64" height="16" rx="5" fill="#1F7A45"/>'+
+      '<path d="M56 40v8h48v-8" fill="none" stroke="#1F7A45" stroke-width="2.5"/></g>'+
+      '</svg>';
+  }
+  const agentIllu=(cls,kind,name,sub)=>'<div class="bot side '+cls+'"><div class="illu">'+illu(kind)+'</div><div class="lab"><b>'+name+'</b><small>'+sub+'</small></div></div>';
+  const gate=(w,h)=>'<div class="gt"><svg viewBox="0 0 300 140" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">'+
+    '<path class="beam" d="M70 34h160l52 96H18z"/>'+
+    '<line class="sweep" x1="62" y1="42" x2="238" y2="42" stroke-width="2" stroke-linecap="round"/>'+
+    '</svg><small>'+L.gate+'</small><div class="held">'+L.held+'</div></div>';
+  const gateBar=()=>'<div class="gt gtb"><svg viewBox="0 0 300 40" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">'+
+    '<rect x="40" y="12" width="220" height="22" rx="11" fill="#13294B"/>'+
+    '<rect x="56" y="21" width="120" height="4" rx="2" fill="#fff" opacity=".22"/>'+
+    '<circle class="lr" cx="214" cy="23" r="4"/><circle class="la" cx="228" cy="23" r="4"/><circle class="lg" cx="242" cy="23" r="4"/>'+
+    '</svg></div>';
+  function gateState(items,p){
+    let st='';
+    for(const it of items){
+      if(it.amber){ if(p>=it.g&&p<it.g+it.hold) return 'amber'; if(p>=it.g+it.hold&&p<it.g+it.hold+.012) st='green'; }
+      else if(p>=it.g-.003&&p<it.g+.012) st='green';
+    }
+    return st;
+  }
+
+  /* ================= the scene ================= */
+  const RH=800, R1=800, R2=1600, R3=2400;
+  function buildScene(){
+    tno.innerHTML=''; objs=[]; files=[]; gate1=[]; gate2=[]; chips=[];
+    camFrames=build([{p:0,y:0},{p:.36,y:0},{p:.44,y:R1},{p:.56,y:R1},{p:.64,y:R2},{p:.76,y:R2},{p:.84,y:R3}]);
+
+    /* room 0 — the folder is centred while the files arrive, then moves up for the scanner */
+    const F=[{p:0,x:260,y:400,s:1,o:1},{p:.14},{p:.18,y:210,e:'io'},{p:.44},{p:.47,o:0}];
+    obj('<div class="fold-back"></div><div class="fold-tab"></div>',240,170,F,'',1);
+    obj('<div class="fold-front"><div class="t">'+L.folder+'</div><div class="s">'+L.folderSub+'</div></div>',240,170,F,'',10);
+
+    const EXT=['pdf','xlsx','xlsx','docx','msg','msg','pptx','pdf'], CORE=[1,1,1,1,0,0,0,0];
+    const rot0=[-16,12,-8,18,-12,9,-20,14];
+    let kc=0,ko=0;
+    L.files.forEach((name,i)=>{
+      const ext=EXT[i], core=CORE[i]; const k=core?kc++:ko++;
+      const t0=.015+i*.006, t1=.19+i*.006;
+      const tray=core?{x:150+k*12,y:590+k*4}:{x:370+k*12,y:590+k*4};
+      const fr=[
+        {p:0,x:170+i*26,y:-160,s:1,r:rot0[i],o:0},{p:t0,o:1},
+        {p:t0+.045,x:260+(i-3.5)*11,y:372-i*2,s:.85,r:(i-3.5)*1.5,e:'out'},
+        {p:.14},{p:.18,y:182-i*2,e:'io'},
+        {p:t1},{p:t1+.016,x:260,y:385,s:.72,r:0,e:'io'},              /* at the junction */
+        {p:t1+.03,x:core?205:315,y:463,s:.8,r:core?-12:12,e:'io'},    /* along the curve */
+        {p:t1+.045,x:tray.x,y:tray.y,s:.95,r:(k-1.5)*4,e:'out'},
+        {p:.36}
+      ];
+      if(core){
+        const tg=.362+k*.009, amber=(k===2), hold=amber?.014:0;
+        gate1.push({g:tg+.022,amber,hold:hold+.006});
+        fr.push({p:tg},{p:tg+.022,x:260,y:R1+8,s:.85,r:0,e:'io'},{p:tg+.022+hold,x:260,y:R1+8,s:.85},
+                {p:tg+.045+hold,x:250+(k-1.5)*14,y:R1+200+k*5,s:.95,r:(k-1.5)*2,e:'io'},{p:.55},{p:.58,y:R1+140,o:0});
+      } else fr.push({p:.37},{p:.41,x:tray.x+180,o:0});
+      const html='<div class="doc"><div class="lines"><i></i><i></i><i></i></div><div class="ext ext-'+ext+'">'+ext.toUpperCase()+'</div></div><div class="fname">'+name+'</div>';
+      const o=obj(html,80,102,fr,'file '+(core?'core':'other'),2+i); o.el.style.setProperty('--d',(i*.45)+'s'); o.tagAt=t1+.02; o.qAt=t0+.045; o.jAt=t1+.016; o.core=!!core; files.push(o);
+    });
+
+    obj('<svg class="tracks" viewBox="0 0 300 260" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">'+
+      '<path d="M150 85C150 150 40 170 40 260" stroke="#C9D6E4" stroke-width="10" stroke-linecap="round" fill="none"/>'+
+      '<path d="M150 85C150 150 260 170 260 260" stroke="#C9D6E4" stroke-width="10" stroke-linecap="round" fill="none"/>'+
+      '<path d="M150 85C150 150 40 170 40 260M150 85C150 150 260 170 260 260" stroke="#fff" stroke-width="3" stroke-linecap="round" fill="none" opacity=".7"/>'+
+      '</svg>',300,260,
+      [{p:.15,x:260,y:430,s:.9,o:0},{p:.19,s:1,o:1},{p:.44},{p:.47,o:0}],'',1);
+    sw=obj(agentIllu('switch','sort',L.a1,L.a1s),220,null,
+      [{p:.15,x:260,y:385,s:.6,o:0},{p:.19,s:1,o:1,e:'ob'},{p:.44},{p:.47,o:0}],'',12);
+    obj('<div class="lbl core">'+L.core+'<small>'+L.coreS+'</small></div>',150,null,
+      [{p:.22,x:150,y:664,o:0},{p:.25,o:1,y:656},{p:.36},{p:.39,o:0}],'',12);
+    obj('<div class="lbl other">'+L.sup+'<small>'+L.supS+'</small></div>',150,null,
+      [{p:.22,x:370,y:664,o:0},{p:.25,o:1,y:656},{p:.37},{p:.41,o:0}],'',12);
+
+    /* gate on the Sort→Read boundary, then room 1 — stack, lens on the stack, record */
+    g1=obj(gate(300,150),300,null,[{p:.34,x:260,y:R1-10,s:.9,o:0},{p:.36,s:1,o:1},{p:.44},{p:.465,o:0,s:.95}],'',1);
+    g1b=obj(gateBar(),300,40,[{p:.34,x:260,y:R1-63,s:.9,o:0},{p:.36,s:1,o:1},{p:.44},{p:.465,o:0,s:.95}],'',13);
+    obj(agentIllu('purple lens-on-files','read',L.a2,L.a2s),220,null,
+      [{p:.41,x:302,y:R1+248,s:.6,o:0},{p:.44,s:1,o:1,e:'ob'},{p:.64},{p:.67,o:0}],'',12);
+    rec=obj('<div class="rec"><div class="h">'+L.rec+'<small>'+L.recS+'</small></div>'+
+      L.rows.map(r=>'<div class="r"><span class="k">'+r[0]+'</span><span class="d"></span><span class="v">'+r[1]+'</span></div>').join('')+'</div>',
+      250,214,[{p:.42,x:260,y:R1+540,s:.8,o:0},{p:.45,s:.9,o:1},{p:.565},
+               {p:.59,x:260,y:R2+6,s:.6,e:'io'},{p:.608,x:260,y:R2+6,s:.6},{p:.635,x:260,y:R2+200,s:.75,e:'io'},
+               {p:.84},{p:.87,y:R2+140,s:.5,o:0}],'',11);
+    rows=[...rec.el.querySelectorAll('.r')];
+    L.rows.forEach((r,j)=>{
+      const t=.445+j*.004;
+      const o=obj('<div class="chip"><span class="k">'+r[0]+'</span><span>'+r[1]+'</span></div>',lang==='zh'?220:190,26,
+        [{p:0,x:290,y:R1+240,s:.35,o:0},{p:t,o:0},{p:t+.005,o:1,s:1,x:262,y:R1+300,e:'ob'},{p:t+.012,x:260,y:R1+350,e:'io'},
+         {p:t+.025,x:260,y:R1+483+j*25.2,e:'ob'},{p:t+.027,o:0}],'',14);
+      o.landAt=t+.025; chips.push(o);
+    });
+    gate2=[{g:.588,amber:false,hold:.022}];
+
+    /* gate on the Read→Write boundary, then room 2 — record, stamp, two reports */
+    g2=obj(gate(300,160),300,null,[{p:.54,x:260,y:R2-12,s:.9,o:0},{p:.56,s:1,o:1},{p:.64},{p:.665,o:0,s:.95}],'',1);
+    g2b=obj(gateBar(),300,40,[{p:.54,x:260,y:R2-65,s:.9,o:0},{p:.56,s:1,o:1},{p:.64},{p:.665,o:0,s:.95}],'',13);
+    obj(agentIllu('green','write',L.a3,L.a3s),220,null,
+      [{p:.615,x:260,y:R2+365,s:.6,o:0},{p:.645,s:1,o:1,e:'ob'},{p:.84},{p:.87,o:0}],'',12);
+    const sheet=(c,t,f)=>'<div class="sheet '+c+'"><div class="h">'+t+'</div><div class="l"><i></i><i></i><i></i><i></i><i></i></div><div class="f">'+f+'</div></div>';
+    obj(sheet('analysis',L.shA,L.shAs),120,150,
+      [{p:.645,x:260,y:R2+365,s:.3,o:0},{p:.65,o:1},{p:.675,x:160,y:R2+560,s:1,e:'ob'},{p:.77},{p:.845,x:140,y:R3+250,e:'io'}],'',15);
+    obj(sheet('entry',L.shE,L.shEs),120,150,
+      [{p:.655,x:260,y:R2+365,s:.3,o:0},{p:.66,o:1},{p:.685,x:360,y:R2+560,s:1,e:'ob'},{p:.77},{p:.845,x:380,y:R3+250,e:'io'}],'',15);
+
+    /* room 3 — deliver */
+    obj('<div class="who"><div class="fig"></div><b>'+L.uw+'</b><span>'+L.uwS+'</span></div>',
+      200,null,[{p:.83,x:140,y:R3+560,o:0},{p:.87,o:1,y:R3+540}],'',12);
+    obj('<div class="who sysc"><div class="srv"><i></i><i></i></div><b>'+L.tpr+'</b><span>'+L.tprS+'</span></div>',
+      200,null,[{p:.84,x:380,y:R3+560,o:0},{p:.875,o:1,y:R3+540}],'',12);
+    const flow=(lbl)=>'<div class="flow"><svg viewBox="0 0 40 110" aria-hidden="true"><path class="ln" d="M20 4v90"/><path class="hd" d="M11 86l9 12 9-12"/></svg>'+(lbl?'<span>'+lbl+'</span>':'')+'</div>';
+    obj(flow(''),40,110,[{p:.87,x:140,y:R3+400,o:0,s:.8},{p:.9,o:1,s:1}],'',12);
+    obj(flow(L.rpa),40,110,[{p:.88,x:380,y:R3+400,o:0,s:.8},{p:.91,o:1,s:1}],'',12);
+  }
+
+  /* ================= language ================= */
+  function applyLang(){
+    L=I18N[lang];
+    document.documentElement.lang=lang==='zh'?'zh-Hans':'en';
+    document.querySelectorAll('[data-i]').forEach(el=>{const k=el.dataset.i; if(L[k]!=null) el.innerHTML=L[k];});
+    document.title=L.title;
+    document.getElementById('langBtn').textContent=L.btn;
+    buildScene(); lastP=-1; render();
+  }
+  document.getElementById('langBtn').addEventListener('click',()=>{
+    lang=lang==='zh'?'en':'zh';
+    try{localStorage.setItem('aidp.lang',lang);}catch(e){}
+    try{const u=new URL(location.href); u.searchParams.set('lang',lang); history.replaceState(null,'',u);}catch(e){}
+    applyLang();
+  });
+
+  /* ================= pipe dots, render loop ================= */
+  const dots=[]; for(let i=0;i<N;i++){const d=document.createElement('div'); d.className='dot'; d.style.top=((i+.5)/N*100)+'%'; side.appendChild(d); dots.push(d);}
+  const fill=document.getElementById('fill');
+  function progress(){ const r=track.getBoundingClientRect(); return clamp((innerHeight/2-r.top)/r.height,0,1); }
+  let lastP=-1;
+  function render(){
+    const p=progress(); if(p===lastP) return; lastP=p;
+    const cy=camFrames?sample(camFrames,p).y:0;
+    for(const o of objs){
+      const v=sample(o.fr,p);
+      o.el.style.opacity=v.o.toFixed(3); o.el.style.visibility=v.o<.01?'hidden':'visible';
+      o.el.style.transform='translate('+v.x.toFixed(1)+'px,'+(v.y-cy).toFixed(1)+'px)';
+      o.inner.style.transform='translate(-50%,-50%) scale('+v.s.toFixed(3)+') rotate('+v.r.toFixed(2)+'deg)';
+    }
+    for(const f of files){f.el.classList.toggle('tagged',p>=f.tagAt);f.el.classList.toggle('q',p>=f.qAt);}
+    let ang=0; for(const f of files){ if(p>=f.jAt-.004&&p<f.jAt+.012) ang=f.core?-34:34; }
+    sw.el.querySelector('.arm').style.transform='rotate('+ang+'deg)';
+    const s1=gateState(gate1,p), s2=gateState(gate2,p);
+    g1.el.querySelector('.gt').className='gt'+(s1?' '+s1:''); g1b.el.querySelector('.gt').className='gt gtb'+(s1?' '+s1:'');
+    g2.el.querySelector('.gt').className='gt'+(s2?' '+s2:''); g2b.el.querySelector('.gt').className='gt gtb'+(s2?' '+s2:'');
+    chips.forEach((c,j)=>rows[j].classList.toggle('filled',p>=c.landAt));
+    const cur=clamp(Math.floor(p*N),0,N-1);
+    sts.forEach((s,i)=>s.classList.toggle('dim',i!==cur));
+    dots.forEach((d,i)=>{d.classList.toggle('on',p>=(i+.5)/N-.01);d.classList.toggle('now',cur===i);});
+    fill.style.height=(p*100)+'%';
+    tno.style.opacity=Math.min(1,p/.035,(1-p)/.035).toFixed(3);
+    const blobs=document.querySelectorAll('.bg i'); const hue=['#FCE9DC','#EAF2F8','#EFE6F5','#E3F4EB','#FCE9DC'][cur];
+    blobs[0].style.transform='translateY('+(-p*22)+'vh)'; blobs[1].style.transform='translateY('+(p*18)+'vh)'; blobs[0].style.background=hue;
+  }
+  function fit(){
+    const w=side.getBoundingClientRect().width||560;
+    const k=Math.min(1, (w-20)/520, innerWidth<980 ? (innerHeight*.58-20)/800 : (innerHeight-40)/800);
+    document.documentElement.style.setProperty('--k',k.toFixed(3));
+    lastP=-1; render();
+  }
+  let ticking=false;
+  addEventListener('scroll',()=>{if(!ticking){ticking=true;requestAnimationFrame(()=>{render();ticking=false;});}},{passive:true});
+  addEventListener('resize',fit);
+  applyLang(); fit();
+})();
+</script>
+</body>
+</html>
