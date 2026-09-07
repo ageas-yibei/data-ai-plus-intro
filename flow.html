@@ -1,0 +1,2647 @@
+<!DOCTYPE html>
+<html lang="en" data-lang="en" data-view="g"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Data+ · at a glance</title>
+<script>try{if(localStorage.getItem("aidp.lang")==="zh"){document.documentElement.setAttribute("data-lang","zh");document.documentElement.setAttribute("lang","zh-Hans");}}catch(e){}</script>
+<style>
+  :root{
+    --ink:#0F2137; --navy:#1C3557; --slate:#5B6B7F; --mute:#8D9BAB;
+    --purple:#7B2D8E; --orange:#E8622A; --cyan:#2E9FB8; --green:#3F8F5F; --amber:#C98A1E;
+    --blue:#4A7DBD;
+    --paper:#F2F5F8; --card:#FFFFFF; --line:#D9E0E8;
+    --disp:"Aptos Display","Segoe UI Variable Display","Segoe UI","Noto Sans SC","PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+    --body:"Aptos","Segoe UI Variable Text","Segoe UI","Noto Sans SC","PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+    --mono:ui-monospace,"Cascadia Mono","Segoe UI Mono",Consolas,monospace;
+  }
+  *{box-sizing:border-box}
+  html,body,svg,.board,.banner{
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;color-adjust:exact}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);
+       -webkit-font-smoothing:antialiased;line-height:1.5}
+  .wrap{max-width:1560px;margin:0 auto;padding:32px 40px 80px}
+
+  .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.14em;
+           color:var(--purple);margin:0 0 8px}
+  h1{font-family:var(--disp);font-size:clamp(28px,3.4vw,40px);line-height:1.12;margin:0 0 22px;
+     font-weight:700;letter-spacing:-.025em;color:var(--navy)}
+  h1 em{font-style:normal;color:inherit;font-weight:700}
+  .lede{max-width:64ch;color:var(--slate);margin:0 0 24px;font-size:15px}
+
+  /* ---------- stage rail ---------- */
+  .railrow{display:flex;gap:11px 22px;align-items:center;margin:0 0 18px;flex-wrap:wrap;
+        position:sticky;top:var(--wk-nav-h,46px);z-index:60;
+        background:var(--paper);
+        padding:8px 0 10px;margin-top:-8px}
+  .rail{display:flex;flex:1 1 680px;min-width:0;height:40px;border:0;background:transparent;
+        overflow:visible;filter:drop-shadow(0 1px 2px rgba(15,33,55,.06))}
+  .stage{flex:1 1 0;min-width:0;position:relative;background:var(--line);border:0;
+         padding:0 12px 0 28px;cursor:pointer;font:inherit;color:inherit;white-space:nowrap;
+         display:flex;align-items:center;justify-content:center;gap:7px;
+         transition:background .15s,color .15s;
+         clip-path:polygon(0 0,calc(100% - 13px) 0,100% 50%,calc(100% - 13px) 100%,0 100%,13px 50%)}
+  .stage::before{content:"";position:absolute;inset:1px;background:var(--card);
+         transition:background .15s;
+         clip-path:polygon(0 0,calc(100% - 13px) 0,100% 50%,calc(100% - 13px) 100%,0 100%,13px 50%)}
+  .stage .lbl{position:relative;z-index:1}
+  .stage + .stage{margin-left:-13px}
+  .stage:first-child{padding-left:15px;
+         clip-path:polygon(0 0,calc(100% - 13px) 0,100% 50%,calc(100% - 13px) 100%,0 100%)}
+  .stage:first-child::before{
+         clip-path:polygon(0 0,calc(100% - 13px) 0,100% 50%,calc(100% - 13px) 100%,0 100%)}
+  .stage:last-child{clip-path:polygon(0 0,100% 0,100% 100%,0 100%,13px 50%)}
+  .stage:last-child::before{clip-path:polygon(0 0,100% 0,100% 100%,0 100%,13px 50%)}
+  .stage:hover::before{background:#EDF3F8}
+  .stage[aria-selected="true"]::before{background:var(--navy)}
+  .stage:focus-visible{outline:0;background:var(--orange)}
+  @media (max-width:1180px){
+    .stage{padding:0 8px 0 24px}
+    .stage:first-child{padding-left:12px}
+    .stage .tag{display:none}
+  }
+  .stage .lbl{display:flex;align-items:baseline;gap:7px;min-width:0}
+  .stage .nm{overflow:hidden;text-overflow:ellipsis}
+  .stage .num{font-family:var(--mono);font-size:10px;color:var(--mute);letter-spacing:.06em}
+  .stage .nm{font-family:var(--disp);font-weight:700;font-size:13.5px;color:var(--navy)}
+  .stage .tag{font-family:var(--mono);font-size:9.5px;color:var(--mute);letter-spacing:.04em}
+  .stage[aria-selected="true"]{background:var(--navy);color:#fff}
+  .stage[aria-selected="true"] .num,.stage[aria-selected="true"] .nm,.stage[aria-selected="true"] .tag{color:#fff}
+  .ctl{display:flex;flex:0 0 auto;align-items:stretch;height:40px;overflow:hidden;
+        box-sizing:border-box;background:var(--card);border:1px solid var(--line);
+        border-radius:var(--r-ctl,6px);box-shadow:0 1px 2px rgba(20,36,58,.05)}
+  .ctl button{font-family:var(--disp);font-weight:600;font-size:12.5px;padding:0 15px;
+        border:0;border-radius:0;background:transparent;color:var(--slate);cursor:pointer;
+        white-space:nowrap;transition:background .15s,color .15s}
+  .ctl button + button{border-left:1px solid var(--line)}
+  .ctl button:hover{background:#EEF2F6;color:var(--navy)}
+  .ctl button:focus-visible{outline:2px solid var(--orange);outline-offset:-2px}
+  .ctl button[aria-selected="true"]{background:var(--navy);color:#fff}
+  .ctl button[aria-selected="true"]:hover{background:var(--navy);color:#fff}
+  .exportbtn{font-family:var(--disp);font-weight:600;font-size:12.5px;height:30px;padding:0 13px;
+        display:flex;align-items:center;gap:8px;
+        border:1px solid var(--line);border-radius:var(--r-ctl,6px);background:transparent;color:var(--navy);
+        cursor:pointer;white-space:nowrap;transition:border-color .15s,background .15s}
+  .exportbtn .g{font-family:var(--mono);font-size:13px;color:var(--slate)}
+  .exportbtn:hover{border-color:#AEBBC8;background:var(--card)}
+  .exportbtn:hover .g{color:var(--orange)}
+  .exportbtn:focus-visible{outline:2px solid var(--orange);outline-offset:2px}
+  .oblock .btitle{font-family:var(--disp);font-weight:700;font-size:14px}
+  .oblock .bsub{font-family:var(--mono);font-size:9px;letter-spacing:.06em;fill:var(--slate)}
+  .oblock .bio{font-family:var(--mono);font-size:8.5px;letter-spacing:.02em;fill:#7A8794}
+  .htick{stroke:#8D9BAB;stroke-width:1.3;stroke-dasharray:2 3}
+
+
+  .keyrow{display:flex;flex-wrap:wrap;gap:7px 16px;align-items:center;margin:0 0 9px;
+          font-family:var(--mono);font-size:10px;letter-spacing:.04em;color:var(--slate)}
+  .keyrow .k{display:flex;align-items:center;gap:6px}
+  .keyrow .sw{width:15px;height:11px;border-radius:2px;border:1px solid;flex:0 0 auto}
+  .keyrow .ln{width:20px;border-top:1.6px solid #7C90A4;flex:0 0 auto}
+  .keyrow .ln.lo{border-top:2px dashed var(--orange)}
+  .keyrow .ln.tb{border-top:1.6px dashed #8D9BAB}
+  .keyrow .dia{width:11px;height:11px;background:#fff;border:1px solid var(--slate);
+          transform:rotate(45deg);flex:0 0 auto}
+  .keyrow .dashbox{width:17px;height:11px;border:1.4px dashed #3F8F5F;border-radius:2px;flex:0 0 auto}
+  .keyrow .k.fade{opacity:.42}
+
+  /* ---------- board / svg ---------- */
+  .board{background:var(--card);border:1px solid var(--line);border-radius:var(--r-card,10px);
+         padding:4px;overflow:auto}
+  .boardwrap{position:relative}
+  .boardwrap::after{content:"";position:absolute;top:1px;right:1px;bottom:1px;width:32px;
+         pointer-events:none;border-radius:0 3px 3px 0;
+         background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,.94))}
+  .utils{display:flex;align-items:center;gap:5px;flex:0 0 auto;order:2}
+  .vtoggle{order:3;margin-left:auto}
+  .rail{order:1}
+  .zoomer{height:30px;background:transparent;box-shadow:none}
+  .zoomer button{font-family:var(--mono);font-size:14px;min-width:28px;padding:0 7px;
+         color:var(--navy);line-height:1}
+  .zoomer button + button{border-left:0}
+  .zoomer .zl{font-family:var(--mono);font-size:10.5px;color:var(--slate);min-width:46px;
+         padding:0;letter-spacing:.03em}
+  .zoomer .zl:hover{color:var(--navy)}
+  svg.map{display:block;width:100%;min-width:1120px;height:auto;font-family:var(--body)}
+
+  .lanehdr{font-family:var(--mono);font-size:11px;letter-spacing:.16em;fill:#fff}
+  .lanehdr-bg{fill:var(--navy)}
+  .lanesep{stroke:#E4E9EF;stroke-width:1;stroke-dasharray:2 6}
+  .sidetag{font-family:var(--mono);font-size:10px;letter-spacing:.08em;fill:var(--slate);font-weight:600}
+
+  .cont{fill:none;stroke-width:1.6;rx:4}
+  .cont.fly{stroke-dasharray:7 4}
+  .ctitle{font-family:var(--disp);font-weight:700;font-size:13px;
+          paint-order:stroke;stroke:#fff;stroke-width:5px;stroke-linejoin:round}
+  .ctag{font-family:var(--mono);font-size:9px;letter-spacing:.08em;fill:var(--mute)}
+  .cstamp{font-family:var(--mono);font-size:11px;fill:#7A8794;letter-spacing:.04em;
+          paint-order:stroke;stroke:#fff;stroke-width:8px;stroke-linejoin:round}
+
+  .nd{cursor:pointer;transition:opacity .3s ease}
+  .nd rect.bg, .nd path.bg{stroke-width:1.1;transition:opacity .35s}
+  .nd .lb{font-size:12px;font-weight:700;fill:var(--ink)}
+  .nd .sb{font-family:var(--mono);font-size:8.5px;letter-spacing:.04em;fill:var(--slate)}
+  .nd .strip{transition:opacity .35s}
+  .nd:focus-visible rect.bg,.nd:focus-visible path.bg{stroke:var(--orange);stroke-width:2}
+  .nd.picked rect.bg,.nd.picked path.bg{stroke:var(--navy);stroke-width:2.4}
+  .actor{stroke:var(--slate);stroke-width:1.6;fill:none}
+  .actor-h{fill:#fff;stroke:var(--slate);stroke-width:1.6}
+  .nd.picked .actor,.nd.picked .actor-h{stroke:var(--navy)!important;stroke-width:2.4}
+  .nd:focus-visible .actor,.nd:focus-visible .actor-h{stroke:var(--orange)!important;stroke-width:2.2}
+  .alabel{font-family:var(--mono);font-size:9px;fill:var(--slate);
+          paint-order:stroke;stroke:#fff;stroke-width:3px;stroke-linejoin:round}
+
+  .eg,text.elb{transition:opacity .3s ease}
+  .edc{fill:none;stroke:#fff;stroke-width:4.6}
+  .ed{fill:none;stroke:#7C90A4;stroke-width:1.6;transition:stroke .15s,stroke-width .15s}
+  .ed.loop{stroke:var(--orange);stroke-width:2;stroke-dasharray:7 5;animation:dashmove 1.1s linear infinite}
+  @keyframes dashmove{to{stroke-dashoffset:-12}}
+  .ed.tbd{stroke-dasharray:5 4}
+  .elb{font-family:var(--mono);font-size:9.5px;fill:#5B6B7F;paint-order:stroke;
+       stroke:#fff;stroke-width:3.5px;stroke-linejoin:round}
+  .elb.lo{fill:#B8600F;font-weight:600}
+  .elb.trace{fill:#1C3557;font-weight:600}
+  .elb.fadeE{opacity:.14}
+  .eg.trace .ed{stroke:#1C3557;stroke-width:2.7}
+  .eg.trace .ed.loop{stroke:#C24E1C;stroke-width:2.8}
+  .eg.trace .elb{fill:#1C3557;font-weight:600}
+  .eg.fadeE{opacity:.14}
+
+  .off{opacity:.13;pointer-events:none}
+  .nd.off{opacity:.34}
+  [data-inactive="ghost"] .nd.off text{opacity:0}
+  [data-inactive="ghost"] .nd.off rect.bg,[data-inactive="ghost"] .nd.off path.bg{fill:#fff;stroke:#C3CEDA}
+  [data-inactive="ghost"] .nd.off .actor,[data-inactive="ghost"] .nd.off .actor-h{stroke:#C3CEDA!important}
+  [data-inactive="dim"] .nd.off{opacity:.22}
+  [data-inactive="hide"] .nd.off,[data-inactive="hide"] .eg.off,
+  [data-inactive="hide"] text.elb.off,[data-inactive="hide"] .semi{opacity:0}
+  .off.under,.nd.off.under{opacity:0}
+
+  [data-detail="standard"] text.elb,[data-detail="sparse"] text.elb{display:none}
+  [data-detail="sparse"] .nd .sb,[data-detail="sparse"] .nd .alabel,
+  [data-detail="sparse"] .oblock .bsub,[data-detail="sparse"] .oblock .bio,
+  [data-detail="sparse"] .ctag,[data-detail="sparse"] .sidetag,
+  [data-detail="sparse"] .cstamp{display:none}
+
+  [data-ink="mono"] .nd rect.bg,[data-ink="mono"] .nd path.bg{fill:#FBFCFD;stroke:#9AA9B8}
+  [data-ink="mono"] .nd.k-human rect.bg{fill:#FBE7DA;stroke:#E0632A}
+  [data-ink="mono"] .oblock rect.bg{fill:#FBFCFD;stroke:#8D9BAB}
+  [data-ink="mono"] .oblock .btitle,[data-ink="mono"] .ctitle{fill:#5B6B7F}
+  [data-ink="mono"] .cont{stroke:#8D9BAB}
+  [data-ink="mono"] .lanehdr-bg{fill:#6D7C8C}
+  [data-ink="mono"] .actor,[data-ink="mono"] .actor-h{stroke:#E0632A!important}
+  [data-ink="mono"][data-inactive="ghost"] .nd.off rect.bg,
+  [data-ink="mono"][data-inactive="ghost"] .nd.off path.bg{fill:#fff;stroke:#C3CEDA}
+  [data-ink="mono"][data-inactive="ghost"] .nd.off .actor,
+  [data-ink="mono"][data-inactive="ghost"] .nd.off .actor-h{stroke:#C3CEDA!important}
+
+  .utils{position:relative}
+  .tweaks{position:absolute;right:0;top:38px;z-index:20;width:272px;background:var(--card);
+        border:1px solid var(--line);border-radius:var(--r-card,10px);padding:15px 16px 16px;
+        box-shadow:0 14px 38px rgba(20,36,58,.20);text-align:left}
+  .tweaks h4{font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;
+        color:var(--mute);margin:0 0 13px;font-weight:400}
+  .trow{margin-bottom:13px}
+  .trow:last-child{margin-bottom:0}
+  .tlab{display:block;font-family:var(--disp);font-weight:700;font-size:12px;color:var(--navy)}
+  .thint{display:block;font-family:var(--mono);font-size:9.5px;color:var(--mute);
+        margin:1px 0 6px;letter-spacing:.02em}
+  .tseg{display:flex;border:1px solid var(--line);border-radius:3px;overflow:hidden}
+  .tseg button{flex:1;font-family:var(--disp);font-weight:600;font-size:11.5px;padding:6px 4px;
+        border:0;background:transparent;color:var(--slate);cursor:pointer;
+        transition:background .15s,color .15s}
+  .tseg button + button{border-left:1px solid var(--line)}
+  .tseg button:hover{background:#EEF2F6;color:var(--navy)}
+  .tseg button[aria-pressed="true"]{background:var(--navy);color:#fff}
+  .tseg button:focus-visible{outline:2px solid var(--orange);outline-offset:-2px}
+  .semi{opacity:.22}
+
+  .flagpill{font-family:var(--mono);font-size:8.5px;letter-spacing:.05em}
+  .flagpill rect{fill:#FFF3D6;stroke:var(--amber)}
+  .flagpill text{fill:#8A6410}
+
+  .qmk{cursor:pointer}
+  .qmk circle{fill:#FFF3D6;stroke:#C9A227;stroke-width:1.4}
+  .qmk text{font-family:var(--disp);font-size:12.5px;font-weight:700;fill:#8A6410;
+            pointer-events:none}
+  .qmk:hover circle,.qmk:focus-visible circle{fill:#F7DFA0}
+  .qmk:focus-visible{outline:none}
+  .qmk:focus-visible circle{stroke:#8A6410;stroke-width:2}
+
+  /* ---------- detail ---------- */
+  .detail{margin-top:16px;background:var(--card);border:1px solid var(--line);
+          border-radius:var(--r-card,10px);padding:14px 18px;min-height:60px;
+          position:sticky;bottom:14px;z-index:6;box-shadow:0 8px 26px rgba(20,36,58,.16)}
+  .detail.isempty{background:transparent;border:none;padding:6px 2px;min-height:0;
+          position:static;box-shadow:none}
+  .detail .close{float:right;font-family:var(--mono);font-size:10px;letter-spacing:.08em;
+          text-transform:uppercase;background:transparent;border:1px solid var(--line);
+          border-radius:2px;color:var(--slate);padding:3px 9px;cursor:pointer;margin-left:14px}
+  .detail .close:hover{color:var(--ink);border-color:#B9C4D0}
+  .detail .close:focus-visible{outline:2px solid var(--orange);outline-offset:2px}
+  .detail .who{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;
+               margin-bottom:4px}
+  .detail h3{font-family:var(--disp);font-size:16px;margin:0 0 4px;color:var(--navy)}
+  .detail p{margin:0;color:var(--slate);font-size:14px;max-width:82ch}
+  .detail .empty{color:var(--mute);font-size:13.5px}
+
+  /* ---------- table + flags ---------- */
+  h2{font-family:var(--disp);font-size:20px;color:var(--navy);margin:34px 0 4px}
+  .sub{color:var(--slate);font-size:14px;margin:0 0 14px}
+  .tw{overflow-x:auto;background:var(--card);border:1px solid var(--line);border-radius:var(--r-card,10px)}
+  table{border-collapse:collapse;width:100%;min-width:820px;font-size:13.5px}
+  th,td{text-align:left;padding:10px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+  thead th{background:var(--navy);color:#fff;font-family:var(--mono);font-size:10.5px;
+           letter-spacing:.1em;text-transform:uppercase;font-weight:400;border:0}
+  tbody tr:last-child td{border-bottom:0}
+  td.role{font-weight:600;color:var(--navy);white-space:nowrap}
+  td.nm{color:var(--slate)} td.duty{font-size:12.5px;color:var(--slate);white-space:nowrap}
+  td.duty.none{color:#C3CEDA}
+  th.live{background:#B84A16} td.live{background:#FDF3EE}
+  tbody tr:hover td{background:#FAFCFD} tbody tr:hover td.live{background:#FBE9DF}
+  .flags{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px;margin-top:16px}
+  .flag{background:#FFFBF2;border:1px solid #E8D6A8;border-radius:var(--r-card,10px);padding:14px 16px;
+        order:var(--o,9);transition:box-shadow .2s,border-color .2s}
+  .flag.rel{border-color:#C9A227;box-shadow:0 0 0 2px rgba(201,162,39,.24)}
+  .flag.hot{border-color:#C9A227;box-shadow:0 0 0 4px rgba(201,162,39,.5)}
+  .flag .top{display:flex;align-items:center;gap:8px;margin:0 0 8px}
+  .flag .sev{font-family:var(--mono);font-size:9.5px;letter-spacing:.09em;text-transform:uppercase;
+        border:1px solid #D9BE72;border-radius:2px;padding:1px 6px;color:#8A6410}
+  .flag .rank{font-family:var(--mono);font-size:10px;color:#8A6410;opacity:.55;margin-left:auto}
+  .flag .where{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.08em;
+               text-transform:uppercase;color:#8A6410;margin:0 0 6px;opacity:.75}
+  .flag b{display:block;font-family:var(--disp);font-size:14px;color:#8A6410;margin-bottom:4px}
+  .flag p{margin:0;font-size:13px;color:#6E5A2E;line-height:1.5}
+  footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);
+         font-family:var(--mono);font-size:11px;color:var(--mute);letter-spacing:.03em;
+         display:flex;justify-content:flex-start;gap:18px;flex-wrap:wrap}
+  footer a{color:var(--orange);text-decoration:none}
+  footer a:hover{text-decoration:underline}
+
+  [data-lang="zh"] .sb,[data-lang="zh"] .ctag,[data-lang="zh"] .cstamp,
+  [data-lang="zh"] .sidetag,[data-lang="zh"] .lanehdr,[data-lang="zh"] .elb,
+  [data-lang="zh"] .alabel,[data-lang="zh"] .oblock .bsub,[data-lang="zh"] .oblock .bio,
+  [data-lang="zh"] .keyrow,[data-lang="zh"] .detail .who,[data-lang="zh"] thead th,
+  [data-lang="zh"] .flag .sev,[data-lang="zh"] .flag .where,[data-lang="zh"] .stage .tag,
+  [data-lang="zh"] .thint,[data-lang="zh"] .tweaks h4,[data-lang="zh"] td.duty
+    {font-family:var(--body);letter-spacing:.02em}
+  [data-lang="zh"] .flag .sev,[data-lang="zh"] .flag .where{white-space:nowrap}
+  [data-lang="zh"] .sb{font-size:9.5px}
+  [data-lang="zh"] .elb{font-size:10.5px}
+  [data-lang="zh"] .lanehdr{font-size:11.5px}
+  [data-lang="zh"] .oblock .bsub{font-size:10px}
+  [data-lang="zh"] .oblock .bio{font-size:9.5px}
+  [data-lang="zh"] .nd .lb{font-size:12.5px}
+  [data-lang="zh"] .alabel{font-size:10px}
+
+  html[data-lang="en"] .zh,html[data-lang="zh"] .en{display:none}
+  [data-view="g"] .rail{display:none}
+  [data-view="g"] .zoomer,[data-view="g"] #tweakBtn,[data-view="g"] #exportChart,
+  [data-view="g"] .tweaks,[data-view="g"] .keyrow.chartkey,[data-view="g"] .deep,
+  [data-view="g"] .boardwrap::after{display:none}
+  [data-view="o"] .keyrow.glancekey,[data-view="d"] .keyrow.glancekey,
+  [data-view="o"] .hero-g,[data-view="d"] .hero-g{display:none}
+  [data-view="g"] .hero-od{display:none}
+  [data-view="g"] #boardO,[data-view="g"] #boardD{display:none}
+  [data-view="o"] #boardG,[data-view="d"] #boardG{display:none}
+  #boardG[hidden]{display:none}
+
+  .hero-g h1{margin-bottom:8px}
+  .hero-g .lede{margin:0 0 18px}
+  #boardG{display:flex;flex-direction:column;gap:0;max-width:1200px}
+  #boardG h2{margin:22px 0 10px}
+  #boardG h2:first-child{margin-top:4px}
+  #boardG .board{margin:0}
+  #boardG svg.map{min-width:900px}
+  #boardG svg text{fill:var(--ink)}
+  #boardG .tt{font-family:var(--disp);font-weight:700}
+  #boardG .tm{font-family:var(--mono);letter-spacing:.06em;fill:var(--slate)}
+  #boardG .ed{fill:none;stroke:#7C90A4;stroke-width:1.6;marker-end:url(#gm)}
+  #boardG .lp{fill:none;stroke:var(--orange);stroke-width:2;stroke-dasharray:7 5;
+        marker-end:url(#gmo);animation:dashmove 1.1s linear infinite}
+  #boardG .actor{stroke:currentColor;stroke-width:1.7;fill:none;stroke-linecap:round;stroke-linejoin:round}
+  #boardG .jump{cursor:pointer}
+  #boardG .jump:focus{outline:none}
+  #boardG .jump:focus-visible .hit,
+  #boardG .jump:hover .hit{stroke:var(--orange);stroke-width:1.6;fill:rgba(224,99,42,.06)}
+  .factline{text-align:center;color:var(--slate);font-size:13.5px;margin:10px 0 0}
+  .factline b{color:var(--navy)}
+  .banner{margin-top:28px;background:#FDEFE6;border:1px solid #F0BDA0;border-radius:var(--r-card,10px);
+          padding:14px 20px;text-align:center;font-family:var(--disp);font-weight:700;
+          font-size:15.5px;color:var(--navy)}
+  .jump-hint{text-align:center;color:var(--mute);font-size:12.5px;margin:8px 0 0}
+  [data-lang="zh"] #boardG .tt{font-family:var(--disp);letter-spacing:0}
+  [data-lang="zh"] #boardG .tm{font-family:var(--body);letter-spacing:.03em}
+  [data-lang="zh"] #boardG text.tm[font-size="8"],
+  [data-lang="zh"] #boardG text.tm[font-size="8.5"]{font-size:9.5px}
+  [data-lang="zh"] .jump-hint,[data-lang="zh"] .factline,[data-lang="zh"] .banner,
+  [data-lang="zh"] #boardG h2{letter-spacing:0}
+  [data-lang="zh"] #boardG h2{line-height:1.4;text-wrap:pretty}
+
+  @media (max-width:980px){.wrap{padding-left:22px;padding-right:22px}}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+  @media print{
+    html,body,*,svg,svg *,.board,.banner,.wrap{
+      -webkit-print-color-adjust:exact!important;
+      print-color-adjust:exact!important;
+      color-adjust:exact!important}
+    html::before{content:"";position:fixed;inset:0;z-index:-1;background:#F2F5F8!important}
+    html,body{background:#F2F5F8!important;margin:0!important;padding:0!important}
+    .wrap{padding:14mm 16mm 18mm!important}
+    .railrow,.utils,.ctl,.exportbtn,.tweaks,.detail,.deep{display:none!important}
+    .boardwrap::after{display:none}
+    .board{overflow:visible;border-color:#C9D2DC;background:#fff!important}
+    svg.map{min-width:0!important}
+    svg.map[style*="display: none"] + .print-raster{display:block}
+    .print-raster{width:100%;height:auto;display:block}
+    #boardG h2{break-after:avoid}
+    #boardG .board{break-inside:avoid}
+    .banner{background:#FDEFE6!important}
+    @page{margin:0;background:#F2F5F8}
+  }
+</style>
+</head>
+<body>
+<!-- wiki chrome · identical in every page of this site: edit one, edit all -->
+<style id="wk-chrome">
+  /* ---- project wiki chrome (shared across every page of this site) ---- */
+  :root{
+    --ink:#14243A; --navy:#1C3557; --slate:#5B6B7F; --mute:#8D9BAB;
+    --paper:#F5F7FA; --card:#FFFFFF; --line:#DCE3EA;
+    --orange:#E0632A; --purple:#7B2D8E; --green:#3F8F5F; --amber:#C98A1E; --halt:#B44538;
+    --person:#C4674A; --blue:#4A7DBD;
+    --disp:"Aptos Display","Segoe UI Variable Display","Segoe UI","Noto Sans SC","PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+    --body:"Aptos","Segoe UI Variable Text","Segoe UI","Noto Sans SC","PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+    --mono:ui-monospace,"Cascadia Mono","Segoe UI Mono",Consolas,monospace;
+    --wk-nav-h:46px;
+    --r-ctl:6px; --r-card:10px; --r-lg:14px;
+  }
+  .wknav *,.wkc *,.wklang *{box-sizing:border-box}
+  .wk-zh{display:none}
+  html[data-lang="zh"] .wk-zh,html[lang^="zh"] .wk-zh,body[data-lang="zh"] .wk-zh{display:inline}
+  html[data-lang="zh"] .wk-en,html[lang^="zh"] .wk-en,body[data-lang="zh"] .wk-en{display:none}
+
+  .wkskip{position:absolute;left:16px;top:-56px;z-index:400;padding:8px 14px;
+          background:var(--navy);color:#fff;text-decoration:none;border-radius:var(--r-ctl);
+          font-family:var(--disp);font-weight:600;font-size:13px}
+  .wkskip:focus{top:8px;color:#fff;outline:2px solid var(--orange);outline-offset:2px}
+
+  .wknav{position:sticky;top:0;z-index:200;background:rgba(255,255,255,.90);
+         -webkit-backdrop-filter:saturate(1.5) blur(10px);backdrop-filter:saturate(1.5) blur(10px);
+         border-bottom:1px solid rgba(20,36,58,.10);
+         font-family:var(--disp)}
+  .wknav-in{max-width:1200px;margin:0 auto;padding:0 40px;height:var(--wk-nav-h);display:flex;align-items:center;
+            gap:14px;overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none}
+  .wknav-in::-webkit-scrollbar{display:none}
+  .wkmark{flex:0 0 auto;display:inline-flex;align-items:baseline;gap:8px;text-decoration:none;white-space:nowrap}
+  .wkmark b{font-size:14px;font-weight:700;letter-spacing:-.012em;color:var(--ink)}
+  .wkmark b i{font-style:normal;color:var(--orange)}
+  .wkmark span{font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:#9AA6B4;font-weight:600}
+  .wkrule{flex:0 0 auto;width:1px;height:17px;background:rgba(20,36,58,.14)}
+  .wklinks{flex:1 1 auto;display:flex;align-items:center;gap:1px;white-space:nowrap}
+  .wknav a{position:relative;padding:7px 10px;border-radius:5px;font-size:13px;font-weight:600;
+           color:var(--slate);text-decoration:none;white-space:nowrap;transition:color .15s,background .15s}
+  .wknav .wklinks a:hover,.wknav .wkdev:hover{background:rgba(20,36,58,.055);color:var(--ink)}
+  .wknav a:focus-visible{outline:2px solid var(--orange);outline-offset:1px}
+  .wknav a[aria-current="page"]{color:var(--ink)}
+  .wknav a[aria-current="page"]::after{content:"";position:absolute;left:10px;right:10px;bottom:0;
+           height:2px;border-radius:2px;background:var(--orange)}
+  .wkdev{flex:0 0 auto;display:inline-flex;align-items:center;gap:6px}
+  .wkdev::before{content:"";position:absolute;left:-8px;top:9px;bottom:9px;width:1px;background:rgba(20,36,58,.14)}
+
+  .wklang{flex:0 0 auto;display:flex;height:28px;overflow:hidden;margin-left:4px;
+          background:var(--card);border:1px solid var(--line);border-radius:var(--r-ctl)}
+  .wklang button{font:inherit;font-family:var(--disp);font-weight:600;font-size:11.5px;
+                 padding:0 10px;border:0;background:transparent;color:var(--slate);cursor:pointer}
+  .wklang button + button{border-left:1px solid var(--line)}
+  .wklang button:hover{background:#EEF2F6;color:var(--navy)}
+  .wklang button[aria-selected="true"]{background:var(--navy);color:#fff}
+  .wklang button[aria-selected="true"]:hover{background:var(--navy);color:#fff}
+  .wklang button:focus-visible{outline:2px solid var(--orange);outline-offset:-2px}
+
+  @media (max-width:980px){.wknav-in{padding:0 22px}}
+  @media (max-width:780px){.wkmark span{display:none}}
+  @media print{.wknav,.wkskip,.wklang{display:none}}
+</style>
+
+<a class="wkskip" href="#main"><span class="wk-en">Skip to content</span><span class="wk-zh">跳到正文</span></a>
+<nav class="wknav" aria-label="Project wiki">
+  <div class="wknav-in">
+    <a class="wkmark" href="index.html">
+      <b>AI Data<i>+</i></b><span class="wk-en">project wiki</span><span class="wk-zh">项目手册</span>
+    </a>
+    <span class="wkrule" aria-hidden="true"></span>
+    <div class="wklinks">
+      <a href="index.html"><span class="wk-en">Overview</span><span class="wk-zh">总览</span></a>
+      <a href="flow.html" aria-current="page"><span class="wk-en">How it works</span><span class="wk-zh">整体流程</span></a>
+      <a href="lifecycle.html"><span class="wk-en">Step by step</span><span class="wk-zh">逐步流程</span></a>
+      <a href="gate.html"><span class="wk-en">RAG Gate</span><span class="wk-zh">RAG 闸门</span></a>
+    </div>
+    <a class="wkdev" href="developer.html"><span class="wk-en">Developer portal</span><span class="wk-zh">开发者门户</span></a>
+    <div class="wklang" role="group" aria-label="Language">
+      <button type="button" data-v="en" aria-selected="true">EN</button>
+      <button type="button" data-v="zh" aria-selected="false">中文</button>
+    </div>
+  </div>
+</nav>
+
+<script>
+"use strict";
+(function(){
+  function read(){
+    try{ return localStorage.getItem("aidp.lang")==="zh" ? "zh" : "en"; }
+    catch(e){ return "en"; }
+  }
+  function paint(v){
+    document.querySelectorAll(".wklang button").forEach(function(b){
+      b.setAttribute("aria-selected", b.getAttribute("data-v")===v ? "true" : "false");
+    });
+  }
+  function apply(v, silent){
+    var r=document.documentElement;
+    r.setAttribute("data-lang", v);
+    r.setAttribute("lang", v==="zh" ? "zh-Hans" : "en");
+    if(document.body) document.body.setAttribute("data-lang", v);
+    try{ localStorage.setItem("aidp.lang", v); }catch(e){}
+    paint(v);
+    if(!silent){
+      try{ document.dispatchEvent(new CustomEvent("aidp:lang", {detail:v})); }
+      catch(e){}
+    }
+  }
+  window.aidpSetLang = function(v){ apply(v==="zh"?"zh":"en", false); };
+  apply(read(), true);
+  document.addEventListener("click", function(e){
+    var b=e.target && e.target.closest && e.target.closest(".wklang button");
+    if(!b) return;
+    apply(b.getAttribute("data-v"), false);
+  });
+  document.addEventListener("aidp:lang", function(e){
+    if(e && e.detail) paint(e.detail==="zh"?"zh":"en");
+  });
+})();
+</script>
+<!-- /wiki chrome -->
+<!-- glance pictograms + arrow markers (ids distinct from the chart maps) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <marker id="gm" viewBox="0 0 10 10" refX="8.4" refY="5" markerWidth="5.4" markerHeight="5.4" orient="auto-start-reverse">
+      <path d="M2 1.5L8 5L2 8.5" fill="none" stroke="#93A5B7" stroke-width="1.7" stroke-linecap="round"/></marker>
+    <marker id="gmo" viewBox="0 0 10 10" refX="8.4" refY="5" markerWidth="5.4" markerHeight="5.4" orient="auto-start-reverse">
+      <path d="M2 1.5L8 5L2 8.5" fill="none" stroke="#E0632A" stroke-width="1.9" stroke-linecap="round"/></marker>
+    <symbol id="i-doc" viewBox="0 0 24 24"><g class="actor" stroke="currentColor">
+      <path d="M6 2h9l5 5v15H6z"/><path d="M15 2v5h5"/><path d="M9.5 12h7M9.5 15.5h7"/></g></symbol>
+    <symbol id="i-mail" viewBox="0 0 24 24"><g class="actor" stroke="currentColor">
+      <rect x="2.5" y="5" width="19" height="14" rx="2"/><path d="M3.5 7l8.5 6 8.5-6"/></g></symbol>
+    <symbol id="i-funnel" viewBox="0 0 24 24"><g class="actor" stroke="currentColor">
+      <path d="M3.5 4h17l-6.4 7.4V19l-4.2 2.4v-10z"/></g></symbol>
+    <symbol id="i-mag" viewBox="0 0 24 24"><g class="actor" stroke="currentColor">
+      <circle cx="10.5" cy="10.5" r="6"/><path d="M15 15l5.5 5.5"/></g></symbol>
+    <symbol id="i-gear" viewBox="0 0 24 24"><g class="actor" stroke="currentColor">
+      <circle cx="12" cy="12" r="3.4"/><path d="M12 4v3.1M12 16.9V20M4 12h3.1M16.9 12H20M6.3 6.3l2.2 2.2M15.5 15.5l2.2 2.2M17.7 6.3l-2.2 2.2M8.5 15.5l-2.2 2.2"/></g></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><g class="actor" stroke="currentColor">
+      <path d="M4.5 12.5l5 5 10-11"/></g></symbol>
+    <symbol id="i-pen" viewBox="0 0 24 24"><g class="actor" stroke="currentColor">
+      <path d="M4 20l1.2-4.4L16 4.8l3.2 3.2L8.4 18.8z"/><path d="M13.8 7l3.2 3.2"/></g></symbol>
+    <symbol id="i-keys" viewBox="0 0 24 24"><g class="actor" stroke="currentColor">
+      <rect x="2" y="7" width="20" height="11" rx="2"/>
+      <path d="M5.5 10.5h1M9 10.5h1M12.5 10.5h1M16 10.5h1M18.5 10.5h.6M5.5 13.5h1M9 13.5h1M12.5 13.5h1M16 13.5h1M8 15.7h8"/></g></symbol>
+    <symbol id="i-tray" viewBox="0 0 24 24"><g class="actor" stroke="currentColor">
+      <path d="M3.5 9.5h17V20h-17z"/><path d="M3.5 9.5L6 5h12l2.5 4.5"/><path d="M9 13h6"/></g></symbol>
+    <symbol id="i-card" viewBox="0 0 24 24"><g class="actor" stroke="currentColor">
+      <rect x="4.5" y="3" width="15" height="18" rx="2"/><path d="M7.5 8h9M7.5 11.5h9M7.5 15h6"/></g></symbol>
+    <symbol id="i-bars" viewBox="0 0 24 24"><g class="actor" stroke="currentColor">
+      <rect x="4.5" y="3" width="15" height="18" rx="2"/><path d="M8 16.5v-3.5M12 16.5v-6.5M16 16.5v-9"/></g></symbol>
+    <symbol id="i-grid" viewBox="0 0 24 24"><g class="actor" stroke="currentColor">
+      <rect x="4.5" y="3" width="15" height="18" rx="2"/><path d="M4.5 9h15M4.5 14.5h15M12 9v12"/></g></symbol>
+    <symbol id="i-loop" viewBox="0 0 24 24"><g class="actor" stroke="currentColor">
+      <path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></g></symbol>
+    <symbol id="i-person" viewBox="0 0 26 46"><g class="actor" stroke="currentColor">
+      <circle cx="13" cy="7.5" r="6"/><path d="M13 13.5V28M4.5 19.5h17M13 28L6.5 41M13 28l6.5 13"/></g></symbol>
+  </defs>
+</svg>
+<div class="wrap" id="main">
+
+  <p class="eyebrow">Ageas + TPRe · AI Data+</p>
+  <div class="hero-g">
+    <h1><span>AI Data+, </span><em>at a glance</em></h1>
+    <p class="lede">The whole programme in four pictures.</p>
+  </div>
+  <div class="hero-od" hidden>
+    <h1><span>The process flow, </span><em>stage by stage</em></h1>
+  </div>
+  <div class="railrow">
+    <div class="rail" role="tablist" aria-label="Project stage" aria-hidden="true"></div>
+    <div class="ctl vtoggle" role="tablist" aria-label="Chart view">
+      <button type="button" id="vG" role="tab" aria-selected="true" aria-controls="boardG" title="At a glance (G)">At a glance</button>
+      <button type="button" id="vO" role="tab" aria-selected="false" aria-controls="boardO" title="Module overview (O)">Module overview</button>
+      <button type="button" id="vD" role="tab" aria-selected="false" aria-controls="boardD" title="Full detail (D)">Full detail</button>
+    </div>
+    <div class="utils">
+      <div class="ctl zoomer" role="group" aria-label="Zoom">
+        <button type="button" id="zOut" aria-label="Zoom out" title="Zoom out">−</button>
+        <button type="button" class="zl" id="zLab" data-nolang aria-label="Reset zoom to 100%" title="Reset zoom">100%</button>
+        <button type="button" id="zIn" aria-label="Zoom in" title="Zoom in">+</button>
+      </div>
+      <button type="button" class="exportbtn" id="tweakBtn" aria-expanded="false" aria-controls="tweaks" title="Display options (T)"><span class="g" aria-hidden="true">◉</span><span>Display</span></button>
+      <button type="button" class="exportbtn" id="exportChart" title="Print all four stages (P)"><span class="g" aria-hidden="true">↧</span><span>Export chart</span></button>
+      <div class="tweaks" id="tweaks" hidden="">
+        <h4>Display</h4>
+        <div class="trow">
+          <span class="tlab">Annotation</span>
+          <span class="thint">how much the chart explains itself</span>
+          <div class="tseg" data-k="detail">
+            <button type="button" data-v="sparse">Sparse</button>
+            <button type="button" data-v="standard">Standard</button>
+            <button type="button" data-v="full">Full</button>
+          </div>
+        </div>
+        <div class="trow">
+          <span class="tlab">Other stages</span>
+          <span class="thint">what happens to steps not running now</span>
+          <div class="tseg" data-k="inactive">
+            <button type="button" data-v="hide">Hidden</button>
+            <button type="button" data-v="ghost">Ghosted</button>
+            <button type="button" data-v="dim">Faded</button>
+          </div>
+        </div>
+        <div class="trow">
+          <span class="tlab">Ink</span>
+          <span class="thint">module colours, or humans only</span>
+          <div class="tseg" data-k="ink">
+            <button type="button" data-v="colour">Module colour</button>
+            <button type="button" data-v="mono">Humans only</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="keyrow chartkey" aria-label="Chart key" hidden>
+    <span class="k"><span class="ln lo"></span><span>feedback loop</span></span>
+    <span class="k"><span class="ln tb"></span><span>to be decided</span></span>
+    <span class="k"><span class="sw" style="background:#FBE7DA;border-color:#E8A377"></span><span>human input</span></span>
+    <span class="k fade"><span class="sw" style="background:#F2F4F6;border-color:#B0BAC4"></span><span>faded = not running this stage</span></span>
+  </div>
+  <div class="keyrow glancekey" aria-label="Key">
+    <span class="k"><span class="sw" style="background:#FBE7DA;border-color:#E8A377"></span><span class="en">people</span><span class="zh">人工</span></span>
+    <span class="k"><span class="sw" style="background:#E2ECF7;border-color:#6C8EBF"></span><span class="en">machine</span><span class="zh">机器</span></span>
+    <span class="k"><span class="ln lo"></span><span class="en">feedback loop</span><span class="zh">反馈回路</span></span>
+  </div>
+
+  <div class="boardwrap">
+    <div id="boardG" role="tabpanel" aria-labelledby="vG">
+      <h2><span class="en">Data before the decision — not two months after</span><span class="zh">决策前就有数据，不必事后再录两个月</span></h2>
+      <div class="board">
+      <svg class="map" viewBox="0 0 1240 300" role="img" aria-label="Today the two months of typing come after the decision; with AI Data+ the facts are prepared before it">
+        <text class="en tm" x="690" y="26" text-anchor="middle" font-size="10" style="fill:#1C3557" font-weight="600">THE DECISION · 1 JAN</text>
+        <text class="zh tm" x="690" y="26" text-anchor="middle" font-size="10" style="fill:#1C3557" font-weight="600">决策日 · 1 月 1 日</text>
+        <line x1="690" y1="40" x2="690" y2="264" stroke="#8D9BAB" stroke-width="1.4" stroke-dasharray="3 5"/>
+
+        <text class="en tt" x="36" y="101" font-size="13" style="fill:#5B6B7F">TODAY</text>
+        <text class="zh tt" x="36" y="101" font-size="13" style="fill:#5B6B7F">现状</text>
+        <rect x="120" y="72" width="180" height="48" rx="4" fill="#F4F6F8" stroke="#8D9BAB" stroke-width="1.1"/>
+        <use href="#i-doc" x="132" y="84" width="22" height="22" color="#5B6B7F"/>
+        <use href="#i-mail" x="150" y="88" width="22" height="22" color="#5B6B7F"/>
+        <text class="en tt" x="182" y="101" font-size="13">Submissions</text>
+        <text class="zh tt" x="182" y="101" font-size="13">申请文件</text>
+        <path class="ed" d="M300 96 H672"/>
+        <text class="en tm" x="486" y="88" text-anchor="middle" font-size="9">PEAK SEASON</text>
+        <text class="zh tm" x="486" y="88" text-anchor="middle" font-size="9">旺季</text>
+        <circle cx="690" cy="96" r="15" fill="#fff" stroke="#1C3557" stroke-width="1.6"/>
+        <use href="#i-pen" x="681" y="87" width="18" height="18" color="#1C3557"/>
+        <path class="ed" d="M705 96 H738"/>
+        <rect x="742" y="68" width="350" height="56" rx="4" fill="#E0632A"/>
+        <use href="#i-keys" x="758" y="82" width="28" height="28" color="#fff"/>
+        <text class="en tt" x="796" y="93" font-size="15" style="fill:#fff">≈ 2 months of typing</text>
+        <text class="zh tt" x="796" y="94" font-size="14" style="fill:#fff">约两个月手工录入</text>
+        <text class="en tm" x="796" y="111" font-size="8.5" style="fill:rgba(255,255,255,.85)">EVERY YEAR · AFTER THE DECISION</text>
+        <text class="zh tm" x="796" y="111" font-size="8.5" style="fill:rgba(255,255,255,.85)">每年 · 都在决策之后</text>
+
+        <text class="tt" x="36" y="221" font-size="13" style="fill:#E0632A">AI DATA+</text>
+        <rect x="120" y="192" width="180" height="48" rx="4" fill="#F4F6F8" stroke="#8D9BAB" stroke-width="1.1"/>
+        <use href="#i-doc" x="132" y="204" width="22" height="22" color="#5B6B7F"/>
+        <use href="#i-mail" x="150" y="208" width="22" height="22" color="#5B6B7F"/>
+        <text class="en tt" x="182" y="221" font-size="13">Submissions</text>
+        <text class="zh tt" x="182" y="221" font-size="13">申请文件</text>
+        <path class="ed" d="M300 216 H356"/>
+        <rect x="360" y="188" width="300" height="56" rx="4" fill="#2E9FB8"/>
+        <use href="#i-gear" x="374" y="202" width="26" height="26" color="#fff"/>
+        <text class="en tt" x="410" y="213" font-size="15" style="fill:#fff">Facts prepared &amp; typed</text>
+        <text class="zh tt" x="410" y="214" font-size="14" style="fill:#fff">事实备好并已录入</text>
+        <text class="en tm" x="410" y="231" font-size="8.5" style="fill:rgba(255,255,255,.85)">ON ARRIVAL · CHECKED BY PEOPLE</text>
+        <text class="zh tm" x="410" y="231" font-size="8.5" style="fill:rgba(255,255,255,.85)">随到随处理 · 由人核对</text>
+        <path class="ed" d="M660 216 H672"/>
+        <circle cx="690" cy="216" r="15" fill="#fff" stroke="#1C3557" stroke-width="1.6"/>
+        <use href="#i-pen" x="681" y="207" width="18" height="18" color="#1C3557"/>
+        <path class="ed" d="M705 216 H738"/>
+        <rect x="742" y="192" width="240" height="48" rx="4" fill="#E3F1E8" stroke="#82B366" stroke-width="1.2"/>
+        <use href="#i-check" x="756" y="205" width="22" height="22" color="#3F8F5F"/>
+        <text class="en tt" x="788" y="221" font-size="13">Nothing left to type</text>
+        <text class="zh tt" x="788" y="221" font-size="13">不用再录入</text>
+      </svg>
+      </div>
+
+      <h2><span class="en">Three agents, three jobs</span><span class="zh">三个 Agent，三件事</span></h2>
+      <div class="board">
+      <svg class="map" viewBox="0 0 1280 440" role="img" aria-label="The Submission Agent sorts the stack; the Facts Agent reads core files into one TreatyRecord; the Template Agent prepares the reports — analysis for the underwriter, entry written to TPR. People check at both flywheels.">
+        <rect x="18" y="104" width="112" height="126" rx="4" fill="#F4F6F8" stroke="#8D9BAB" stroke-width="1.1"/>
+        <use href="#i-mail" x="30" y="122" width="22" height="22" color="#5B6B7F"/>
+        <use href="#i-doc" x="60" y="116" width="24" height="24" color="#5B6B7F" transform="rotate(-8 72 128)"/>
+        <use href="#i-doc" x="80" y="122" width="24" height="24" color="#5B6B7F" transform="rotate(7 92 134)"/>
+        <text class="en tt" x="74" y="196" font-size="13" text-anchor="middle">One treaty</text>
+        <text class="zh tt" x="74" y="196" font-size="13" text-anchor="middle">一份合约</text>
+        <text class="en tm" x="74" y="212" font-size="8" text-anchor="middle">EMAILS &amp; FILES</text>
+        <text class="zh tm" x="74" y="212" font-size="8" text-anchor="middle">邮件与文件</text>
+        <path class="ed" d="M130 167 H146"/>
+
+        <rect x="150" y="60" width="220" height="250" rx="4" fill="#fff" stroke="#82B366" stroke-width="1.6"/>
+        <circle cx="174" cy="84" r="11" fill="#3F8F5F"/>
+        <text class="tt" x="174" y="88.5" font-size="13" style="fill:#fff" text-anchor="middle">1</text>
+        <text class="tt" x="194" y="89" font-size="15" style="fill:#3F8F5F">Submission Agent</text>
+        <text class="en tm" x="194" y="105" font-size="8.5">SORTS THE STACK</text>
+        <text class="zh tm" x="194" y="105" font-size="8.5">挑出关键文件</text>
+        <use href="#i-funnel" x="240" y="118" width="40" height="40" color="#3F8F5F"/>
+        <path class="ed" d="M260 164 v12 h-60 v10"/>
+        <path class="ed" d="M260 164 v12 h60 v10"/>
+        <use href="#i-doc" x="183" y="190" width="34" height="34" color="#3F8F5F"/>
+        <use href="#i-tray" x="303" y="190" width="34" height="34" color="#8D9BAB"/>
+        <text class="en tm" x="200" y="242" font-size="8" text-anchor="middle">CORE FILES</text>
+        <text class="zh tm" x="200" y="242" font-size="8" text-anchor="middle">核心文件</text>
+        <text class="en tm" x="320" y="242" font-size="8" text-anchor="middle">OTHERS · KEPT</text>
+        <text class="zh tm" x="320" y="242" font-size="8" text-anchor="middle">其余 · 保留</text>
+        <path class="ed" d="M370 167 H386"/>
+
+        <rect x="390" y="104" width="150" height="126" rx="4" fill="#fff" stroke="#82B366" stroke-width="1.6" stroke-dasharray="7 4"/>
+        <text class="en tt" x="465" y="130" font-size="12.5" style="fill:#3F8F5F" text-anchor="middle">Validation Flywheel</text>
+        <text class="zh tt" x="465" y="130" font-size="12.5" style="fill:#3F8F5F" text-anchor="middle">验证飞轮</text>
+        <text class="tm" x="465" y="145" font-size="7.5" text-anchor="middle">MODULE A</text>
+        <use href="#i-loop" x="448" y="158" width="34" height="34" color="#3F8F5F"/>
+        <use href="#i-check" x="459" y="169" width="13" height="13" color="#3F8F5F"/>
+        <path class="ed" d="M540 167 H556"/>
+
+        <rect x="560" y="60" width="220" height="250" rx="4" fill="#fff" stroke="#6C8EBF" stroke-width="1.6"/>
+        <circle cx="584" cy="84" r="11" fill="#4A7DBD"/>
+        <text class="tt" x="584" y="88.5" font-size="13" style="fill:#fff" text-anchor="middle">2</text>
+        <text class="tt" x="604" y="89" font-size="15" style="fill:#4A7DBD">Facts Agent</text>
+        <text class="en tm" x="604" y="105" font-size="8.5">READS FACTS · NEVER INVENTS</text>
+        <text class="zh tm" x="604" y="105" font-size="8.5">只读事实 · 不编造</text>
+        <use href="#i-doc" x="585" y="128" width="46" height="46" color="#5B6B7F"/>
+        <use href="#i-mag" x="607" y="156" width="34" height="34" color="#4A7DBD"/>
+        <path class="ed" d="M664 160 h24"/>
+        <use href="#i-card" x="696" y="126" width="50" height="50" color="#4A7DBD"/>
+        <text class="en tm" x="670" y="242" font-size="8" text-anchor="middle">ONE TREATYRECORD PER TREATY</text>
+        <text class="zh tm" x="670" y="236" font-size="8" text-anchor="middle">每份合约一条</text>
+        <text class="zh tm" x="670" y="248" font-size="8" text-anchor="middle">TreatyRecord</text>
+        <path class="ed" d="M780 167 H796"/>
+
+        <rect x="800" y="104" width="150" height="126" rx="4" fill="#fff" stroke="#6C8EBF" stroke-width="1.6" stroke-dasharray="7 4"/>
+        <text class="en tt" x="875" y="130" font-size="12.5" style="fill:#4A7DBD" text-anchor="middle">Validation Flywheel</text>
+        <text class="zh tt" x="875" y="130" font-size="12.5" style="fill:#4A7DBD" text-anchor="middle">验证飞轮</text>
+        <text class="tm" x="875" y="145" font-size="7.5" text-anchor="middle">MODULE B</text>
+        <use href="#i-loop" x="858" y="158" width="34" height="34" color="#4A7DBD"/>
+        <use href="#i-check" x="869" y="169" width="13" height="13" color="#4A7DBD"/>
+        <path class="ed" d="M950 167 H966"/>
+
+        <rect x="970" y="60" width="220" height="250" rx="4" fill="#fff" stroke="#9673A6" stroke-width="1.6"/>
+        <circle cx="994" cy="84" r="11" fill="#7B2D8E"/>
+        <text class="tt" x="994" y="88.5" font-size="13" style="fill:#fff" text-anchor="middle">3</text>
+        <text class="tt" x="1014" y="89" font-size="15" style="fill:#7B2D8E">Template Agent</text>
+        <text class="en tm" x="1014" y="105" font-size="8.5">PREPARES THE REPORTS</text>
+        <text class="zh tm" x="1014" y="105" font-size="8.5">备好两份报告</text>
+        <use href="#i-bars" x="1012" y="128" width="46" height="46" color="#7B2D8E"/>
+        <use href="#i-grid" x="1102" y="128" width="46" height="46" color="#7B2D8E"/>
+        <text class="en tm" x="1035" y="242" font-size="8" text-anchor="middle">ANALYSIS REPORT</text>
+        <text class="zh tm" x="1035" y="242" font-size="8" text-anchor="middle">分析报告</text>
+        <text class="en tm" x="1125" y="242" font-size="8" text-anchor="middle">ENTRY REPORT</text>
+        <text class="zh tm" x="1125" y="242" font-size="8" text-anchor="middle">录入报告</text>
+        <path class="ed" d="M1190 130 H1202"/>
+        <path class="ed" d="M1190 236 H1202"/>
+
+        <use href="#i-person" x="1208" y="88" width="34" height="60" color="#C4674A"/>
+        <use href="#i-check" x="1246" y="86" width="18" height="18" color="#3F8F5F"/>
+        <text class="en tm" x="1225" y="168" font-size="9" text-anchor="middle">UNDERWRITER</text>
+        <text class="zh tm" x="1225" y="168" font-size="9" text-anchor="middle">核保人</text>
+        <text class="en tm" x="1225" y="181" font-size="9" text-anchor="middle">DECIDES</text>
+        <text class="zh tm" x="1225" y="181" font-size="9" text-anchor="middle">做决策</text>
+
+        <rect x="1212" y="214" width="48" height="40" rx="4" fill="#F4F6F8" stroke="#8D9BAB" stroke-width="1.1"/>
+        <use href="#i-card" x="1224" y="222" width="24" height="24" color="#5B6B7F"/>
+        <text class="en tm" x="1236" y="270" font-size="9" text-anchor="middle">TPR SYSTEM</text>
+        <text class="zh tm" x="1236" y="270" font-size="9" text-anchor="middle">TPR 系统</text>
+        <text class="en tm" x="1236" y="283" font-size="9" text-anchor="middle">ENTRY WRITTEN</text>
+        <text class="zh tm" x="1236" y="283" font-size="9" text-anchor="middle">写入 TPR</text>
+
+        <path class="lp" d="M465 104 V44 H260 V56"/>
+        <path class="lp" d="M875 104 V44 H670 V56"/>
+        <use href="#i-person" x="654" y="322" width="32" height="56" color="#C4674A"/>
+        <path class="ed" d="M650 348 H465 V236"/>
+        <path class="ed" d="M690 348 H875 V236"/>
+        <text class="en tt" x="670" y="404" font-size="13" style="fill:#1C3557" text-anchor="middle">People check &amp; correct — at both flywheels</text>
+        <text class="zh tt" x="670" y="404" font-size="13" style="fill:#1C3557" text-anchor="middle">两边飞轮都由人核对、纠正</text>
+        <text class="en tm" x="670" y="421" font-size="8.5" text-anchor="middle">EVERY CORRECTION TEACHES THE AGENT</text>
+        <text class="zh tm" x="670" y="421" font-size="8.5" text-anchor="middle">每改一处，Agent 就前进一步</text>
+      </svg>
+      </div>
+      <p class="factline"><span class="en"><b>It never invents a number</b> — it only copies what the documents say.</span><span class="zh"><b>从不编造数字</b>——文件里怎么写，就怎么抄。</span></p>
+
+      <h2><span class="en">Trust is earned in stages</span><span class="zh">信任要一步步挣来</span></h2>
+      <div class="board">
+      <svg class="map" viewBox="0 0 1240 300" role="img" aria-label="At first people check every answer; then the machine flags its own doubts; always it is scored against what was booked">
+        <text class="en tm" x="220" y="40" font-size="9.5" style="fill:#7B2D8E" text-anchor="middle">AT FIRST</text>
+        <text class="zh tm" x="220" y="40" font-size="9.5" style="fill:#7B2D8E" text-anchor="middle">起初</text>
+        <use href="#i-person" x="108" y="86" width="30" height="54" color="#C4674A"/>
+        <g color="#3F8F5F">
+          <rect x="160" y="72" width="24" height="24" rx="3" fill="#E3F1E8" stroke="#82B366"/><use href="#i-check" x="164" y="76" width="16" height="16"/>
+          <rect x="190" y="72" width="24" height="24" rx="3" fill="#E3F1E8" stroke="#82B366"/><use href="#i-check" x="194" y="76" width="16" height="16"/>
+          <rect x="220" y="72" width="24" height="24" rx="3" fill="#E3F1E8" stroke="#82B366"/><use href="#i-check" x="224" y="76" width="16" height="16"/>
+          <rect x="250" y="72" width="24" height="24" rx="3" fill="#E3F1E8" stroke="#82B366"/><use href="#i-check" x="254" y="76" width="16" height="16"/>
+          <rect x="280" y="72" width="24" height="24" rx="3" fill="#E3F1E8" stroke="#82B366"/><use href="#i-check" x="284" y="76" width="16" height="16"/>
+          <rect x="160" y="106" width="24" height="24" rx="3" fill="#E3F1E8" stroke="#82B366"/><use href="#i-check" x="164" y="110" width="16" height="16"/>
+          <rect x="190" y="106" width="24" height="24" rx="3" fill="#E3F1E8" stroke="#82B366"/><use href="#i-check" x="194" y="110" width="16" height="16"/>
+          <rect x="220" y="106" width="24" height="24" rx="3" fill="#E3F1E8" stroke="#82B366"/><use href="#i-check" x="224" y="110" width="16" height="16"/>
+          <rect x="250" y="106" width="24" height="24" rx="3" fill="#E3F1E8" stroke="#82B366"/><use href="#i-check" x="254" y="110" width="16" height="16"/>
+          <rect x="280" y="106" width="24" height="24" rx="3" fill="#E3F1E8" stroke="#82B366"/><use href="#i-check" x="284" y="110" width="16" height="16"/>
+          <rect x="160" y="140" width="24" height="24" rx="3" fill="#E3F1E8" stroke="#82B366"/><use href="#i-check" x="164" y="144" width="16" height="16"/>
+          <rect x="190" y="140" width="24" height="24" rx="3" fill="#E3F1E8" stroke="#82B366"/><use href="#i-check" x="194" y="144" width="16" height="16"/>
+          <rect x="220" y="140" width="24" height="24" rx="3" fill="#E3F1E8" stroke="#82B366"/><use href="#i-check" x="224" y="144" width="16" height="16"/>
+          <rect x="250" y="140" width="24" height="24" rx="3" fill="#E3F1E8" stroke="#82B366"/><use href="#i-check" x="254" y="144" width="16" height="16"/>
+          <rect x="280" y="140" width="24" height="24" rx="3" fill="#E3F1E8" stroke="#82B366"/><use href="#i-check" x="284" y="144" width="16" height="16"/>
+        </g>
+        <text class="en tt" x="220" y="246" font-size="14" style="fill:#1C3557" text-anchor="middle">People check every answer</text>
+        <text class="zh tt" x="220" y="246" font-size="14" style="fill:#1C3557" text-anchor="middle">每个答案都由人核对</text>
+
+        <path d="M410 118 l20 24 -20 24" fill="none" stroke="#C3CEDA" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+
+        <text class="en tm" x="620" y="40" font-size="9.5" style="fill:#7B2D8E" text-anchor="middle">THEN</text>
+        <text class="zh tm" x="620" y="40" font-size="9.5" style="fill:#7B2D8E" text-anchor="middle">随后</text>
+        <rect x="492" y="70" width="66" height="46" rx="4" fill="#E3F1E8" stroke="#82B366" stroke-width="1.2"/>
+        <path d="M506 88h38M506 98h30" stroke="#82B366" stroke-width="1.6" stroke-linecap="round"/>
+        <rect x="587" y="70" width="66" height="46" rx="4" fill="#FBF0D5" stroke="#D6B656" stroke-width="1.2"/>
+        <path d="M601 88h38M601 98h30" stroke="#D6B656" stroke-width="1.6" stroke-linecap="round"/>
+        <rect x="682" y="70" width="66" height="46" rx="4" fill="#F8DEDC" stroke="#B85450" stroke-width="1.2"/>
+        <path d="M696 88h38M696 98h30" stroke="#B85450" stroke-width="1.6" stroke-linecap="round"/>
+        <path class="ed" d="M525 116 V140"/>
+        <use href="#i-check" x="515" y="146" width="20" height="20" color="#3F8F5F"/>
+        <text class="en tm" x="525" y="190" font-size="8" text-anchor="middle">AUTO</text>
+        <text class="zh tm" x="525" y="190" font-size="8" text-anchor="middle">自动通过</text>
+        <path class="ed" d="M620 116 v12 h20 v6"/>
+        <path class="ed" d="M715 116 v12 h-28 v6"/>
+        <use href="#i-person" x="648" y="140" width="28" height="50" color="#C4674A"/>
+        <text class="en tm" x="662" y="212" font-size="8" text-anchor="middle">TO A PERSON</text>
+        <text class="zh tm" x="662" y="212" font-size="8" text-anchor="middle">交给人处理</text>
+        <text class="en tt" x="620" y="246" font-size="14" style="fill:#1C3557" text-anchor="middle">It flags its own doubts</text>
+        <text class="zh tt" x="620" y="246" font-size="13" style="fill:#1C3557" text-anchor="middle">没把握的，自己标出来</text>
+
+        <path d="M810 118 l20 24 -20 24" fill="none" stroke="#C3CEDA" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+
+        <text class="en tm" x="1020" y="40" font-size="9.5" style="fill:#7B2D8E" text-anchor="middle">ALWAYS</text>
+        <text class="zh tm" x="1020" y="40" font-size="9.5" style="fill:#7B2D8E" text-anchor="middle">始终</text>
+        <use href="#i-card" x="898" y="78" width="54" height="54" color="#4A7DBD"/>
+        <text class="en tm" x="925" y="166" font-size="8" text-anchor="middle">ITS ANSWERS</text>
+        <text class="zh tm" x="925" y="166" font-size="8" text-anchor="middle">它的答案</text>
+        <circle cx="1002" cy="104" r="17" fill="#E3F1E8" stroke="#82B366" stroke-width="1.6"/>
+        <use href="#i-check" x="992" y="94" width="20" height="20" color="#3F8F5F"/>
+        <use href="#i-card" x="1076" y="78" width="54" height="54" color="#C98A1E"/>
+        <text class="en tm" x="1103" y="166" font-size="8" text-anchor="middle">WHAT WAS BOOKED</text>
+        <text class="zh tm" x="1103" y="166" font-size="8" text-anchor="middle">实际入账</text>
+        <text class="en tt" x="1020" y="246" font-size="14" style="fill:#1C3557" text-anchor="middle">Scored against reality</text>
+        <text class="zh tt" x="1020" y="246" font-size="14" style="fill:#1C3557" text-anchor="middle">对照入账打分</text>
+      </svg>
+      </div>
+
+      <h2><span class="en">Four stages</span><span class="zh">四个阶段</span></h2>
+      <div class="board">
+      <svg class="map" viewBox="0 0 1240 360" role="img" aria-label="Setup, Generalise, Parallel run, Full production">
+        <rect x="972" y="24" width="16" height="12" rx="2" fill="#FBE7DA" stroke="#E8A377"/>
+        <text class="en tm" x="994" y="34" font-size="8.5">PEOPLE</text>
+        <text class="zh tm" x="994" y="34" font-size="8.5">人工</text>
+        <rect x="1064" y="24" width="16" height="12" rx="2" fill="#E2ECF7" stroke="#6C8EBF"/>
+        <text class="en tm" x="1086" y="34" font-size="8.5">MACHINE</text>
+        <text class="zh tm" x="1086" y="34" font-size="8.5">机器</text>
+
+        <line x1="120" y1="100" x2="1140" y2="100" stroke="#D9E0E8" stroke-width="2"/>
+        <circle cx="180" cy="100" r="8" fill="#fff" stroke="#8D9BAB" stroke-width="3"/>
+        <circle cx="480" cy="100" r="8" fill="#fff" stroke="#8D9BAB" stroke-width="3"/>
+        <circle cx="780" cy="100" r="8" fill="#fff" stroke="#8D9BAB" stroke-width="3"/>
+        <circle cx="1080" cy="100" r="8" fill="#fff" stroke="#8D9BAB" stroke-width="3"/>
+
+        <rect x="122" y="24" width="116" height="40" rx="8" fill="#E2ECF7" stroke="#6C8EBF"/>
+        <text class="tt" x="180" y="40" font-size="10.5" style="fill:#4A7DBD" text-anchor="middle">FACTS AGENT</text>
+        <text class="en tm" x="180" y="55" font-size="8" text-anchor="middle">SETTING UP</text>
+        <text class="zh tm" x="180" y="55" font-size="8" text-anchor="middle">搭建中</text>
+        <line x1="180" y1="64" x2="180" y2="88" stroke="#6C8EBF" stroke-width="1.4" stroke-dasharray="2 3"/>
+        <circle cx="180" cy="100" r="4.5" fill="#4A7DBD"/>
+        <rect x="248" y="24" width="170" height="40" rx="8" fill="#E3F1E8" stroke="#82B366"/>
+        <text class="tt" x="333" y="40" font-size="10.5" style="fill:#3F8F5F" text-anchor="middle">SUBMISSION AGENT</text>
+        <text class="en tm" x="333" y="55" font-size="8" text-anchor="middle">PENDING EVALUATION</text>
+        <text class="zh tm" x="333" y="55" font-size="8" text-anchor="middle">待评估</text>
+        <line x1="333" y1="64" x2="333" y2="94" stroke="#82B366" stroke-width="1.4" stroke-dasharray="2 3"/>
+        <circle cx="333" cy="100" r="4.5" fill="#3F8F5F"/>
+
+        <g class="jump" data-st="1" tabindex="0" role="link">
+          <title class="en">Open Setup on the chart</title><title class="zh">打开「搭建」流程图</title>
+          <rect class="hit" x="80" y="118" width="200" height="186" rx="6" fill="transparent" stroke="transparent"/>
+          <text class="en tt" x="180" y="134" font-size="15" style="fill:#1C3557" text-anchor="middle">1 · Setup</text>
+          <text class="zh tt" x="180" y="134" font-size="15" style="fill:#1C3557" text-anchor="middle">1 · 搭建</text>
+          <text class="tm" x="180" y="150" font-size="8.5" text-anchor="middle">MVP 20</text>
+          <use href="#i-doc" x="140" y="170" width="26" height="26" color="#5B6B7F"/>
+          <use href="#i-doc" x="156" y="176" width="26" height="26" color="#5B6B7F"/>
+          <use href="#i-person" x="196" y="164" width="30" height="54" color="#C4674A"/>
+          <use href="#i-mag" x="222" y="202" width="18" height="18" color="#5B6B7F"/>
+          <text class="en tm" x="180" y="242" font-size="8" text-anchor="middle">A SMALL BATCH OF PAST CASES</text>
+          <text class="zh tm" x="180" y="241" font-size="8" text-anchor="middle">一小批历史案例</text>
+          <text class="en tm" x="180" y="257" font-size="8" text-anchor="middle">EVERY ANSWER MARKED</text>
+          <text class="zh tm" x="180" y="258" font-size="8" text-anchor="middle">逐一批改</text>
+          <rect x="90" y="284" width="150" height="13" fill="#FBE7DA" stroke="#E8A377"/>
+          <rect x="240" y="284" width="30" height="13" fill="#E2ECF7" stroke="#6C8EBF"/>
+        </g>
+
+        <g class="jump" data-st="2" tabindex="0" role="link">
+          <title class="en">Open Generalise on the chart</title><title class="zh">打开「泛化」流程图</title>
+          <rect class="hit" x="380" y="118" width="200" height="186" rx="6" fill="transparent" stroke="transparent"/>
+          <text class="en tt" x="480" y="134" font-size="15" style="fill:#1C3557" text-anchor="middle">2 · Generalise</text>
+          <text class="zh tt" x="480" y="134" font-size="15" style="fill:#1C3557" text-anchor="middle">2 · 泛化</text>
+          <text class="tm" x="480" y="150" font-size="8.5" text-anchor="middle">MVP 500</text>
+          <use href="#i-doc" x="398" y="170" width="26" height="26" color="#5B6B7F"/>
+          <use href="#i-doc" x="412" y="176" width="26" height="26" color="#5B6B7F"/>
+          <use href="#i-doc" x="426" y="170" width="26" height="26" color="#5B6B7F"/>
+          <use href="#i-doc" x="440" y="176" width="26" height="26" color="#5B6B7F"/>
+          <use href="#i-card" x="492" y="168" width="28" height="28" color="#C98A1E"/>
+          <circle cx="540" cy="182" r="13" fill="#E3F1E8" stroke="#82B366" stroke-width="1.4"/>
+          <use href="#i-check" x="532" y="174" width="16" height="16" color="#3F8F5F"/>
+          <text class="en tm" x="480" y="242" font-size="8" text-anchor="middle">HUNDREDS OF PAST CASES</text>
+          <text class="zh tm" x="480" y="241" font-size="8" text-anchor="middle">数百个历史案例</text>
+          <text class="en tm" x="480" y="257" font-size="8" text-anchor="middle">SCORED VS WHAT WAS BOOKED</text>
+          <text class="zh tm" x="480" y="258" font-size="8" text-anchor="middle">对照实际入账打分</text>
+          <rect x="390" y="284" width="100" height="13" fill="#FBE7DA" stroke="#E8A377"/>
+          <rect x="490" y="284" width="80" height="13" fill="#E2ECF7" stroke="#6C8EBF"/>
+        </g>
+
+        <g class="jump" data-st="3" tabindex="0" role="link">
+          <title class="en">Open Parallel run on the chart</title><title class="zh">打开「并行运行」流程图</title>
+          <rect class="hit" x="680" y="118" width="200" height="186" rx="6" fill="transparent" stroke="transparent"/>
+          <text class="en tt" x="780" y="134" font-size="15" style="fill:#1C3557" text-anchor="middle">3 · Parallel run</text>
+          <text class="zh tt" x="780" y="134" font-size="15" style="fill:#1C3557" text-anchor="middle">3 · 并行运行</text>
+          <text class="en tm" x="780" y="150" font-size="8.5" text-anchor="middle">(live)</text>
+          <text class="zh tm" x="780" y="150" font-size="8.5" text-anchor="middle">（上线）</text>
+          <use href="#i-person" x="712" y="164" width="30" height="54" color="#C4674A"/>
+          <rect x="756" y="170" width="46" height="42" rx="6" fill="#E2ECF7" stroke="#6C8EBF" stroke-width="1.4"/>
+          <use href="#i-gear" x="767" y="177" width="26" height="26" color="#4A7DBD"/>
+          <text class="en tm" x="780" y="242" font-size="8" text-anchor="middle">LIVE SEASON, SIDE BY SIDE</text>
+          <text class="zh tm" x="780" y="241" font-size="8" text-anchor="middle">旺季里并肩作业</text>
+          <text class="en tm" x="780" y="257" font-size="8" text-anchor="middle">PEOPLE STILL SIGN OFF</text>
+          <text class="zh tm" x="780" y="258" font-size="8" text-anchor="middle">仍由人签核</text>
+          <rect x="690" y="284" width="60" height="13" fill="#FBE7DA" stroke="#E8A377"/>
+          <rect x="750" y="284" width="120" height="13" fill="#E2ECF7" stroke="#6C8EBF"/>
+        </g>
+
+        <g class="jump" data-st="4" tabindex="0" role="link">
+          <title class="en">Open Full production on the chart</title><title class="zh">打开「全量生产」流程图</title>
+          <rect class="hit" x="980" y="118" width="200" height="186" rx="6" fill="transparent" stroke="transparent"/>
+          <text class="en tt" x="1080" y="134" font-size="14" style="fill:#1C3557" text-anchor="middle">4 · Full production</text>
+          <text class="zh tt" x="1080" y="134" font-size="14" style="fill:#1C3557" text-anchor="middle">4 · 全量生产</text>
+          <text class="en tm" x="1080" y="150" font-size="8.5" text-anchor="middle">(prod)</text>
+          <text class="zh tm" x="1080" y="150" font-size="8.5" text-anchor="middle">（生产）</text>
+          <rect x="1022" y="164" width="54" height="48" rx="6" fill="#E2ECF7" stroke="#6C8EBF" stroke-width="1.4"/>
+          <use href="#i-gear" x="1035" y="172" width="30" height="30" color="#4A7DBD"/>
+          <circle cx="1078" cy="164" r="10" fill="#E3F1E8" stroke="#82B366" stroke-width="1.4"/>
+          <use href="#i-check" x="1071" y="157" width="14" height="14" color="#3F8F5F"/>
+          <use href="#i-person" x="1096" y="178" width="22" height="40" color="#C4674A"/>
+          <use href="#i-mag" x="1112" y="208" width="14" height="14" color="#5B6B7F"/>
+          <text class="en tm" x="1080" y="242" font-size="8" text-anchor="middle">ROUTINE RUNS END TO END</text>
+          <text class="zh tm" x="1080" y="241" font-size="8" text-anchor="middle">日常全程自动</text>
+          <text class="en tm" x="1080" y="257" font-size="8" text-anchor="middle">PEOPLE SPOT-CHECK</text>
+          <text class="zh tm" x="1080" y="258" font-size="8" text-anchor="middle">人工抽查</text>
+          <rect x="990" y="284" width="24" height="13" fill="#FBE7DA" stroke="#E8A377"/>
+          <rect x="1014" y="284" width="156" height="13" fill="#E2ECF7" stroke="#6C8EBF"/>
+        </g>
+
+        <text class="en tt" x="620" y="336" font-size="13.5" style="fill:#1C3557" text-anchor="middle">We advance a step only when the scores allow.</text>
+        <text class="zh tt" x="620" y="336" font-size="13.5" style="fill:#1C3557" text-anchor="middle">分数达标，才进入下一步。</text>
+      </svg>
+      </div>
+      <p class="jump-hint"><span class="en">Click a step to open it on the chart.</span><span class="zh">点一步，打开对应流程图。</span></p>
+    </div>
+    <div class="board" id="boardO" role="tabpanel" aria-labelledby="vO" hidden="">
+      <svg class="map mapo" id="mapO" viewBox="0 0 1560 1400" role="group" aria-label="Module overview: the modules, their inputs and outputs, and where the humans sit"></svg>
+    </div>
+    <div class="board" id="boardD" role="tabpanel" aria-labelledby="vD" hidden="">
+      <svg class="map" id="map" viewBox="0 0 1560 1400" role="group" aria-label="AI Data+ process flow with swimlanes for user and system, file storage, processing scripts, validation and project team"></svg>
+    </div>
+  </div>
+
+  <div class="deep">
+  <div class="detail" id="detail">
+    <p class="empty">Click any box on the chart for what it does and who owns it.</p>
+  </div>
+
+  <h2>Who does what</h2>
+  <p class="sub" id="tsub"></p>
+  <div class="tw">
+    <table>
+      <thead><tr>
+        <th>Role</th><th>Name</th><th>Org</th>
+        <th data-st="1">Setup</th><th data-st="2">Generalise</th>
+        <th data-st="3">Parallel run</th><th data-st="4">Production</th>
+      </tr></thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+
+  <h2>Open questions</h2>
+  <p class="sub"><span>Two decisions still open, most consequential first. The ringed card applies to the selected stage, and a</span> <b>!</b> <span>on the chart marks the module or line it bites. Owners not yet assigned.</span></p>
+  <div class="flags">
+    <div class="flag" id="q2" data-st="4" style="--o:1">
+      <div class="top"><span class="sev">Decide</span><span class="rank">01</span></div>
+      <span class="where">Stage 4 · Intake</span>
+      <b>The production intake route is not chosen</b>
+      <p>Files may come through an IT-managed endpoint instead of the shared folder. Drawn as a
+         dashed box until IT confirms.</p>
+    </div>
+    <div class="flag" id="q3" data-st="4" style="--o:2">
+      <div class="top"><span class="sev">Discuss</span><span class="rank">02</span></div>
+      <span class="where">Stage 4 · Module A &amp; B · maintenance</span>
+      <b>No plan for keeping the live modules running</b>
+      <p>One TPRe Data &amp; AI Engineer is on the chart to maintain Module A and Module B in
+         production. What that work actually is has not been discussed.</p>
+    </div>
+  </div>
+
+  </div><!-- /.deep -->
+
+  <footer>
+    <span class="en">Updated 2026-08-31 · <a href="index.html">Overview</a> · <a href="lifecycle.html">Step by step</a></span>
+    <span class="zh">更新于 2026-08-31 · <a href="index.html">总览</a> · <a href="lifecycle.html">逐步流程</a></span>
+  </footer>
+</div>
+
+<script>
+"use strict";
+/* ============ LANGUAGE ============
+   Keyed by the English source string. Terminology (Module A/B/C, TreatyRecord,
+   Facts / Submission / Template Agent, Recipe, Gold Core, LLM, TPR, UMS, EFS,
+   RAG, RPA/API, MVP-n, PAP) stays in English by design. */
+let LANG = "en";
+try{ if(localStorage.getItem("aidp.lang")==="zh") LANG="zh"; }catch(e){}
+const ZH = {
+/* -- page chrome -- */
+"The process flow,":"流程全貌，","stage by stage":"逐阶段拆解",
+"AI Data+,":"AI Data+，","at a glance":"一图读懂",
+"The whole programme in four pictures.":"四张图，把整件事看明白。",
+"At a glance":"一图读懂",
+"Module overview":"模块总览","Full detail":"完整细节",
+"Display":"显示","Export chart":"导出图表",
+"Annotation":"标注密度","how much the chart explains itself":"图上自解释的信息量",
+"Sparse":"精简","Standard":"标准","Full":"完整",
+"Other stages":"其他阶段","what happens to steps not running now":"当前不运行的步骤如何显示",
+"Hidden":"隐藏","Ghosted":"留白轮廓","Faded":"淡化",
+"Ink":"配色","module colours, or humans only":"模块配色，或仅标注人工",
+"Module colour":"模块配色","Humans only":"仅人工",
+"feedback loop":"反馈回路","to be decided":"待定","human input":"人工输入",
+"faded = not running this stage":"淡化 = 本阶段不运行",
+"Click any box on the chart for what it does and who owns it.":"点击图上任意方块，查看它做什么、由谁负责。",
+"Who does what":"谁负责什么",
+"Role":"角色","Name":"人员","Org":"机构",
+"Open questions":"待决问题",
+"Two decisions still open, most consequential first. The ringed card applies to the selected stage, and a":"仍有两项决定未定，影响最大的排在前面。带环的卡片对应当前选中的阶段，图上的",
+"on the chart marks the module or line it bites. Owners not yet assigned.":"标记出它影响的模块或连线。责任人尚未指定。",
+"Decide":"待决定","Discuss":"待讨论",
+"Stage 4 · Intake":"阶段 4 · 接入",
+"Stage 4 · Module A & B · maintenance":"阶段 4 · Module A 与 B · 运维",
+"The production intake route is not chosen":"生产环境的文件接入方式尚未确定",
+"Files may come through an IT-managed endpoint instead of the shared folder. Drawn as a\n         dashed box until IT confirms.":"文件可能改由 IT 管理的接入端点进入，而不是共享文件夹。IT 确认前以虚线方块表示。",
+"No plan for keeping the live modules running":"上线后模块的运维尚无方案",
+"One TPRe Data & AI Engineer is on the chart to maintain Module A and Module B in\n         production. What that work actually is has not been discussed.":"图上安排了一位 TPRe 数据与 AI 工程师在生产阶段运维 Module A 与 Module B。这项工作具体包含什么，尚未讨论。",
+"Updated 2026-08-31":"更新于 2026-08-31",
+"Close":"关闭","Allow pop-ups to export the chart.":"请允许弹出窗口以导出图表。",
+/* -- roles, people, duties -- */
+"Business Analyst":"业务分析师","Domain Specialist":"领域专家",
+"Data & AI Engineer":"数据与 AI 工程师","IT / Platform":"IT / 平台","Underwriter":"核保人",
+"Aidon Li, Aylon Xie · vendor may take MVP-500 review":"Aidon Li, Aylon Xie · MVP-500 的复核可能由供应商承担",
+"17F underwriting team (BD2)":"17F 核保团队（BD2）",
+"manual filter · 20 templates · review":"人工筛选 · 20 份模板 · 复核",
+"recipes · review (heavy)":"Recipe · 复核（工作量大）",
+"evaluate output · new recipes":"评估输出 · 新建 Recipe","new recipes":"新建 Recipe",
+"gold sign-off · shopping list":"Gold 签署 · 字段清单",
+"reviews pack & results (TBD)":"复核文件包与结果（待定）","spot checks":"抽样检查",
+"rules · facts agent":"规则 · Facts Agent","rules · agent & recipe":"规则 · Agent 与 Recipe",
+"maintains A & B · new recipes":"运维 A 与 B · 新建 Recipe",
+"TPRe maintains A & B (TBD)":"TPRe 运维 A 与 B（待定）",
+"environment":"环境","deployment":"部署","runs it":"负责运行",
+"owns intake + TPR write":"负责接入与写入 TPR",
+"works in parallel":"并行处理","consumes reports":"使用报告",
+/* -- stages -- */
+"Setup":"搭建","Generalise":"泛化","Parallel run":"并行运行",
+"Production":"生产","Full production":"全量生产","(live)":"（上线）","(prod)":"（生产）",
+/* -- lanes -- */
+"USER / SYSTEM":"用户 / 系统","FILE STORAGE":"文件存储","PROCESSING SCRIPTS":"处理脚本",
+"VALIDATION":"验证","PROJECT TEAM":"项目团队",
+"RETROSPECTIVE":"历史回溯","PROSPECTIVE · LIVE":"前瞻 · 实时",
+/* -- containers -- */
+"MODULE A: Validation Flywheel":"MODULE A：验证飞轮",
+"MODULE B: Validation Flywheel":"MODULE B：验证飞轮",
+"MODULE B: Recipe Creation":"MODULE B：Recipe 生成",
+"File filtering (triage)":"文件筛选（分流）","Information extraction":"信息抽取",
+"Report generation":"报告生成",
+"off in production":"生产阶段关闭","not started":"尚未启动",
+"not started — nothing reviewed to learn from yet":"尚未启动 —— 还没有可供学习的复核结果",
+/* -- node titles & sub-labels -- */
+"RETROSPECTIVE STOCK":"历史存量","Local Folder":"本地文件夹","AUTO-DOWNLOAD":"自动下载",
+"Public Folder (R:)":"共享文件夹（R:）","LIVE UPLOAD":"实时上传",
+"IT endpoint":"IT 接入端点","ROUTE TBD":"路径待定",
+"All files · per treaty":"全部文件 · 按合约","Deterministic Rule":"确定性规则",
+"Script Selected Core":"脚本选出的核心文件","Others":"其他文件","TAGGED, KEPT":"已标记并保留",
+"Human Categorized Files":"人工分类文件","THE ANSWER KEY":"标准答案",
+"Comparison Scripts":"比对脚本","Matches gold":"与 Gold 一致","NO ACTION":"无需处理",
+"Machine Kept":"机器保留","FALSE POSITIVE":"误报",
+"Missed Core":"漏掉的核心文件","FALSE NEGATIVE":"漏报",
+"Red":"红","Amber":"黄","Green":"绿",
+"FULL REVIEW":"全量复核","SPOT REVIEW":"抽点复核","AUTO-ACCEPT":"自动通过",
+"Human Check":"人工检查","Validated core":"已验证核心文件","FEEDS EXTRACTION":"供抽取使用",
+"TPR system":"TPR 系统","BOOKED VALUES SOURCE":"已入账数据来源",
+"Core files":"核心文件","FROM THE GOLD SET":"来自 Gold 集","STRAIGHT FROM TRIAGE":"直接来自分流",
+"Shopping List":"字段清单","SIGNED, VERSIONED":"已签署 · 有版本",
+"Structured Output":"结构化输出","TREATYRECORD PER TREATY":"每份合约一条 TreatyRecord",
+"Hand-Extracted Templates":"人工填写的抽取模板","MVP 3 ONLY":"仅 MVP 3",
+"TPR booked values":"TPR 已入账数据","WHAT WAS ACTUALLY BOOKED":"实际入账结果",
+"RECORD REVIEW":"整条复核","FIELD REVIEW":"字段复核",
+"Validated output":"已验证输出","RED & AMBER WORKED TO GREEN":"红黄经处理转绿",
+"Unmatched Fields":"未匹配字段","WHAT THE AGENT GOT WRONG":"Agent 出错之处",
+"Matched Fields":"已匹配字段","ACCEPTED":"已接受",
+"Use LLM agent\nto create recipe":"使用 LLM Agent\n生成 Recipe",
+"Use LLM agent":"使用 LLM Agent","to create recipe":"生成 Recipe",
+"Recipe per Treaty / PAP":"按合约 / PAP 的 Recipe","VERSIONED":"有版本",
+"Template Script":"模板脚本","DETERMINISTIC · NO LLM":"确定性 · 不调用 LLM",
+"Analysis Report":"分析报告","SUBMISSION TEMPLATE":"分保申请模板",
+"Entry Report":"录入报告","TPR INPUT":"TPR 录入用","REPORTS OUT":"报告输出",
+"WRITE TPR ONLY — NEVER UMS":"只写 TPR —— 绝不写 UMS",
+/* -- edge labels -- */
+"manual filtering":"人工筛选","validate":"验证","validated":"已验证",
+"hits the rule":"命中规则","doesn't hit":"未命中",
+"false positive":"误报","false negative":"漏报","machine's errors":"机器的错误",
+"updates RAG rules":"更新 RAG 规则","worked until green":"处理至转绿",
+"straight through":"直接通过","overturned calls":"被推翻的判定",
+"improves rules & prompts":"优化规则与提示词","maintains A (TBD)":"运维 A（待定）",
+"validated core → extraction":"已验证核心文件 → 抽取","sample check":"抽样检查",
+"booked values · retrospective only":"已入账数据 · 仅历史回溯",
+"updates agent":"更新 Agent","new cedant recipe":"新分出公司的 Recipe",
+"provides":"提供","auto-accept":"自动通过","matched":"已匹配",
+"agent's miss":"Agent 的遗漏","reads report":"读取报告","auto — RPA / API":"自动 —— RPA / API",
+"gold core — the answer key":"Gold Core —— 标准答案",
+/* -- overview sub-labels & IO -- */
+"FILE FILTERING (TRIAGE)":"文件筛选（分流）","BUILD · VS GOLD":"构建 · 对比 Gold",
+"BUILD · MACHINE → HUMAN → PACK":"构建 · 机器 → 人工 → 文件包",
+"EVALUATE TRIAGE PERFORMANCE":"评估分流表现","INFORMATION EXTRACTION":"信息抽取",
+"BUILD · HUMAN CHECK ONLY":"构建 · 仅人工检查","BUILD · VS BOOKED VALUES":"构建 · 对比已入账数据",
+"EVALUATE · HUMAN CHECK ONLY":"评估 · 仅人工检查","REPORT GENERATION · SCRIPT":"报告生成 · 脚本",
+"LLM AGENT DRAFTS · BA REVIEWS":"LLM Agent 起草 · BA 复核",
+"NEW CEDANT · NO RECIPE YET":"新分出公司 · 尚无 Recipe",
+"IN  all files per treaty":"IN  全部文件 · 按合约",
+"OUT  core files · others (kept)":"OUT  核心文件 · 其他（保留）",
+"IN  machine result · gold core":"IN  机器结果 · Gold Core",
+"OUT  confirmed errors · rule updates":"OUT  确认的错误 · 规则更新",
+"IN  machine result":"IN  机器结果","OUT  human-validated core":"OUT  人工验证的核心文件",
+"OUT  performance sample (not the pack)":"OUT  表现抽样（不作为文件包）",
+"IN  core files · shopping list":"IN  核心文件 · 字段清单",
+"OUT  TreatyRecord · both reports":"OUT  TreatyRecord · 两份报告",
+"IN  TreatyRecord · reference (templates / booked)":"IN  TreatyRecord · 参照（模板 / 已入账）",
+"OUT  validated results · failure patterns":"OUT  验证结果 · 失败模式",
+"OUT  human-checked performance score":"OUT  人工检查的表现评分",
+"OUT  analysis report · entry report":"OUT  分析报告 · 录入报告",
+"IN  failure patterns":"IN  失败模式","OUT  recipe per treaty / PAP":"OUT  按合约 / PAP 的 Recipe",
+"IN  new cedant (no recipe)":"IN  新分出公司（尚无 Recipe）",
+/* -- detail panel -- */
+"MODULE — THE PROGRAM'S BOUNDARY":"模块 —— 程序边界",
+"SYSTEM / ARTEFACT":"系统 / 产物","HUMAN — OUTSIDE THE PROGRAM":"人工 —— 程序之外",
+" · NOT RUNNING THIS STAGE":" · 本阶段不运行",
+/* -- open questions -- */
+"extraction has no independent check":"抽取缺少独立校验",
+"intake route not chosen":"接入路径尚未确定","no maintenance plan":"尚无运维方案",
+"how the Domain Specialist reviews human judgment":"领域专家如何复核人工判断",
+/* -- descriptions · full detail -- */
+"The archive of historic submissions, pulled by treaty-year with the auto-download scripts.":"历史分保申请的归档库，由自动下载脚本按合约年度拉取。",
+"Where the retrospective batch lands before triage. MVP-20 and MVP-500 both run from here.":"历史批次在分流前的落地位置。MVP-20 与 MVP-500 都从这里开始。",
+"During peak season the underwriter uploads the raw submission pack. This path does not exist before the parallel run.":"旺季期间由核保人上传原始申请文件包。并行运行之前不存在这条路径。",
+"The shared folder live submissions land in. In full production this may be replaced by an IT-managed endpoint.":"实时申请落地的共享文件夹。全量生产阶段可能改为由 IT 管理的接入端点。",
+"A centralised, IT-managed intake route under discussion for full production. Dashed until IT confirms.":"面向全量生产、由 IT 统一管理的接入路径，仍在讨论中。IT 确认前以虚线表示。",
+"Everything received for one treaty-year, before any filtering.":"某一合约年度收到的全部文件，尚未做任何筛选。",
+"Rules run first — cheap and explainable. In setup they are the only machine triage; the developers rewrite them continuously from confirmed errors.":"规则先跑 —— 成本低且可解释。搭建阶段这是唯一的机器分流手段；工程师会根据确认的错误持续重写规则。",
+"From stage 2, the LLM classifier handles whatever the rules can't place. Not part of the initial setup — stage 1 runs rules only.":"从阶段 2 起，规则无法归类的文件交给 LLM 分类器。这不属于最初的搭建 —— 阶段 1 只跑规则。",
+"The files the machine believes carry data. In set-up they are measured against gold; in generalisation a person rules on them and that ruling is the pack; from the parallel run they go straight through.":"机器认为含有数据的文件。搭建阶段与 Gold 比对；泛化阶段由人工裁定，裁定结果即文件包；从并行运行起直接通过。",
+"Not discarded — tagged non-core and retained, so a wrong call can always be recovered.":"不会丢弃 —— 标记为非核心并保留，判错时随时可以找回。",
+"The Business Analysts do the manual filtering. In setup they filter everything; in generalisation only a sample.":"人工筛选由业务分析师完成。搭建阶段全量筛选，泛化阶段只做抽样。",
+"Andrew and Susana validate the manually filtered files into Gold Core, and provide the shopping list. Set-up only — the shopping list is then fixed.":"Andrew 与 Susana 验证人工筛选的文件，形成 Gold Core，并提供字段清单。仅搭建阶段 —— 之后字段清单即固定。",
+"The Business Analysts' manual filtering result, then validated by the Domain Specialist. What is signed off becomes Gold Core.":"业务分析师的人工筛选结果，再由领域专家验证。签署通过的部分成为 Gold Core。",
+"This is where the developers sit in the loop: confirmed machine errors come to them, and they turn each one into a rule or prompt update. The machine only improves because someone rewrites its rules. Build stages only.":"这是工程师在回路中的位置：确认的机器错误交到他们手上，每一条都转化为规则或提示词的更新。机器之所以变好，是因为有人在重写它的规则。仅构建阶段。",
+"Maintains Module A and Module B in the parallel run and in production. How the live maintenance flow works is still to be discussed.":"在并行运行和生产阶段运维 Module A 与 Module B。上线后的运维流程如何运作仍待讨论。",
+"The validated answer key, built from human filtering in set-up. It is the flywheel reference and the core-file set for extraction — set-up only. From generalisation there is no gold input and no comparison.":"经验证的标准答案，由搭建阶段的人工筛选构建。它既是飞轮的参照，也是抽取用的核心文件集 —— 仅搭建阶段。从泛化阶段起没有 Gold 输入，也没有比对。",
+"Set-up only. Machine triage against the answer key, file by file. Matches need no action; false positives and false negatives are machine errors. From generalisation there is nothing to compare to, so this step is gone.":"仅搭建阶段。把机器分流结果逐个文件与标准答案比对。一致的无需处理；误报与漏报都算机器错误。从泛化阶段起没有可比对的对象，这一步随之消失。",
+"The machine agrees with the answer key — true positives and true negatives. Nothing to do. Set-up only.":"机器与标准答案一致 —— 真正例与真负例。无需处理。仅搭建阶段。",
+"The machine kept a file gold says is non-core — a false positive. It goes straight to the Data & AI Engineer, who rewrites the rules. Set-up only.":"机器保留了 Gold 判为非核心的文件 —— 误报。直接交给数据与 AI 工程师重写规则。仅搭建阶段。",
+"Gold says core, the machine missed it. It goes straight to the Data & AI Engineer. Set-up only.":"Gold 判为核心而机器漏掉的文件。直接交给数据与 AI 工程师。仅搭建阶段。",
+"The machine's own gate on its triage. Every submission leaves the gate rated red, amber or green. Green needs no person; red and amber do.":"机器对自身分流结果设置的关卡。每份申请离开关卡时都带有红、黄或绿的评级。绿色无需人工；红色与黄色需要。",
+"The gate has no confidence in the split — a person re-does the whole triage.":"关卡对这次拆分毫无信心 —— 由人工重做整个分流。",
+"The gate is unsure about specific files — a person rules on those only.":"关卡只对个别文件没把握 —— 人工只裁定这些文件。",
+"The gate is confident. The split passes to extraction with no human touch.":"关卡有信心。拆分结果无需人工介入，直接进入抽取。",
+"A person rules on red and amber submissions and keeps working them until the split is sound — only then does it join the validated core. In the parallel run this scores triage performance only.":"人工裁定红色与黄色的申请，反复处理直到拆分可靠 —— 之后才并入已验证核心文件。并行运行阶段这只用于评估分流表现。",
+"Rules on red and amber submissions from the gate; green never reaches them. In generalisation the ruling becomes part of the validated core, in the parallel run it is a performance sample only.":"裁定关卡输出的红色与黄色申请；绿色永远不会到他们手上。泛化阶段该裁定成为已验证核心文件的一部分，并行运行阶段只是表现抽样。",
+"The flywheel's output, outside the module: the human ruling on the machine's triage. From generalisation on it is the core-file set Module B reads — nothing bypasses the gate. Only production drops the flywheel and runs triage straight through.":"飞轮的输出，位于模块之外：人工对机器分流的裁定。从泛化阶段起，它就是 Module B 读取的核心文件集 —— 没有任何东西绕过关卡。只有生产阶段撤掉飞轮，让分流直接通过。",
+"Reviews the humans' own output — the validated core and the validated extraction results. In set-up Andrew and Susana saw all 20; at volume the method is not agreed, so both routes are dotted.":"复核人工自己的产出 —— 已验证核心文件与已验证抽取结果。搭建阶段 Andrew 与 Susana 看了全部 20 份；放量后的方法尚未达成一致，因此两条路径都用虚线表示。",
+"Where booked values come from for the extraction comparison. Retrospective only — generalisation. The parallel run is live new business, so there is no TPR record to check against.":"抽取比对所用已入账数据的来源。仅历史回溯 —— 即泛化阶段。并行运行处理的是实时新业务，没有可比对的 TPR 记录。",
+"The treaty's core files, handed to extraction. From the gold set in set-up; straight from triage in the parallel run and in production. In generalisation the validated core is this input, so there is no second box.":"交给抽取的合约核心文件。搭建阶段来自 Gold 集；并行运行与生产阶段直接来自分流。泛化阶段的输入就是已验证核心文件，因此没有第二个方块。",
+"The agreed field list, provided and signed by the Domain Specialist. Nothing downstream is stable until this is fixed.":"由领域专家提供并签署的约定字段清单。在它固定之前，下游没有任何环节是稳定的。",
+"Takes the unmatched fields from the Module B flywheel back into the Facts Agent and retunes the gate's red/amber/green rules (build stages), and feeds a published or new-cedant recipe from the recipe module into the Recipe step.":"把 Module B 飞轮输出的未匹配字段带回 Facts Agent，并重新调校关卡的红/黄/绿规则（构建阶段）；同时把 Recipe 模块发布的、或新分出公司的 Recipe 送入 Recipe 步骤。",
+"The extraction engine itself. In the build stages the Data & AI Engineer feeds the unmatched fields back into it; from the parallel run it reads the treaty under the published recipe.":"抽取引擎本身。构建阶段由数据与 AI 工程师把未匹配字段回灌给它；从并行运行起，它按已发布的 Recipe 读取合约。",
+"The extraction logic inside Module B. The Data & AI Engineer feeds the published recipe from the recipe module into it. From the parallel run onwards this is what runs; no LLM is called.":"Module B 内部的抽取逻辑。数据与 AI 工程师把 Recipe 模块发布的 Recipe 送入其中。从并行运行起由它执行，不再调用 LLM。",
+"One record per treaty-year, shaped by the shopping list. Located from the documents, never invented. In production this is what the two reports are built from. In build and parallel-run stages this same output is scored in the Module B flywheel.":"每个合约年度一条记录，结构由字段清单决定。数据从文档中定位而来，绝不凭空生成。生产阶段两份报告都由它生成。构建与并行运行阶段，同一份输出会在 Module B 飞轮中被评分。",
+"Hand-filled extraction templates — the reference the person checks the machine's extraction against in set-up. Only for the very first set-up (MVP 3); by MVP 20 no hand-filling is needed, which is why it is greyed rather than marked as human input.":"人工填写的抽取模板 —— 搭建阶段人工核对机器抽取结果的参照。只用于最初的搭建（MVP 3）；到 MVP 20 已不需要人工填写，因此它是灰色，而不是标为人工输入。",
+"Hand-filled the extraction templates for MVP 3, the very first set-up. Not needed from MVP 20 on.":"为最初的搭建（MVP 3）人工填写抽取模板。从 MVP 20 起不再需要。",
+"What was actually booked — an independent check on extraction in generalisation (retrospective). Not used in the parallel run: that is live new business, so there is no TPR record yet.":"实际入账的结果 —— 泛化阶段（历史回溯）对抽取的独立校验。并行运行不使用：那是实时新业务，还没有 TPR 记录。",
+"The machine's own gate on its extraction: every record leaves rated red, amber or green. In generalisation it scores against booked values; in the parallel run there is nothing to compare to, so the rating is the gate's own confidence. There is no gate in set-up — everything goes to a person.":"机器对自身抽取结果设置的关卡：每条记录离开时都带有红、黄或绿的评级。泛化阶段对照已入账数据打分；并行运行没有可比对的对象，评级即关卡自身的置信度。搭建阶段没有关卡 —— 所有记录都交给人工。",
+"Material variance — the whole record goes to a person.":"重大差异 —— 整条记录交给人工。",
+"Minor variance — specific fields go to a person.":"轻微差异 —— 个别字段交给人工。",
+"Match — accepted without human touch.":"一致 —— 无需人工介入，直接接受。",
+"In set-up every extracted record comes to a person, checked against the hand-filled templates — there is no gate yet. From generalisation only red and amber reach them; green never does.":"搭建阶段每条抽取结果都交给人工，对照人工填写的模板核对 —— 此时还没有关卡。从泛化阶段起只有红色与黄色会到人工手上，绿色不会。",
+"Checks extracted records: all of them in set-up, then only red and amber once the gate exists. In the parallel run this also scores extraction performance — there is no booked value to compare against.":"核对抽取结果：搭建阶段全部核对，关卡建立后只核对红色与黄色。并行运行阶段这同时用于评估抽取表现 —— 因为没有已入账数据可比对。",
+"The flywheel's output in the parallel run: red and amber are worked until they turn green, green passes straight through. This is what the Template Agent reads.":"并行运行阶段飞轮的输出：红色与黄色处理到转绿，绿色直接通过。这就是 Template Agent 读取的内容。",
+"The fields the person had to correct. These are what the Data & AI Engineer works from — the agent only improves where it was wrong.":"人工不得不修正的字段。数据与 AI 工程师就从这里入手 —— Agent 只在出错的地方改进。",
+"In build stages: auto-accepted plus corrected records, fed back into the Facts Agent. In the parallel run: the human-checked extraction output, used as a performance score only — reports still come from Module B.":"构建阶段：自动通过的记录加上已修正的记录，回灌给 Facts Agent。并行运行阶段：经人工核对的抽取输出，仅作为表现评分 —— 报告仍由 Module B 生成。",
+"A coding agent drafts a per-cedant recipe; the Business Analyst reviews it before it is published. In generalisation it learns from the matched fields — the extraction the humans accepted. In the parallel run and in production it still runs for a new cedant that has no recipe yet.":"由编码 Agent 起草分出公司专属的 Recipe，业务分析师复核后发布。泛化阶段它从已匹配字段中学习 —— 也就是人工接受的抽取结果。并行运行与生产阶段，遇到尚无 Recipe 的新分出公司时依然运行。",
+"Reviews and publishes the recipes drafted by the LLM agent — including for a new cedant with no recipe yet.":"复核并发布由 LLM Agent 起草的 Recipe —— 包括尚无 Recipe 的新分出公司。",
+"The recipe module's published recipe. The Data & AI Engineer feeds it into the Recipe step inside Module B — the extraction logic, not an input to the module.":"Recipe 模块发布的 Recipe。数据与 AI 工程师把它送入 Module B 内部的 Recipe 步骤 —— 它是抽取逻辑，而不是模块的输入。",
+"A script, not an agent: it reads the TreatyRecord and lays it out into the two reports. No model, no judgement — the same record always produces the same reports.":"这是脚本，不是 Agent：读取 TreatyRecord 并排布成两份报告。没有模型，也没有判断 —— 同一条记录永远产出同样的报告。",
+"The submission-template view the underwriter reads. Written by Module B from the TreatyRecord in the parallel run and in production.":"核保人阅读的分保申请模板视图。并行运行与生产阶段由 Module B 依据 TreatyRecord 生成。",
+"Formatted for TPR input. Written by Module B in the parallel run and in production. Posted to TPR only in production — not in the parallel run.":"按 TPR 录入格式排布。并行运行与生产阶段由 Module B 生成。只有生产阶段才写入 TPR —— 并行运行不写。",
+"Where the underwriter picks up the analysis report.":"核保人取用分析报告的位置。",
+"Works the same file in parallel during stage 3; consumes the reports in stage 4.":"阶段 3 并行处理同一份文件；阶段 4 使用报告。",
+"The entry report feeds TPR. UMS is populated downstream by core-logic calculation and is never written to directly.":"录入报告写入 TPR。UMS 由下游的核心逻辑计算填充，绝不直接写入。",
+/* -- descriptions · module overview -- */
+"Which files carry data. Rules first — the LLM classifier joins from stage 2. The program's boundary: inputs and outputs sit outside it.":"判断哪些文件含有数据。规则先跑 —— LLM 分类器从阶段 2 加入。这是程序的边界：输入与输出都在它之外。",
+"Set-up and generalisation: build. Parallel run: evaluate triage performance — the sample does not become the pack Module B reads. Off in production.":"搭建与泛化阶段：构建。并行运行：评估分流表现 —— 抽样不会成为 Module B 读取的文件包。生产阶段关闭。",
+"Reads the treaty's core files into one TreatyRecord, shaped by the signed shopping list. The cedant recipe is the extraction logic inside the module, not an input. From the parallel run it writes both reports directly — no LLM.":"把合约的核心文件读成一条 TreatyRecord，结构由已签署的字段清单决定。分出公司的 Recipe 是模块内部的抽取逻辑，而不是输入。从并行运行起它直接生成两份报告 —— 不调用 LLM。",
+"Set-up and generalisation: build — compare to a reference, then feed back into the Facts Agent. Parallel run: no TPR record to compare to, so a person checks the extraction output to evaluate performance. Off in production.":"搭建与泛化阶段：构建 —— 与参照比对，再回灌给 Facts Agent。并行运行：没有可比对的 TPR 记录，因此由人工核对抽取输出以评估表现。生产阶段关闭。",
+"A script, not an agent: it lays the TreatyRecord out into the two reports. No model, no judgement.":"这是脚本，不是 Agent：把 TreatyRecord 排布成两份报告。没有模型，也没有判断。",
+"An LLM agent drafts a per-cedant recipe; the Business Analyst reviews it. In generalisation it learns from extraction failures. In the parallel run and in production it still runs for a new cedant that has no recipe yet.":"由 LLM Agent 起草分出公司专属的 Recipe，业务分析师负责复核。泛化阶段它从抽取失败中学习。并行运行与生产阶段，遇到尚无 Recipe 的新分出公司时依然运行。",
+"The archive of historic submissions, pulled by treaty-year.":"历史分保申请的归档库，按合约年度拉取。",
+"Where the retrospective batch lands before triage.":"历史批次在分流前的落地位置。",
+"The shared folder live submissions land in.":"实时申请落地的共享文件夹。",
+"A centralised, IT-managed intake route under discussion for production.":"面向生产、由 IT 统一管理的接入路径，仍在讨论中。",
+"The files the machine believes carry data.":"机器认为含有数据的文件。",
+"Not discarded — tagged non-core and retained.":"不会丢弃 —— 标记为非核心并保留。",
+"Built in set-up from validated human filtering. Set-up only — from generalisation there is no gold and no comparison; Module B reads the human-validated pack.":"搭建阶段由经验证的人工筛选结果构建。仅搭建阶段 —— 从泛化阶段起没有 Gold、也没有比对；Module B 读取人工验证过的文件包。",
+"The Module A flywheel's output, outside the module: the human ruling on the machine's triage. From generalisation on it is the core-file set Module B reads — nothing bypasses the gate.":"Module A 飞轮的输出，位于模块之外：人工对机器分流的裁定。从泛化阶段起，它就是 Module B 读取的核心文件集 —— 没有任何东西绕过关卡。",
+"The agreed field list, provided and signed by the Domain Specialist.":"由领域专家提供并签署的约定字段清单。",
+"One record per treaty-year — Module B's output. From the parallel run the two reports are built from here. In build and parallel-run stages this same output is scored in the Module B flywheel.":"每个合约年度一条记录 —— Module B 的输出。从并行运行起两份报告都由它生成。构建与并行运行阶段，同一份输出会在 Module B 飞轮中被评分。",
+"Hand-filled extraction templates — the answer key for the very first set-up (MVP 3) only. By MVP 20 no hand-filling is needed.":"人工填写的抽取模板 —— 仅作为最初搭建（MVP 3）的标准答案。到 MVP 20 已不需要人工填写。",
+"What was actually booked — an independent check in generalisation. Not used in the parallel run (live new business).":"实际入账的结果 —— 泛化阶段的独立校验。并行运行不使用（实时新业务）。",
+"The flywheel's output in the parallel run: red and amber worked until they turn green, green straight through — what the Template Agent reads.":"并行运行阶段飞轮的输出：红色与黄色处理到转绿，绿色直接通过 —— 也就是 Template Agent 读取的内容。",
+"The fields the person had to correct — what the Data & AI Engineer improves the agent from.":"人工不得不修正的字段 —— 数据与 AI 工程师据此改进 Agent。",
+"The fields the person accepted as they were extracted. In the parallel run this is the performance score.":"人工按抽取原样接受的字段。并行运行阶段这就是表现评分。",
+"The recipe module's published recipe. The Data & AI Engineer feeds it into the Recipe step inside Module B.":"Recipe 模块发布的 Recipe。数据与 AI 工程师把它送入 Module B 内部的 Recipe 步骤。",
+"Where booked values come from — generalisation only.":"已入账数据的来源 —— 仅泛化阶段。",
+"The submission-template view the underwriter reads. Written by Module B from the parallel run onwards.":"核保人阅读的分保申请模板视图。从并行运行起由 Module B 生成。",
+"Written by Module B from the parallel run onwards. Posted to TPR only in production.":"从并行运行起由 Module B 生成。只有生产阶段才写入 TPR。",
+"UMS is populated downstream and never written to directly. Production only — not the parallel run.":"UMS 由下游填充，绝不直接写入。仅生产阶段 —— 并行运行没有这一步。",
+"Uploads the live submission during peak season.":"旺季期间上传实时申请。",
+"Confirmed machine errors come to the developers, who turn each one into a rule or prompt update. Build stages only.":"确认的机器错误交到工程师手上，每一条都转化为规则或提示词的更新。仅构建阶段。",
+"Takes the unmatched fields from the Module B flywheel back into the Facts Agent (build stages), and feeds a published or new-cedant recipe from the recipe module into the Recipe step.":"把 Module B 飞轮输出的未匹配字段带回 Facts Agent（构建阶段），并把 Recipe 模块发布的、或新分出公司的 Recipe 送入 Recipe 步骤。",
+"Does the manual filtering in set-up.":"搭建阶段负责人工筛选。",
+"Rules on the machine result itself — that ruling is the pack. Not in set-up: comparison errors go straight to the Data & AI Engineer.":"直接裁定机器结果 —— 该裁定即文件包。搭建阶段没有这一步：比对出的错误直接交给数据与 AI 工程师。",
+"Hand-fills the 20 templates in set-up.":"搭建阶段人工填写 20 份模板。",
+"Checks extracted records: all of them in set-up, then only red and amber once the gate exists.":"核对抽取结果：搭建阶段全部核对，关卡建立后只核对红色与黄色。",
+"Reviews the extraction output in the parallel run to evaluate performance. There is no comparison script.":"并行运行阶段复核抽取输出以评估表现。没有比对脚本。",
+"Works the file in parallel; consumes the reports in production.":"并行处理文件；生产阶段使用报告。"
+};
+function T(s){
+  if(LANG!=="zh"||s==null) return s;
+  const k=String(s);
+  if(ZH[k]!=null) return ZH[k];
+  const t=k.trim().replace(/\s+/g," ");
+  return ZH[t]!=null?ZH[t]:k;
+}
+const NOSNAP={SCRIPT:1,STYLE:1,TEMPLATE:1};
+function snapshotEn(root){
+  root.querySelectorAll("*").forEach(n=>{
+    if(NOSNAP[n.tagName]||n.hasAttribute("data-nolang")||n.hasAttribute("data-en"))return;
+    if(n.classList&&(n.classList.contains("en")||n.classList.contains("zh")))return;
+    if(n.children.length)return;
+    const t=n.textContent;
+    if(t&&t.trim()) n.setAttribute("data-en",t);
+  });
+}
+function applyLang(){
+  const r=document.documentElement;
+  r.setAttribute("lang",LANG==="zh"?"zh-Hans":"en");
+  r.setAttribute("data-lang",LANG);
+  if(document.body) document.body.setAttribute("data-lang",LANG);
+  document.querySelectorAll("[data-en]").forEach(n=>{
+    n.textContent=T(n.getAttribute("data-en"));
+  });
+  try{localStorage.setItem("aidp.lang",LANG);}catch(e){}
+  syncTitle();
+  setStage(stage);
+}
+function setLang(v){ if(v===LANG)return; LANG=v; applyLang(); }
+document.addEventListener("aidp:lang", function(e){
+  setLang(e.detail==="zh"?"zh":"en");
+});
+const ROLES = {
+  ba :{n:"Business Analyst",   who:"Aidon Li, Aylon Xie · vendor may take MVP-500 review", org:"TPRe", c:"#C4674A"},
+  ds :{n:"Domain Specialist",  who:"Andrew Yuen, Susana Pui",          org:"Ageas / TPRe", c:"#C4674A"},
+  dai:{n:"Data & AI Engineer", who:"Henri Qiu, Yibei Chen",             org:"Ageas / TPRe", c:"#C4674A"},
+  it :{n:"IT / Platform",      who:"Chen Jin, Que Jinchao",            org:"TPRe",         c:"#C4674A"},
+  uw :{n:"Underwriter",        who:"17F underwriting team (BD2)",      org:"TPRe",         c:"#C4674A"}
+};
+const DUTY = {
+  ba :["manual filter · 20 templates · review","recipes · review (heavy)","evaluate output · new recipes","new recipes"],
+  ds :["gold sign-off · shopping list","reviews pack & results (TBD)","reviews pack & results (TBD)","spot checks"],
+  dai:["rules · facts agent","rules · agent & recipe","maintains A & B · new recipes","TPRe maintains A & B (TBD)"],
+  it :["environment","deployment","runs it","owns intake + TPR write"],
+  uw :["—","—","works in parallel","consumes reports"]
+};
+const STAGES = [
+  {n:"Setup", tag:"(MVP 20)", mv:"MVP-3 → MVP-20 · retrospective",
+   t:"People write the answer key.",
+   d:"Business Analysts filter by hand and hand-fill 20 extraction templates; both become the answer keys. No live submissions, no reports out."},
+  {n:"Generalise", tag:"(MVP 500)", mv:"MVP-500 · retrospective",
+   t:"The machine leads, people check a sample.",
+   d:"Objective: build. No gold core and no comparison in the Module A flywheel. The machine filters, the Business Analyst rules, and the human-validated pack goes to extraction. The recipe module turns failures into recipes. Validated extraction results feed back into the Facts Agent."},
+  {n:"Parallel run", tag:"(live)", mv:"live · peak season",
+   t:"The machine runs alongside the underwriter.",
+   d:"Objective: evaluate performance. Live path matches production (recipe as logic, Module B writes both reports, shared-folder intake, no TPR write) but both validation flywheels stay on to score the live output. They do not feed the build loops. Recipe creation still runs for a new cedant that has no recipe yet."},
+  {n:"Full production", tag:"(prod)", mv:"machine output is used",
+   t:"The machine's output is used.",
+   d:"Both flywheels stay off. Extraction runs the published recipe — no LLM. Module B writes both reports to TPR. Recipe creation still runs for a new cedant with no recipe. One TPRe Data & AI Engineer maintains Module A and Module B — that flow is still to be discussed."}
+];
+
+/* ============ CONTAINERS ============ */
+const CONT = [
+ {id:"modA", x:470,y:146,w:270,h:202, col:"#3F8F5F", t:"MODULE A: Submission Agent", sub:"File filtering (triage)", st:[1,2,3,4]},
+ {id:"flyA", x:830,y:306,w:405,h:300, col:"#3F8F5F", t:"MODULE A: Validation Flywheel", fly:1, st:[1,2,3],
+  offNote:"off in production"},
+ {id:"modB", x:430,y:795,w:350,h:120, col:"#4A7DBD", t:"MODULE B: Facts Agent", sub:"Information extraction", st:[1,2,3,4]},
+ {id:"flyB", x:830,y:780,w:405,h:290, col:"#4A7DBD", t:"MODULE B: Validation Flywheel", fly:1, st:[1,2,3],
+  offNote:"off in production"},
+ {id:"modT", x:430,y:1050,w:350,h:100,col:"#7B2D8E", t:"MODULE C: Template Agent", sub:"Report generation", st:[3,4]},
+ {id:"modR", x:830,y:1185,w:320,h:110,col:"#4A7DBD", t:"MODULE B: Recipe Creation", st:[2,3,4],
+  offNote:"not started — nothing reviewed to learn from yet"}
+];
+
+/* ============ NODES ============ */
+/* type: box | dec (diamond) | actor ; k = fill kind */
+const ND = [
+ {id:"efs",     type:"box",x:30, y:80,  w:150,h:46,k:"sys", r:"it", t:"EFS",              s:"RETROSPECTIVE STOCK", st:[1,2],
+  d:"The archive of historic submissions, pulled by treaty-year with the auto-download scripts."},
+ {id:"lf",      type:"box",x:240,y:80,  w:150,h:46,k:"sys", r:"it", t:"Local Folder",     s:"AUTO-DOWNLOAD", st:[1,2],
+  d:"Where the retrospective batch lands before triage. MVP-20 and MVP-500 both run from here."},
+ {id:"uwIn",    type:"actor",x:58,y:195,w:26,h:46,  r:"uw", t:"Underwriter", st:[3,4],
+  d:"During peak season the underwriter uploads the raw submission pack. This path does not exist before the parallel run."},
+ {id:"pubIn",   type:"box",x:240,y:195, w:150,h:46,k:"sys", r:"uw", t:"Public Folder (R:)",s:"LIVE UPLOAD", st:[3,4],
+  d:"The shared folder live submissions land in. In full production this may be replaced by an IT-managed endpoint."},
+ {id:"endpt",   type:"box",x:240,y:268, w:150,h:46,k:"tbd", r:"it", t:"IT endpoint",      s:"ROUTE TBD", st:[4],
+  d:"A centralised, IT-managed intake route under discussion for full production. Dashed until IT confirms."},
+
+ {id:"allf",    type:"box",x:480,y:96, w:250,h:40,k:"proc",r:"dai",t:"All files · per treaty", s:"", st:[1,2,3,4],
+  d:"Everything received for one treaty-year, before any filtering."},
+ {id:"rule",    type:"dec",x:510,y:173, w:190,h:64,k:"dec", r:"dai",t:"Deterministic Rule", st:[1,2,3,4],
+  d:"Rules run first — cheap and explainable. In setup they are the only machine triage; the developers rewrite them continuously from confirmed errors."},
+ {id:"llm",     type:"dec",x:505,y:268, w:200,h:64,k:"dec", r:"dai",t:"LLM", st:[2,3,4],
+  d:"From stage 2, the LLM classifier handles whatever the rules can't place. Not part of the initial setup — stage 1 runs rules only."},
+ {id:"core",    type:"box",x:450,y:395, w:150,h:46,k:"green",r:"dai",t:"Script Selected Core", s:"", st:[1,2,3,4],
+  d:"The files the machine believes carry data. In set-up they are measured against gold; in generalisation a person rules on them and that ruling is the pack; from the parallel run they go straight through."},
+ {id:"oth",     type:"box",x:615,y:395, w:145,h:46,k:"gray",r:"dai",t:"Others",           s:"TAGGED, KEPT", st:[1,2,3,4],
+  d:"Not discarded — tagged non-core and retained, so a wrong call can always be recovered."},
+
+ {id:"baM",     type:"actor",x:1410,y:118,w:26,h:46, r:"ba", t:"Business Analyst", st:[1],
+  d:"The Business Analysts do the manual filtering. In setup they filter everything; in generalisation only a sample."},
+ {id:"dsA",     type:"actor",x:1410,y:202,w:26,h:46, r:"ds", t:"Domain Specialist", st:[1],
+  d:"Andrew and Susana validate the manually filtered files into Gold Core, and provide the shopping list. Set-up only — the shopping list is then fixed."},
+ {id:"hcat",    type:"box",x:880,y:85,  w:190,h:46,k:"human",r:"ba",t:"Human Categorized Files",
+  s:"", st:[1],
+  d:"The Business Analysts' manual filtering result, then validated by the Domain Specialist. What is signed off becomes Gold Core."},
+
+ {id:"dev",     type:"actor",x:1410,y:52,w:26,h:46, r:"dai", t:"Data & AI Engineer", st:[1,2],
+  d:"This is where the developers sit in the loop: confirmed machine errors come to them, and they turn each one into a rule or prompt update. The machine only improves because someone rewrites its rules. Build stages only."},
+ {id:"devP",    type:"actor",x:1410,y:52,w:26,h:46, r:"dai", t:"Data & AI Engineer", st:[3,4],
+  d:"Maintains Module A and Module B in the parallel run and in production. How the live maintenance flow works is still to be discussed."},
+
+ {id:"gold",    type:"box",x:880,y:200,w:190,h:44,k:"gold",r:"ds", t:"Gold Core",       s:"THE ANSWER KEY", st:[1],
+  d:"The validated answer key, built from human filtering in set-up. It is the flywheel reference and the core-file set for extraction — set-up only. From generalisation there is no gold input and no comparison."},
+ {id:"cmpA",    type:"dec",x:845,y:352,w:180,h:60,k:"dec", r:"dai",t:"Comparison Scripts", st:[1],
+  d:"Set-up only. Machine triage against the answer key, file by file. Matches need no action; false positives and false negatives are machine errors. From generalisation there is nothing to compare to, so this step is gone."},
+ {id:"match",   type:"box",x:845,y:455, w:110,h:44,k:"green",r:"dai",t:"Matches gold",    s:"NO ACTION", st:[1],
+  d:"The machine agrees with the answer key — true positives and true negatives. Nothing to do. Set-up only."},
+ {id:"nrev",    type:"box",x:963,y:455, w:125,h:44,k:"amber",r:"dai",t:"Machine Kept",     s:"FALSE POSITIVE", st:[1],
+  d:"The machine kept a file gold says is non-core — a false positive. It goes straight to the Data & AI Engineer, who rewrites the rules. Set-up only."},
+ {id:"miss",    type:"box",x:1096,y:455,w:129,h:44,k:"amber",r:"dai",t:"Missed Core",      s:"FALSE NEGATIVE", st:[1],
+  d:"Gold says core, the machine missed it. It goes straight to the Data & AI Engineer. Set-up only."},
+ {id:"hvalA",   type:"dec",x:845,y:352,w:180,h:60,k:"dec", r:"dai", t:"Submission Gate", st:[2,3],
+  d:"The machine's own gate on its triage. Every submission leaves the gate rated red, amber or green. Green needs no person; red and amber do."},
+ {id:"redA",    type:"box",x:845,y:440, w:110,h:42,k:"redf",r:"ba", t:"Red",   s:"FULL REVIEW",  st:[2,3],
+  d:"The gate has no confidence in the split — a person re-does the whole triage."},
+ {id:"ambA",    type:"box",x:968,y:440, w:110,h:42,k:"amber",r:"ba",t:"Amber", s:"SPOT REVIEW",  st:[2,3],
+  d:"The gate is unsure about specific files — a person rules on those only."},
+ {id:"grnA",    type:"box",x:1091,y:440,w:110,h:42,k:"green",r:"dai",t:"Green", s:"AUTO-ACCEPT", st:[2,3],
+  d:"The gate is confident. The split passes to extraction with no human touch."},
+ {id:"hchkA",   type:"dec",x:845,y:510, w:180,h:60,k:"dec", r:"ba", t:"Human Check", st:[2,3],
+  d:"A person rules on red and amber submissions and keeps working them until the split is sound — only then does it join the validated core. In the parallel run this scores triage performance only."},
+ {id:"aaV",     type:"actor",x:1410,y:359,w:26,h:46, r:"ba", t:"Business Analyst", st:[2,3],
+  d:"Rules on red and amber submissions from the gate; green never reaches them. In generalisation the ruling becomes part of the validated core, in the parallel run it is a performance sample only."},
+ {id:"packA",   type:"box",x:845,y:636, w:180,h:44,k:"green",r:"ba",t:"Validated core",   s:"FEEDS EXTRACTION", st:[2,3],
+  d:"The flywheel's output, outside the module: the human ruling on the machine's triage. From generalisation on it is the core-file set Module B reads — nothing bypasses the gate. Only production drops the flywheel and runs triage straight through."},
+ {id:"dsRev",   type:"actor",x:1410,y:635,w:26,h:46, r:"ds", t:"Domain Specialist", st:[2,3],
+  d:"Reviews the humans' own output — the validated core and the validated extraction results. In set-up Andrew and Susana saw all 20; at volume the method is not agreed, so both routes are dotted."},
+
+ {id:"tprS",    type:"box",x:30, y:760, w:150,h:46,k:"sys", r:"it", t:"TPR system",      s:"BOOKED VALUES SOURCE", st:[2],
+  d:"Where booked values come from for the extraction comparison. Retrospective only — generalisation. The parallel run is live new business, so there is no TPR record to check against."},
+ {id:"goldB",   type:"box",x:450,y:724, w:150,h:44,k:"green",r:"dai",t:"Core files",     s:"FROM THE GOLD SET", st:[1,4],
+  dyn:{3:{s:"STRAIGHT FROM TRIAGE"},4:{s:"STRAIGHT FROM TRIAGE"}},
+  d:"The treaty's core files, handed to extraction. From the gold set in set-up; straight from triage in the parallel run and in production. In generalisation the validated core is this input, so there is no second box."},
+ {id:"shop",    type:"box",x:610,y:724, w:150,h:44,k:"human",r:"ds", t:"Shopping List",   s:"SIGNED, VERSIONED", st:[1,2,3,4],
+  d:"The agreed field list, provided and signed by the Domain Specialist. Nothing downstream is stable until this is fixed."},
+ {id:"devB",    type:"actor",x:1410,y:860,w:26,h:46, r:"dai", t:"Data & AI Engineer", st:[1,2,3,4],
+  d:"Takes the unmatched fields from the Module B flywheel back into the Facts Agent and retunes the gate's red/amber/green rules (build stages), and feeds a published or new-cedant recipe from the recipe module into the Recipe step."},
+ {id:"subA",    type:"dec",x:440,y:825, w:175,h:60,k:"dec", r:"dai",t:"LLM", st:[1,2,3,4],
+  d:"The extraction engine itself. In the build stages the Data & AI Engineer feeds the unmatched fields back into it; from the parallel run it reads the treaty under the published recipe."},
+ {id:"recN",    type:"dec",x:628,y:825, w:145,h:60,k:"dec",r:"dai",t:"Recipe", st:[2,3,4],
+  d:"The extraction logic inside Module B. The Data & AI Engineer feeds the published recipe from the recipe module into it. From the parallel run onwards this is what runs; no LLM is called."},
+ {id:"struct",  type:"box",x:490,y:935, w:230,h:46,k:"blue",r:"dai",t:"Structured Output", s:"TREATYRECORD PER TREATY", st:[1,2,3,4],
+  d:"One record per treaty-year, shaped by the shopping list. Located from the documents, never invented. In production this is what the two reports are built from. In build and parallel-run stages this same output is scored in the Module B flywheel."},
+
+ {id:"hext",    type:"box",x:1035,y:714,w:185,h:40,k:"gray",r:"ba", t:"Hand-Extracted Templates", s:"MVP 3 ONLY", st:[1],
+  d:"Hand-filled extraction templates — the reference the person checks the machine's extraction against in set-up. Only for the very first set-up (MVP 3); by MVP 20 no hand-filling is needed, which is why it is greyed rather than marked as human input."},
+ {id:"baE",     type:"actor",x:1410,y:732,w:26,h:46, r:"ba", t:"Business Analyst", st:[1],
+  d:"Hand-filled the extraction templates for MVP 3, the very first set-up. Not needed from MVP 20 on."},
+ {id:"booked",  type:"box",x:1035,y:714,w:185,h:40,k:"sys", r:"it", t:"TPR booked values", s:"WHAT WAS ACTUALLY BOOKED", st:[2],
+  d:"What was actually booked — an independent check on extraction in generalisation (retrospective). Not used in the parallel run: that is live new business, so there is no TPR record yet."},
+ {id:"cmpB",    type:"dec",x:868,y:810,w:175,h:60,k:"dec", r:"dai",t:"Facts Gate", st:[2,3],
+  d:"The machine's own gate on its extraction: every record leaves rated red, amber or green. In generalisation it scores against booked values; in the parallel run there is nothing to compare to, so the rating is the gate's own confidence. There is no gate in set-up — everything goes to a person."},
+ {id:"red",     type:"box",x:845,y:905, w:110,h:42,k:"redf",r:"dai",t:"Red",             s:"RECORD REVIEW", st:[2,3],
+  d:"Material variance — the whole record goes to a person."},
+ {id:"amb",     type:"box",x:968,y:905, w:110,h:42,k:"amber",r:"dai",t:"Amber",          s:"FIELD REVIEW", st:[2,3],
+  d:"Minor variance — specific fields go to a person."},
+ {id:"grn",     type:"box",x:1091,y:905,w:110,h:42,k:"green",r:"dai",t:"Green",          s:"AUTO-ACCEPT", st:[2,3],
+  d:"Match — accepted without human touch."},
+ {id:"hchkB",   type:"dec",x:895,y:985, w:185,h:60,k:"dec", r:"ba", t:"Human Check", st:[1,2,3],
+  d:"In set-up every extracted record comes to a person, checked against the hand-filled templates — there is no gate yet. From generalisation only red and amber reach them; green never does."},
+ {id:"aaB",     type:"actor",x:1410,y:992,w:26,h:46, r:"ba", t:"Business Analyst", st:[1,2,3],
+  d:"Checks extracted records: all of them in set-up, then only red and amber once the gate exists. In the parallel run this also scores extraction performance — there is no booked value to compare against."},
+ {id:"voutB",   type:"box",x:1000,y:1104,w:200,h:44,k:"blue",r:"ba",t:"Validated output", s:"RED & AMBER WORKED TO GREEN", st:[3],
+  d:"The flywheel's output in the parallel run: red and amber are worked until they turn green, green passes straight through. This is what the Template Agent reads."},
+ {id:"unm",     type:"box",x:830,y:1104,w:150,h:44,k:"redf",r:"ba",t:"Unmatched Fields", s:"WHAT THE AGENT GOT WRONG", st:[1,2],
+  d:"The fields the person had to correct. These are what the Data & AI Engineer works from — the agent only improves where it was wrong."},
+ {id:"valid",   type:"box",x:1000,y:1104,w:200,h:44,k:"blue",r:"ba",t:"Matched Fields", s:"ACCEPTED", st:[1,2],
+  d:"In build stages: auto-accepted plus corrected records, fed back into the Facts Agent. In the parallel run: the human-checked extraction output, used as a performance score only — reports still come from Module B."},
+
+ {id:"recAg",   type:"dec",x:870,y:1215,w:235,h:60,k:"dec",r:"ba", t:"Use LLM agent\nto create recipe", st:[2,3,4],
+  d:"A coding agent drafts a per-cedant recipe; the Business Analyst reviews it before it is published. In generalisation it learns from the matched fields — the extraction the humans accepted. In the parallel run and in production it still runs for a new cedant that has no recipe yet."},
+ {id:"baC",     type:"actor",x:1410,y:1222,w:26,h:46, r:"ba", t:"Business Analyst", st:[2,3,4],
+  d:"Reviews and publishes the recipes drafted by the LLM agent — including for a new cedant with no recipe yet."},
+ {id:"recOut",  type:"box",x:887,y:1322,w:200,h:44,k:"blue",r:"ba", t:"Recipe per Treaty / PAP", s:"VERSIONED", st:[2,3,4],
+  d:"The recipe module's published recipe. The Data & AI Engineer feeds it into the Recipe step inside Module B — the extraction logic, not an input to the module."},
+
+ {id:"tmpl",    type:"box",x:440,y:1096,w:330,h:42,k:"purp",r:"dai",t:"Template Script",  s:"DETERMINISTIC · NO LLM", st:[3,4],
+  d:"A script, not an agent: it reads the TreatyRecord and lays it out into the two reports. No model, no judgement — the same record always produces the same reports."},
+ {id:"anal",    type:"box",x:440,y:1180,w:165,h:54,k:"purp",r:"dai",t:"Analysis Report",  s:"SUBMISSION TEMPLATE", st:[3,4],
+  d:"The submission-template view the underwriter reads. Written by Module B from the TreatyRecord in the parallel run and in production."},
+ {id:"entry",   type:"box",x:620,y:1180,w:165,h:54,k:"purp",r:"dai",t:"Entry Report",     s:"TPR INPUT", st:[3,4],
+  d:"Formatted for TPR input. Written by Module B in the parallel run and in production. Posted to TPR only in production — not in the parallel run."},
+ {id:"pubOut",  type:"box",x:240,y:1185,w:150,h:46,k:"sys", r:"uw", t:"Public Folder (R:)",s:"REPORTS OUT", st:[3,4],
+  d:"Where the underwriter picks up the analysis report."},
+ {id:"uwOut",   type:"actor",x:62,y:1185,w:26,h:46,  r:"uw", t:"Underwriter", st:[3,4],
+  d:"Works the same file in parallel during stage 3; consumes the reports in stage 4."},
+ {id:"tprW",    type:"box",x:30,y:1275,w:150,h:46,k:"sys", r:"it", t:"TPR system",      s:"WRITE TPR ONLY — NEVER UMS", st:[4],
+  d:"The entry report feeds TPR. UMS is populated downstream by core-logic calculation and is never written to directly."}
+];
+
+/* ============ EDGES ============ */
+const ED = [
+ {f:"efs",fa:"r",t:"lf",ta:"l",st:[1,2]},
+ {f:"lf",fa:"r",t:"allf",ta:"l",pts:[[440,103],[440,116]],st:[1,2]},
+ {f:"uwIn",fa:"r",t:"pubIn",ta:"l",st:[3,4]},
+ {f:"pubIn",fa:"r",t:"allf",ta:"l",pts:[[455,218],[455,116]],st:[3,4]},
+ {f:"endpt",fa:"r",t:"allf",ta:"l",pts:[[455,291],[455,116]],cls:"tbd",st:[4]},
+ {f:"baM",fa:"l",t:"hcat",ta:"r",pts:[[1240,141],[1240,108]],
+  lbl:"manual filtering",lblAt:[1305,134],st:[1]},
+ {f:"dsA",fa:"l",t:"hcat",ta:"r",pts:[[1240,225],[1240,108]],
+  lbl:"validate",lblAt:[1305,218],st:[1]},
+ {f:"allf",fa:"b",t:"rule",ta:"pt:605,146",st:[1,2,3,4]},
+ {f:"rule",fa:"l",t:"core",ta:"l",pts:[[430,205],[430,418]],lbl:"hits the rule",lblAt:[505,198],st:[1,2,3,4]},
+ {f:"rule",fa:"r",t:"oth",ta:"t",pts:[[735,205],[735,377],[687,377]],lbl:"doesn't hit",lblAt:[748,198],st:[1]},
+ {f:"rule",fa:"b",t:"llm",ta:"t",lbl:"doesn't hit",lblAt:[648,255],st:[2,3,4]},
+ {f:"llm",fa:"b",t:"core",ta:"t",pts:[[605,368],[525,368]],st:[2,3,4]},
+ {f:"llm",fa:"b",t:"oth",ta:"t",pts:[[605,368],[687,368]],st:[2,3,4]},
+ {f:"core",fa:"b",t:"cmpA",ta:"l",pts:[[525,460]],st:[1]},
+ {f:"core",fa:"b",t:"hvalA",ta:"l",pts:[[525,460]],st:[2,3]},
+ {f:"hcat",fa:"b",t:"gold",ta:"t",lbl:"validated",lblAt:[1025,168],st:[1]},
+ {f:"gold",fa:"r",t:"cmpA",ta:"r",pts:[[1075,222],[1075,382]],st:[1]},
+ {f:"cmpA",fa:"b",t:"match",ta:"t",pts:[[935,432],[900,432]],st:[1]},
+ {f:"cmpA",fa:"b",t:"nrev",ta:"t",pts:[[935,432],[1025,432]],lbl:"false positive",lblAt:[1042,421],st:[1]},
+ {f:"cmpA",fa:"b",t:"miss",ta:"t",pts:[[935,432],[1160,432]],lbl:"false negative",lblAt:[1178,421],st:[1]},
+ {f:"nrev",fa:"b",t:"dev",ta:"l",pts:[[1025,560],[1360,560],[1360,75]],cls:"loop",
+  lbl:"machine's errors",lblAt:[1175,574],st:[1]},
+ {f:"miss",fa:"b",t:"dev",ta:"l",pts:[[1160,560],[1360,560],[1360,75]],cls:"loop",st:[1]},
+ {f:"aaV",fa:"l",t:"hchkA",ta:"r",pts:[[1290,382],[1290,540]],st:[2,3]},
+ {f:"dev",fa:"lb",t:"hvalA",ta:"pt:1000,368",pts:[[1250,87],[1250,368]],cls:"loop",
+  lbl:"updates RAG rules",lblAt:[1130,360],st:[2]},
+
+ {f:"hvalA",fa:"b",t:"redA",ta:"t",pts:[[935,428],[900,428]],st:[2,3]},
+ {f:"hvalA",fa:"b",t:"ambA",ta:"t",pts:[[935,428],[1023,428]],st:[2,3]},
+ {f:"hvalA",fa:"b",t:"grnA",ta:"t",pts:[[935,428],[1146,428]],st:[2,3]},
+ {f:"redA",fa:"b",t:"hchkA",ta:"t",pts:[[900,496],[935,496]],st:[2,3]},
+ {f:"ambA",fa:"b",t:"hchkA",ta:"t",pts:[[1023,496],[935,496]],st:[2,3]},
+ {f:"hchkA",fa:"b",t:"packA",ta:"t",
+  lbl:"worked until green",lblAt:[862,600],st:[2,3]},
+ {f:"grnA",fa:"b",t:"packA",ta:"tx:990",pts:[[1146,600],[990,600]],
+  lbl:"straight through",lblAt:[1082,592],st:[2,3]},
+ {f:"packA",fa:"tx:1005",t:"dev",ta:"l",pts:[[1005,618],[1360,618],[1360,75]],cls:"loop",
+  lbl:"overturned calls",lblAt:[1160,633],st:[2]},
+ {f:"dev",fa:"l",t:"rule",ta:"pt:605,146",pts:[[605,75]],cls:"loop",
+  lbl:"improves rules & prompts",lblAt:[1000,66],st:[1,2]},
+ {f:"devP",fa:"l",t:"rule",ta:"pt:605,146",pts:[[605,75]],cls:"tbd",
+  lbl:"maintains A (TBD)",lblAt:[1000,66],st:[3,4]},
+ {f:"gold",fa:"l",t:"goldB",ta:"t",pts:[[814,222],[814,690],[525,690]],st:[1]},
+ {f:"packA",fa:"l",t:"subA",ta:"pt:470,795",pts:[[814,658],[814,690],[470,690]],
+  lbl:"validated core → extraction",lblAt:[600,682],st:[2,3]},
+ {f:"dsRev",fa:"l",t:"packA",ta:"r",cls:"tbd",
+  lbl:"sample check",lblAt:[1180,650],st:[2,3]},
+ {f:"dsRev",fa:"r",t:"valid",ta:"ry:1140",pts:[[1520,658],[1520,1140]],cls:"tbd",
+  lbl:"sample check",lblAt:[1450,1155],st:[2]},
+ {f:"dsRev",fa:"r",t:"voutB",ta:"ry:1140",pts:[[1520,658],[1520,1140]],cls:"tbd",
+  lbl:"sample check",lblAt:[1450,1155],st:[3]},
+ {f:"core",fa:"b",t:"goldB",ta:"t",lbl:"straight through",lblAt:[578,560],st:[4]},
+ {f:"tprS",fa:"r",t:"booked",ta:"tx:1060",pts:[[410,783],[410,700],[1060,700]],
+  lbl:"booked values · retrospective only",lblAt:[920,694],st:[2]},
+
+ {f:"devB",fa:"t",t:"cmpB",ta:"t",pts:[[1423,770],[955,770]],cls:"loop",
+  lbl:"updates RAG rules",lblAt:[980,762],st:[2]},
+ {f:"recOut",fa:"l",t:"recN",ta:"b",pts:[[810,1344],[810,925],[700,925]],cls:"loop",st:[2,3,4]},
+ {f:"devB",fa:"lu",t:"recN",ta:"r",pts:[[797,874]],cls:"loop",
+  lbl:"updates agent",lblAt:[1140,866],st:[2,3,4]},
+ {f:"devB",fa:"lu",t:"subA",ta:"r",pts:[[639,874]],cls:"loop",
+  lbl:"updates agent",lblAt:[1240,866],st:[1]},
+ {f:"goldB",fa:"b",t:"subA",ta:"pt:525,795",st:[1,2,3,4]},
+ {f:"goldB",fa:"bx:575",t:"recN",ta:"pt:700,795",pts:[[575,786],[700,786]],st:[2,3,4]},
+ {f:"dsA",fa:"b",t:"shop",ta:"t",pts:[[1423,702],[685,702]],
+  lbl:"provides",lblAt:[900,712],st:[1]},
+ {f:"shop",fa:"b",t:"subA",ta:"pt:527,795",pts:[[685,782],[527,782]],st:[1,2,3,4]},
+ {f:"shop",fa:"b",t:"recN",ta:"pt:735,795",pts:[[685,782],[735,782]],st:[2,3,4]},
+ {f:"subA",fa:"b",t:"struct",ta:"t",pts:[[527,918],[605,918]],st:[1,2,3,4]},
+ {f:"recN",fa:"b",t:"struct",ta:"t",pts:[[700,918],[605,918]],st:[2,3,4]},
+ {f:"struct",fa:"r",t:"cmpB",ta:"l",pts:[[800,958],[800,840]],st:[2,3]},
+ {f:"struct",fa:"r",t:"hchkB",ta:"l",pts:[[800,958],[800,1015]],st:[1]},
+ {f:"hext",fa:"b",t:"hchkB",ta:"r",pts:[[1127,1015]],st:[1]},
+ {f:"baE",fa:"l",t:"hext",ta:"ry:755",st:[1]},
+ {f:"booked",fa:"b",t:"cmpB",ta:"r",pts:[[1127,840]],st:[2]},
+ {f:"cmpB",fa:"b",t:"red",ta:"t",pts:[[955,888],[900,888]],st:[2,3]},
+ {f:"cmpB",fa:"b",t:"amb",ta:"t",pts:[[955,888],[1023,888]],st:[2,3]},
+ {f:"cmpB",fa:"b",t:"grn",ta:"t",pts:[[955,888],[1146,888]],st:[2,3]},
+ {f:"red",fa:"b",t:"hchkB",ta:"t",pts:[[900,966],[987,966]],st:[2,3]},
+ {f:"amb",fa:"b",t:"hchkB",ta:"t",pts:[[1023,966],[987,966]],st:[2,3]},
+ {f:"grn",fa:"b",t:"valid",ta:"tx:1146",lbl:"auto-accept",lblAt:[1210,968],st:[2]},
+ {f:"grn",fa:"b",t:"voutB",ta:"tx:1146",lbl:"straight through",lblAt:[1222,968],st:[3]},
+ {f:"aaB",fa:"l",t:"hchkB",ta:"r",st:[1,2,3]},
+ {f:"hchkB",fa:"b",t:"valid",ta:"tx:1040",pts:[[987.5,1075],[1040,1075]],
+  lbl:"matched",lblAt:[1065,1094],st:[1,2]},
+ {f:"hchkB",fa:"b",t:"voutB",ta:"tx:1040",pts:[[987.5,1075],[1040,1075]],
+  lbl:"worked until green",lblAt:[1090,1094],st:[3]},
+ {f:"hchkB",fa:"b",t:"unm",ta:"tx:905",pts:[[987.5,1075],[905,1075]],st:[1,2]},
+ {f:"unm",fa:"b",t:"devB",ta:"lb",pts:[[905,1165],[1290,1165],[1290,895]],cls:"loop",
+  lbl:"agent's miss",lblAt:[990,1158],st:[1,2]},
+ {f:"valid",fa:"bx:1129",t:"recAg",ta:"pt:1105,1245",pts:[[1129,1245]],st:[2]},
+ {f:"voutB",fa:"bx:1129",t:"recAg",ta:"pt:1105,1245",pts:[[1129,1245]],st:[3]},
+ {f:"baC",fa:"l",t:"recAg",ta:"r",st:[2,3,4]},
+ {f:"recAg",fa:"b",t:"recOut",ta:"t",st:[2,3,4]},
+ {f:"struct",fa:"bx:700",t:"tmpl",ta:"tx:700",st:[4]},
+ {f:"voutB",fa:"tx:1030",t:"tmpl",ta:"tx:740",pts:[[1030,1085],[740,1085]],st:[3]},
+ {f:"tmpl",fa:"bx:522",t:"anal",ta:"tx:522",st:[3,4]},
+ {f:"tmpl",fa:"bx:702",t:"entry",ta:"tx:702",st:[3,4]},
+ {f:"anal",fa:"l",t:"pubOut",ta:"r",st:[3,4]},
+ {f:"pubOut",fa:"l",t:"uwOut",ta:"r",lbl:"reads report",lblAt:[160,1200],st:[3,4]},
+ {f:"entry",fa:"b",t:"tprW",ta:"r",pts:[[702,1298]],lbl:"auto — RPA / API",
+  lblAt:[540,1290],st:[4]}
+];
+
+/* ============ RENDER ============ */
+const SVGNS="http://www.w3.org/2000/svg";
+const el=(n,a={},txt)=>{const e=document.createElementNS(SVGNS,n);
+  for(const k in a)e.setAttribute(k,a[k]); if(txt!=null)e.textContent=txt; return e;};
+const map=document.getElementById("map");
+const FILL={sys:["#F4F6F8","#8D9BAB"],proc:["#FFFFFF","#B9C4D0"],dec:["#FFFFFF","#5B6B7F"],
+  decP:["#F3EAF6","#9673A6"],green:["#E3F1E8","#82B366"],gold:["#FBE7DA","#E8A377"],
+  amber:["#FBF0D5","#D6B656"],redf:["#F8DEDC","#B85450"],gray:["#F2F4F6","#B0BAC4"],
+  blue:["#E2ECF7","#6C8EBF"],human:["#FBE7DA","#E8A377"],
+  purp:["#EDE2F2","#9673A6"],tbd:["#F7F9FA","#8D9BAB"]};
+
+let stage=1, picked=null, oPicked=null;
+let hoverT=null, exporting=false, zoom=1;
+const NM=Object.fromEntries(ND.map(n=>[n.id,n]));
+function anchor(n,side){
+  const {x,y,w,h}=n;
+  if(side.startsWith("pt:")){const p=side.slice(3).split(",");return[+p[0],+p[1]];}
+  if(side.startsWith("ry:"))return[x+w,parseFloat(side.slice(3))];
+  if(side.startsWith("ly:"))return[x,parseFloat(side.slice(3))];
+  if(side.startsWith("tx:"))return[parseFloat(side.slice(3)),y];
+  if(side.startsWith("bx:"))return[parseFloat(side.slice(3)),y+h];
+  if(side==="lu")return[x,y+h*0.3];
+  if(side==="lb")return[x,y+h*0.75];
+  if(side==="ru")return[x+w,y+h*0.3];
+  if(side==="rb")return[x+w,y+h*0.75];
+  return side==="t"?[x+w/2,y]:side==="b"?[x+w/2,y+h]:side==="l"?[x,y+h/2]:[x+w,y+h/2];
+}
+
+/* lanes */
+const gBG=el("g"); map.appendChild(gBG);
+[["USER / SYSTEM",105],["FILE STORAGE",315],["PROCESSING SCRIPTS",605],["VALIDATION",1025],["PROJECT TEAM",1420]]
+ .forEach(([t,cx])=>{
+  const bw=t==="PROJECT TEAM"?220:190;
+  gBG.appendChild(el("rect",{class:"lanehdr-bg",x:cx-bw/2,y:14,width:bw,height:24,rx:3}));
+  gBG.appendChild(el("text",{class:"lanehdr",x:cx,y:30,"text-anchor":"middle"},t));
+});
+[210,420,800,1280].forEach(x=>gBG.appendChild(el("line",{class:"lanesep",x1:x,y1:48,x2:x,y2:1390})));
+const tagRetro=el("text",{class:"sidetag",x:30,y:68},"RETROSPECTIVE");
+const tagPro  =el("text",{class:"sidetag",x:30,y:184},"PROSPECTIVE · LIVE");
+gBG.append(tagRetro,tagPro);
+
+/* markers */
+const defs=el("defs");
+defs.innerHTML=`
+<marker id="m" viewBox="0 0 10 10" refX="8.4" refY="5" markerWidth="5.4" markerHeight="5.4" orient="auto-start-reverse">
+  <path d="M2 1.5L8 5L2 8.5" fill="none" stroke="#93A5B7" stroke-width="1.7" stroke-linecap="round"/></marker>
+<marker id="mo" viewBox="0 0 10 10" refX="8.4" refY="5" markerWidth="5.4" markerHeight="5.4" orient="auto-start-reverse">
+  <path d="M2 1.5L8 5L2 8.5" fill="none" stroke="#E0632A" stroke-width="1.9" stroke-linecap="round"/></marker>
+<marker id="mT" viewBox="0 0 10 10" refX="8.4" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+  <path d="M2 1.5L8 5L2 8.5" fill="none" stroke="#1C3557" stroke-width="2" stroke-linecap="round"/></marker>
+<marker id="moT" viewBox="0 0 10 10" refX="8.4" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+  <path d="M2 1.5L8 5L2 8.5" fill="none" stroke="#C24E1C" stroke-width="2" stroke-linecap="round"/></marker>`;
+map.appendChild(defs);
+
+/* containers */
+const gC=el("g"); map.appendChild(gC);
+const contEls={};
+CONT.forEach(c=>{
+  const g=el("g");
+  g.appendChild(el("rect",{class:"cont"+(c.fly?" fly":""),x:c.x,y:c.y,width:c.w,height:c.h,
+    rx:4,stroke:c.col}));
+  g.appendChild(el("text",{class:"ctitle",x:c.x+12,y:c.y+20,fill:c.col},c.t));
+  if(c.sub)g.appendChild(el("text",{class:"ctag",x:c.x+12,y:c.y+34},c.sub));
+
+  const stamp=el("text",{class:"cstamp",x:c.x+c.w/2,y:c.y+c.h/2,"text-anchor":"middle"},"");
+  g.appendChild(stamp);
+  gC.appendChild(g); contEls[c.id]={g,stamp,c};
+});
+
+/* edges */
+function rpath(pts,rad=9){
+  if(pts.length<3)return pts.map((p,i)=>(i?"L":"M")+p[0]+" "+p[1]).join(" ");
+  let d=`M${pts[0][0]} ${pts[0][1]}`;
+  for(let i=1;i<pts.length-1;i++){
+    const [x0,y0]=pts[i-1],[x1,y1]=pts[i],[x2,y2]=pts[i+1];
+    const d1=Math.hypot(x1-x0,y1-y0), d2=Math.hypot(x2-x1,y2-y1);
+    if(!d1||!d2){d+=` L${x1} ${y1}`;continue;}
+    const r=Math.min(rad,d1/2,d2/2);
+    const ax=x1-(x1-x0)/d1*r, ay=y1-(y1-y0)/d1*r;
+    const bx=x1+(x2-x1)/d2*r, by=y1+(y2-y1)/d2*r;
+    d+=` L${ax} ${ay} Q${x1} ${y1} ${bx} ${by}`;
+  }
+  d+=` L${pts[pts.length-1][0]} ${pts[pts.length-1][1]}`;
+  return d;
+}
+function ortho(pts){
+  const out=[pts[0]];
+  for(let i=1;i<pts.length;i++){
+    const a=out[out.length-1], b=pts[i];
+    if(Math.abs(a[0]-b[0])>1 && Math.abs(a[1]-b[1])>1) out.push([b[0], a[1]]);
+    out.push(b);
+  }
+  return out;
+}
+function sideK(side){
+  if(!side) return "r";
+  if(side.startsWith("tx")||side==="t"||side==="tr"||side==="tq") return "t";
+  if(side.startsWith("bx")||side==="b") return "b";
+  if(side==="l"||side==="lu"||side==="lb") return "l";
+  return "r";
+}
+function outward(pt,k,len){
+  if(k==="r") return [pt[0]+len,pt[1]];
+  if(k==="l") return [pt[0]-len,pt[1]];
+  if(k==="t") return [pt[0],pt[1]-len];
+  return [pt[0],pt[1]+len];
+}
+function segHV(a,b){
+  if(Math.abs(a[1]-b[1])<=1) return "h";
+  if(Math.abs(a[0]-b[0])<=1) return "v";
+  return "d";
+}
+function needsH(k){ return k==="l"||k==="r"; }
+function route(pts,fa,ta,stub=24){
+  const isPt=s=>typeof s==="string"&&s.startsWith("pt:");
+  const k1=isPt(fa)?null:sideK(fa), k2=isPt(ta)?null:sideK(ta);
+  const start=pts[0], end=pts[pts.length-1];
+  const nxt=pts[1]||end, prv=pts[pts.length-2]||start;
+  const out=[start];
+  const firstOK=k1===null?segHV(start,nxt)!=="d":(needsH(k1)?segHV(start,nxt)==="h":segHV(start,nxt)==="v");
+  if(!firstOK&&k1!==null) out.push(outward(start,k1,stub));
+  for(let i=1;i<pts.length-1;i++) out.push(pts[i]);
+  const lastOK=k2===null?segHV(prv,end)!=="d":(needsH(k2)?segHV(prv,end)==="h":segHV(prv,end)==="v");
+  if(!lastOK&&k2!==null) out.push(outward(end,k2,stub));
+  out.push(end);
+  return ortho(out);
+}
+const gE=el("g"); map.appendChild(gE);
+const gEL=el("g"); map.appendChild(gEL);
+const edgeEls=[];
+ED.forEach(e=>{
+  const p1=anchor(NM[e.f],e.fa), p2=anchor(NM[e.t],e.ta);
+  const pts=route([p1,...(e.pts||[]),p2],e.fa,e.ta);
+  const d=rpath(pts);
+  const g=el("g",{class:"eg"});
+  g.appendChild(el("path",{class:"edc",d}));
+  const path=el("path",{class:"ed"+(e.cls?" "+e.cls:""),d,
+    "marker-end":`url(#${e.cls==="loop"?"mo":"m"})`});
+  g.appendChild(path);
+  gE.appendChild(g);
+  let lblEl=null;
+  if(e.lbl||e.dyn){
+    const at=e.lblAt||pts[Math.floor(pts.length/2)];
+    lblEl=el("text",{class:"elb"+(e.cls==="loop"?" lo":""),x:at[0],y:at[1],
+      "text-anchor":"middle"},e.lbl||"");
+    gEL.appendChild(lblEl);
+  }
+  edgeEls.push({e,g,path,lblEl,on:true});
+});
+map.insertBefore(gE,gC);
+map.insertBefore(gEL,gC);
+function applyTrace(id){
+  edgeEls.forEach(o=>{
+    const inc=!!id&&(o.e.f===id||o.e.t===id)&&o.on;
+    o.g.classList.toggle("trace",inc);
+    o.g.classList.toggle("fadeE",!!id&&!inc&&o.on);
+    if(o.lblEl){
+      o.lblEl.classList.toggle("trace",inc);
+      o.lblEl.classList.toggle("fadeE",!!id&&!inc&&o.on);
+    }
+    o.path.setAttribute("marker-end",
+      `url(#${o.e.cls==="loop"?(inc?"moT":"mo"):(inc?"mT":"m")})`);
+  });
+}
+
+/* nodes */
+const gN=el("g"); map.appendChild(gN);
+const nodeEls={};
+function wrapText(g,txt,cx,cy,cls,lh){
+  const lines=txt.split("\n");
+  const t=el("text",{class:cls,x:cx,y:cy-(lines.length-1)*lh/2,"text-anchor":"middle"});
+  if(lines.length===1) t.textContent=txt;
+  else lines.forEach((L,i)=>t.appendChild(el("tspan",{x:cx,dy:i?lh:0},L)));
+  g.appendChild(t);
+}
+function labelBox(g,n,title,sub){
+  const cx=n.x+n.w/2, hasSub=!!sub || n.dyn;
+  wrapText(g,title,cx,n.y+(hasSub?n.h/2-2:n.h/2+4),"lb",13);
+  const sb=el("text",{class:"sb",x:cx,y:n.y+n.h/2+13,"text-anchor":"middle"},sub||"");
+  g.appendChild(sb);
+  return sb;
+}
+ND.forEach(n=>{
+  const g=el("g",{class:"nd",tabindex:"0",role:"button","aria-label":n.t});
+  const rc=ROLES[n.r].c;
+  if(n.type==="actor"){
+    const cx=n.x+13, cy=n.y+8;
+    g.appendChild(el("circle",{class:"actor-h",cx,cy,r:7,style:"stroke:"+rc}));
+    g.appendChild(el("path",{class:"actor",style:"stroke:"+rc,
+      d:`M${cx} ${cy+7} V${cy+22} M${cx-9} ${cy+13} H${cx+9} M${cx} ${cy+22} L${cx-8} ${cy+34} M${cx} ${cy+22} L${cx+8} ${cy+34}`}));
+    g.appendChild(el("text",{class:"alabel",x:cx,y:n.y+(n.ly||58),"text-anchor":"middle"},n.t));
+  }else if(n.type==="dec"){
+    const [f,s]=FILL[n.k]||FILL.dec;
+    const cx=n.x+n.w/2, cy=n.y+n.h/2;
+    g.appendChild(el("path",{class:"bg",
+      d:`M${cx} ${n.y} L${n.x+n.w} ${cy} L${cx} ${n.y+n.h} L${n.x} ${cy} Z`,fill:f,stroke:s}));
+    wrapText(g,n.t,cx,cy+4,"lb",13);
+  }else{
+    const [f,s]=FILL[n.k]||FILL.proc;
+    g.classList.add("k-"+n.k);
+    const r=el("rect",{class:"bg",x:n.x,y:n.y,width:n.w,height:n.h,rx:3,fill:f,stroke:s});
+    if(n.k==="tbd")r.setAttribute("stroke-dasharray","5 4");
+    g.appendChild(r);
+    n._sb=labelBox(g,n,n.t,n.s);
+    }
+  if(n.flag){
+    const fp=el("g",{class:"flagpill"});
+    const tw=n.flag[Object.keys(n.flag)[0]].length*5.4+14;
+    fp.appendChild(el("rect",{x:n.x+n.w-tw,y:n.y-18,width:tw,height:15,rx:7}));
+    const ft=el("text",{x:n.x+n.w-tw/2,y:n.y-7,"text-anchor":"middle"},"");
+    fp.appendChild(ft); gN.appendChild(fp); n._flag={fp,ft};
+  }
+  const pick=()=>{picked=(picked===n.id?null:n.id);paint();};
+  g.addEventListener("click",pick);
+  g.addEventListener("mouseenter",()=>{clearTimeout(hoverT);
+    hoverT=setTimeout(()=>applyTrace(n.id),160);});
+  g.addEventListener("mouseleave",()=>{clearTimeout(hoverT);applyTrace(picked);});
+  g.addEventListener("keydown",ev=>{if(ev.key==="Enter"||ev.key===" "){ev.preventDefault();pick();}});
+  gN.appendChild(g); nodeEls[n.id]=g;
+});
+
+/* ============ OPEN-QUESTION MARKERS ============ */
+/* a "!" on the module or line the question bites, per stage */
+const QLBL={1:"extraction has no independent check",2:"intake route not chosen",
+  3:"no maintenance plan",4:"how the Domain Specialist reviews human judgment"};
+const QMK=[
+ {q:2,st:4,nid:"endpt"},
+ {q:3,st:4,nid:"devP"}
+];
+function gotoQ(q){
+  const card=document.getElementById("q"+q); if(!card)return;
+  window.scrollTo({top:card.getBoundingClientRect().top+window.pageYOffset-140,behavior:"smooth"});
+  document.querySelectorAll(".flag.hot").forEach(f=>f.classList.remove("hot"));
+  card.classList.add("hot");
+  setTimeout(()=>card.classList.remove("hot"),2400);
+}
+function mkQmk(svg,nmap,list){
+  const layer=el("g"); svg.appendChild(layer);
+  const out=[],seen={};
+  list.forEach(it=>{const k=it.st+"|"+(it.nid||it.at.join(","));
+    it.i=(seen[k]||0); seen[k]=it.i+1;});
+  list.forEach(it=>{
+    let cx,cy;
+    if(it.at){ cx=it.at[0]+it.i*22; cy=it.at[1]; }
+    else{
+      const n=nmap[it.nid]; if(!n)return;
+      if(n.type==="actor"||n.w===26){ cx=n.x+n.w+14+it.i*22; cy=n.y+2; }
+      else if(n.type==="dec"){ cx=n.x+n.w-16+it.i*22; cy=n.y+n.h*0.22; }
+      else { cx=n.x+n.w-4-it.i*22; cy=n.y+2; }
+    }
+    const qt=(LANG==="zh"?"待决问题 ":"Open question ")+it.q;
+    const g=el("g",{class:"qmk",tabindex:"0",role:"button",
+      "aria-label":qt+": "+T(QLBL[it.q])});
+    g.appendChild(el("title",{},qt+" \u00b7 "+T(QLBL[it.q])));
+    g.appendChild(el("circle",{cx,cy,r:8.5}));
+    g.appendChild(el("text",{x:cx,y:cy+4,"text-anchor":"middle"},"!"));
+    g.addEventListener("click",ev=>{ev.stopPropagation();gotoQ(it.q);});
+    g.addEventListener("keydown",ev=>{if(ev.key==="Enter"||ev.key===" "){
+      ev.preventDefault();gotoQ(it.q);}});
+    layer.appendChild(g);
+    out.push({...it,g,nmap});
+  });
+  return out;
+}
+function paintQmk(list){
+  list.forEach(o=>{
+    const on=o.st===stage&&(!o.nid||o.nmap[o.nid].st.includes(stage));
+    o.g.style.display=on?"":"none";
+    o.g.setAttribute("tabindex",on?"0":"-1");
+    o.g.setAttribute("aria-hidden",on?"false":"true");
+  });
+}
+const qmkEls=mkQmk(map,NM,QMK);
+
+/* rail + play */
+const rail=document.querySelector(".rail");
+STAGES.forEach((s,i)=>{
+  const b=document.createElement("button");
+  b.type="button"; b.className="stage"; b.setAttribute("role","tab");
+  b.setAttribute("aria-controls","boardO boardD"); b.tabIndex=i?-1:0;
+  b.innerHTML='<span class="lbl"><span class="num">'+(i+1)+'</span>'+
+    '<span class="nm">'+s.n+'</span>'+
+    (s.tag?'<span class="tag">'+s.tag+'</span>':"")+'</span>';
+  b.addEventListener("click",()=>setStage(i+1));
+  rail.appendChild(b);
+});
+rail.addEventListener("keydown",ev=>{
+  const k=ev.key;
+  let n=0;
+  if(k==="ArrowRight"||k==="ArrowDown") n=stage+1;
+  else if(k==="ArrowLeft"||k==="ArrowUp") n=stage-1;
+  else if(k==="Home") n=1;
+  else if(k==="End") n=STAGES.length;
+  else return;
+  ev.preventDefault();
+  n=Math.min(STAGES.length,Math.max(1,n));
+  setStage(n); rail.children[n-1].focus();
+});
+
+const vG=document.getElementById("vG"), vO=document.getElementById("vO"), vD=document.getElementById("vD");
+function setView(v){
+  document.documentElement.setAttribute("data-view",v);
+  document.getElementById("boardG").hidden = v!=="g";
+  document.getElementById("boardO").hidden = v!=="o";
+  document.getElementById("boardD").hidden = v!=="d";
+  document.querySelector(".hero-g").hidden = v!=="g";
+  document.querySelector(".hero-od").hidden = v==="g";
+  document.querySelector(".chartkey").hidden = v==="g";
+  document.querySelector(".glancekey").hidden = v!=="g";
+  [[vG,"g"],[vO,"o"],[vD,"d"]].forEach(([b,id])=>{
+    const on=v===id;
+    b.setAttribute("aria-selected",on?"true":"false");
+    b.tabIndex=on?0:-1;
+  });
+  const railEl=document.querySelector(".rail");
+  if(railEl) railEl.setAttribute("aria-hidden", v==="g"?"true":"false");
+  picked=null; oPicked=null;
+  if(v!=="g") paint();
+  syncTitle();
+  syncHash();
+}
+vG.addEventListener("click",()=>setView("g"));
+vO.addEventListener("click",()=>setView("o"));
+vD.addEventListener("click",()=>setView("d"));
+document.querySelector(".vtoggle").addEventListener("keydown",ev=>{
+  const order=["g","o","d"], btns=[vG,vO,vD];
+  let i=order.indexOf(currentView());
+  if(ev.key==="ArrowRight"||ev.key==="ArrowDown") i++;
+  else if(ev.key==="ArrowLeft"||ev.key==="ArrowUp") i--;
+  else if(ev.key==="Home") i=0;
+  else if(ev.key==="End") i=order.length-1;
+  else return;
+  ev.preventDefault();
+  i=(i+order.length)%order.length;
+  setView(order[i]); btns[i].focus();
+});
+document.querySelectorAll("#boardG .jump").forEach(g=>{
+  const go=()=>{ setView("o"); setStage(+g.dataset.st);
+    const board=document.getElementById("boardO");
+    if(board) board.scrollIntoView({block:"nearest"}); };
+  g.addEventListener("click",go);
+  g.addEventListener("keydown",ev=>{
+    if(ev.key==="Enter"||ev.key===" "){ ev.preventDefault(); go(); }
+  });
+});
+function syncTitle(){
+  const v=currentView();
+  document.title = LANG==="zh"
+    ? (v==="g"?"AI Data+ · 一图读懂":"AI Data+ · 流程全貌")
+    : (v==="g"?"AI Data+ · at a glance":"AI Data+ · process flow");
+}
+
+function applyZoom(){
+  ["mapO","map"].forEach(id=>{
+    const s=document.getElementById(id);
+    s.style.width=(zoom*100)+"%";
+    s.style.minWidth=Math.round(1120*zoom)+"px";
+  });
+  document.getElementById("zLab").textContent=Math.round(zoom*100)+"%";
+}
+function setZoom(z){zoom=Math.min(2.5,Math.max(0.75,Math.round(z*100)/100));applyZoom();}
+document.getElementById("zIn").addEventListener("click",()=>setZoom(zoom+0.25));
+document.getElementById("zOut").addEventListener("click",()=>setZoom(zoom-0.25));
+document.getElementById("zLab").addEventListener("click",()=>setZoom(1));
+
+function syncHash(){
+  if(exporting) return;
+  const v=currentView();
+  const t=v==="g"?"#g":("#s"+stage+v);
+  if(location.hash!==t) history.replaceState(null,"",t);
+}
+document.addEventListener("keydown",ev=>{
+  if(ev.metaKey||ev.ctrlKey||ev.altKey) return;
+  const t=ev.target;
+  if(t&&(t.tagName==="INPUT"||t.tagName==="TEXTAREA"||t.isContentEditable)) return;
+  const k=ev.key;
+  if(k>="1"&&k<="4"){ if(currentView()==="g") setView("o"); setStage(+k); }
+  else if(k==="g"||k==="G"){ setView("g"); }
+  else if(k==="o"||k==="O"){ setView("o"); }
+  else if(k==="d"||k==="D"){ setView("d"); }
+  else if(k==="p"||k==="P"){ if(currentView()==="g") printAsShown(); else exportChart(); }
+  else if(k==="t"||k==="T"){ if(currentView()!=="g") twOpen(twPanel.hidden); }
+  else if(k==="l"||k==="L"){ (window.aidpSetLang||setLang)(LANG==="zh"?"en":"zh"); }
+  else if(k==="Escape"){ if(!twPanel.hidden){twOpen(false);} else {picked=null; oPicked=null; paint();} }
+  else return;
+  ev.preventDefault();
+});
+const TW={detail:"full",inactive:"ghost",ink:"colour"};
+try{Object.assign(TW,JSON.parse(localStorage.getItem("aidp.tweaks")||"{}"));}catch(e){}
+function applyTweaks(){
+  const r=document.documentElement;
+  r.setAttribute("data-detail",TW.detail);
+  r.setAttribute("data-inactive",TW.inactive);
+  r.setAttribute("data-ink",TW.ink);
+  document.querySelectorAll(".tseg").forEach(sg=>{
+    sg.querySelectorAll("button").forEach(b=>
+      b.setAttribute("aria-pressed",b.dataset.v===TW[sg.dataset.k]?"true":"false"));
+  });
+  try{localStorage.setItem("aidp.tweaks",JSON.stringify(TW));}catch(e){}
+}
+document.querySelectorAll(".tseg button").forEach(b=>b.addEventListener("click",()=>{
+  TW[b.parentNode.dataset.k]=b.dataset.v; applyTweaks();
+}));
+const twPanel=document.getElementById("tweaks"), twBtn=document.getElementById("tweakBtn");
+function twOpen(v){ twPanel.hidden=!v; twBtn.setAttribute("aria-expanded",v?"true":"false"); }
+twBtn.addEventListener("click",e=>{ e.stopPropagation(); twOpen(twPanel.hidden); });
+document.addEventListener("click",e=>{
+  if(!twPanel.hidden && !twPanel.contains(e.target) && e.target!==twBtn) twOpen(false);
+});
+function readHash(){
+  const h=location.hash||"";
+  if(h==="#g"||h==="#s1g"||h==="#s2g"||h==="#s3g"||h==="#s4g"){ setView("g"); return; }
+  const m=/^#s([1-4])(o|d)$/.exec(h);
+  if(!m) return;
+  setView(m[2]); setStage(+m[1]);
+}
+document.getElementById("detail").addEventListener("click",ev=>{
+  if(ev.target.closest("[data-close]")){picked=null;oPicked=null;paint();}
+});
+function currentView(){
+  if(!document.getElementById("boardG").hidden) return "g";
+  return document.getElementById("boardO").hidden ? "d" : "o";
+}
+function snapshotSvg(src, suffix){
+  const svg=src.cloneNode(true);
+  svg.removeAttribute("id");
+  svg.setAttribute("preserveAspectRatio","xMidYMid meet");
+  svg.removeAttribute("width");
+  svg.removeAttribute("height");
+  svg.removeAttribute("style");
+  const ids={};
+  svg.querySelectorAll("[id]").forEach(n=>{ ids[n.id]=n.id+suffix; n.id=n.id+suffix; });
+  svg.querySelectorAll("[marker-end]").forEach(n=>{
+    const v=n.getAttribute("marker-end")||"";
+    const m=v.match(/url\(#([^)]+)\)/);
+    if(m&&ids[m[1]]) n.setAttribute("marker-end",`url(#${ids[m[1]]})`);
+  });
+  return svg.outerHTML;
+}
+function exportHtml(view){
+  const src=document.getElementById(view==="o"?"mapO":"map");
+  const viewName=T(view==="o"?"Module overview":"Full detail");
+  const saved=stage;
+  exporting=true;
+  const pages=[];
+  for(let i=1;i<=4;i++){
+    setStage(i);
+    const s=STAGES[i-1];
+    const cap=`${i}. ${T(s.n)}${s.tag?" "+T(s.tag):""}`;
+    pages.push(`<section class="page"><header>
+      <p class="eyebrow">Ageas + TPRe · AI Data+ · ${viewName}</p>
+      <h1>${cap}</h1></header>${snapshotSvg(src,"_s"+i)}</section>`);
+  }
+  setStage(saved);
+  exporting=false;
+  const pageStyle=document.querySelector("head > style");
+  const css=pageStyle?pageStyle.textContent:"";
+  const rr=document.documentElement;
+  const dsAttrs=' data-detail="'+rr.getAttribute("data-detail")+'" data-inactive="'+
+    rr.getAttribute("data-inactive")+'" data-ink="'+rr.getAttribute("data-ink")+
+    '" data-lang="'+LANG+'"';
+  return `<!DOCTYPE html><html lang="${LANG==="zh"?"zh-Hans":"en"}"${dsAttrs}><head><meta charset="utf-8">
+<title>AI Data+ · ${viewName}</title>
+<style>${css}
+html,body{margin:0;background:#fff!important;color:var(--ink)}
+html::before{display:none!important}
+.page{box-sizing:border-box;padding:5mm 6mm 0}
+.page + .page{break-before:page;page-break-before:always}
+.page header{margin:0 0 3mm}
+.page h1{font-size:14pt;margin:0;line-height:1.2}
+.page .eyebrow{margin:0 0 2px;font-size:8.5pt;letter-spacing:.12em}
+svg.map{display:block;min-width:0!important;width:100%!important;height:auto!important;max-height:none;margin:0 auto}
+.detail,.boardwrap::after,.tweaks,.utils{display:none}
+.lanehdr,.sidetag{letter-spacing:0}
+.ed.loop{animation:none!important}
+.off,.off.under,.semi,.cstamp{opacity:0!important}
+@page{size:A3 portrait;margin:7mm;background:#fff}
+@media print{
+  html::before{display:none!important;background:none!important}
+  html,body{background:#fff!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  @page{background:#fff}
+  .page{padding:0;height:406mm;overflow:hidden;background:#fff}
+  svg.map{width:283mm!important;height:254mm!important}
+}
+</style></head><body>${pages.join("")}<template id="__bundler_thumbnail" data-bg-color="#F2F5F8">
+  <svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+    <rect width="1200" height="800" fill="#F2F5F8"/>
+    <rect x="150" y="150" width="240" height="120" rx="10" fill="#E9F4ED" stroke="#3F8F5F" stroke-width="6"/>
+    <rect x="480" y="150" width="240" height="120" rx="10" fill="#FFF" stroke="#3F8F5F" stroke-width="6" stroke-dasharray="26 16"/>
+    <rect x="150" y="530" width="240" height="120" rx="10" fill="#E7EFF8" stroke="#4A7DBD" stroke-width="6"/>
+    <rect x="480" y="530" width="240" height="120" rx="10" fill="#FFF" stroke="#4A7DBD" stroke-width="6" stroke-dasharray="26 16"/>
+    <rect x="810" y="340" width="240" height="120" rx="10" fill="#F5EDF8" stroke="#7B2D8E" stroke-width="6"/>
+    <path d="M270 270 V530" stroke="#1C3557" stroke-width="7" fill="none"/>
+    <path d="M390 210 H480" stroke="#E0632A" stroke-width="7" stroke-dasharray="20 14" fill="none"/>
+    <path d="M390 590 H480" stroke="#E0632A" stroke-width="7" stroke-dasharray="20 14" fill="none"/>
+    <path d="M720 590 H810 V460" stroke="#1C3557" stroke-width="7" fill="none"/>
+  </svg>
+</template>
+</body></html>`;
+}
+function exportChart(){
+  const view=currentView();
+  const w=window.open("","_blank");
+  if(!w){ alert(T("Allow pop-ups to export the chart.")); return; }
+  w.document.open();
+  w.document.write(exportHtml(view));
+  w.document.close();
+  w.focus();
+  const fire=()=>{ try{ w.print(); }catch(e){} };
+  if(w.document.fonts && w.document.fonts.ready) w.document.fonts.ready.then(()=>setTimeout(fire,300));
+  else setTimeout(fire,800);
+}
+document.getElementById("exportChart").addEventListener("click", exportChart);
+
+/* table */
+const tb=document.getElementById("tbody");
+Object.entries(ROLES).forEach(([k,r])=>{
+  const tr=document.createElement("tr");
+  tr.innerHTML=`<td class="role">${r.n}</td>
+    <td class="nm">${r.who}</td><td class="nm">${r.org}</td>`+
+    DUTY[k].map((d,i)=>`<td class="duty${d==="—"?" none":""}" data-st="${i+1}">${d}</td>`).join("");
+  tb.appendChild(tr);
+});
+
+/* ============ PAINT ============ */
+function setStage(s){stage=s;
+  const st=STAGES[s-1];
+  document.getElementById("tsub").textContent = LANG==="zh"
+    ? `高亮列为阶段 ${s} —— ${T(st.n)}。`
+    : `Highlighted column shows stage ${s} — ${st.n.toLowerCase()}.`;
+  document.querySelectorAll(".stage").forEach((b,i)=>{
+    b.setAttribute("aria-selected",i+1===s?"true":"false");
+    b.tabIndex=i+1===s?0:-1;
+  });
+  document.querySelectorAll(".flag").forEach(f=>
+    f.classList.toggle("rel",f.dataset.st.split(" ").includes(String(s))));
+  syncHash();
+  document.querySelectorAll("th[data-st],td[data-st]").forEach(c=>
+    c.classList.toggle("live",+c.dataset.st===s));
+  paint();
+}
+function paint(){
+  tagRetro.classList.toggle("off",!(stage===1||stage===2));
+  tagPro.classList.toggle("off",!(stage===3||stage===4));
+  CONT.forEach(c=>{
+    const on=c.st.includes(stage);
+    const {g,stamp}=contEls[c.id];
+    g.classList.toggle("semi",!on);
+    stamp.textContent=on?"":T(typeof c.offNote==="object"?(c.offNote[stage]||""):(c.offNote||""));
+  });
+  const liveAt={};
+  ND.forEach(n=>{
+    if(n.st.includes(stage)) liveAt[n.x+"|"+n.y]=1;
+  });
+  const liveFly=CONT.filter(c=>c.fly&&c.st.includes(stage));
+  ND.forEach(n=>{
+    const g=nodeEls[n.id];
+    const on=n.st.includes(stage);
+    g.classList.toggle("off",!on);
+    g.setAttribute("tabindex",on?"0":"-1");
+    g.setAttribute("aria-hidden",on?"false":"true");
+    const cx=n.x+(n.w||26)/2, cy=n.y+(n.h||46)/2;
+    const inLiveFly=liveFly.some(c=>cx>=c.x&&cx<=c.x+c.w&&cy>=c.y&&cy<=c.y+c.h);
+    const key=n.x+"|"+n.y;
+    let under=false;
+    if(!on){
+      if(liveAt[key]||inLiveFly) under=true; else liveAt[key]=1;
+    }
+    g.classList.toggle("under",under);
+    g.classList.toggle("picked",picked===n.id);
+    if(n._sb){const o=(n.dyn&&n.dyn[stage]&&n.dyn[stage].s);
+      n._sb.textContent=T(o!=null?o:(n.s||""));}
+    if(n._flag){const f=n.flag[stage];
+      n._flag.fp.style.display=f?"":"none";
+      if(f)n._flag.ft.textContent=T(f);}
+  });
+  paintQmk(qmkEls);
+  edgeEls.forEach(o=>{
+    const on=o.e.st.includes(stage)&&NM[o.e.f].st.includes(stage)&&NM[o.e.t].st.includes(stage);
+    o.on=on;
+    o.g.classList.toggle("off",!on);
+    if(o.lblEl){
+      o.lblEl.classList.toggle("off",!on);
+      if(o.e.dyn)o.lblEl.textContent=T(o.e.dyn[stage]||o.e.lbl||"");
+    }
+  });
+  applyTrace(picked);
+  if(typeof paintO==="function")paintO();
+  const d=document.getElementById("detail");
+  const inO=currentView()==="o";
+  const sel=inO?oPicked:picked;
+  d.classList.toggle("isempty",!sel);
+  const close='<button type="button" class="close" data-close>'+T("Close")+'</button>';
+  if(!sel){
+    d.innerHTML='<p class="empty">'+T("Click any box on the chart for what it does and who owns it.")+'</p>';
+  }else if(inO){
+    const n=oNM[sel], rr=n._role?ROLES[n._role]:null;
+    const who=rr?T(rr.n)+" — "+T(rr.who):T(n.sub?"MODULE — THE PROGRAM'S BOUNDARY":"SYSTEM / ARTEFACT");
+    const col=rr?rr.c:(n.col||"#5B6B7F");
+    const on=n.st.includes(stage);
+    d.innerHTML=close+'<div class="who" style="color:'+col+'">'+who+
+      (on?"":T(" · NOT RUNNING THIS STAGE"))+'</div><h3>'+T(n.t)+'</h3><p>'+T(n.d)+'</p>';
+  }else{
+    const n=NM[sel], r=ROLES[n.r], on=n.st.includes(stage);
+    d.innerHTML=close+'<div class="who" style="color:'+r.c+'">'+T(r.n)+" — "+T(r.who)+
+      (on?"":T(" · NOT RUNNING THIS STAGE"))+'</div><h3>'+T(n.t).replace("\n"," ")+
+      '</h3><p>'+T(n.d)+'</p>';
+  }
+}
+/* ============ MODULE OVERVIEW · collapsed version of the same chart ============ */
+const OFILL={sys:["#F4F6F8","#8D9BAB"],human:["#FBE7DA","#E8A377"],blue:["#E2ECF7","#6C8EBF"],
+  tbd:["#F7F9FA","#8D9BAB"],gold:["#FBE7DA","#E8A377"],
+  purp:["#EDE2F2","#9673A6"],green:["#E3F1E8","#82B366"],gray:["#F2F4F6","#B0BAC4"],
+  redf:["#F8DEDC","#B85450"],amber:["#FBF0D5","#D6B656"],
+  proc:["#FFFFFF","#B9C4D0"]};
+const OBLOCKS=[
+ {id:"v_ma",x:470,y:146,w:270,h:202,col:"#3F8F5F",fill:"#E9F4ED",
+  t:"MODULE A: Submission Agent",
+  sub:{1:"FILE FILTERING (TRIAGE)",2:"FILE FILTERING (TRIAGE)",3:"FILE FILTERING (TRIAGE)",4:"FILE FILTERING (TRIAGE)"},
+  io:"IN  all files per treaty→OUT  core files · others (kept)",st:[1,2,3,4],
+  d:"Which files carry data. Rules first — the LLM classifier joins from stage 2. The program's boundary: inputs and outputs sit outside it."},
+ {id:"v_fa",x:830,y:306,w:405,h:300,col:"#3F8F5F",fill:"#E9F4ED",dash:1,
+  t:"MODULE A: Validation Flywheel",
+  sub:{1:"BUILD · VS GOLD",2:"BUILD · MACHINE → HUMAN → PACK",3:"EVALUATE TRIAGE PERFORMANCE"},
+  io:"IN  machine result · gold core→OUT  confirmed errors · rule updates",
+  ioSt:{1:"IN  machine result · gold core→OUT  confirmed errors · rule updates",
+        2:"IN  machine result→OUT  human-validated core",
+        3:"IN  machine result→OUT  performance sample (not the pack)"},
+  st:[1,2,3],
+  offNote:"off in production",
+  d:"Set-up and generalisation: build. Parallel run: evaluate triage performance — the sample does not become the pack Module B reads. Off in production."},
+ {id:"v_mb",x:430,y:795,w:350,h:120,col:"#4A7DBD",fill:"#E7EFF8",
+  t:"MODULE B: Facts Agent",
+  sub:{1:"INFORMATION EXTRACTION",2:"INFORMATION EXTRACTION",3:"INFORMATION EXTRACTION",4:"INFORMATION EXTRACTION"},
+  io:"IN  core files · shopping list→OUT  TreatyRecord",
+  ioSt:{3:"IN  core files · shopping list→OUT  TreatyRecord · both reports",
+        4:"IN  core files · shopping list→OUT  TreatyRecord · both reports"},
+  st:[1,2,3,4],
+  d:"Reads the treaty's core files into one TreatyRecord, shaped by the signed shopping list. The cedant recipe is the extraction logic inside the module, not an input. From the parallel run it writes both reports directly — no LLM."},
+ {id:"v_fb",x:830,y:780,w:405,h:290,col:"#4A7DBD",fill:"#E7EFF8",dash:1,
+  t:"MODULE B: Validation Flywheel",
+  sub:{1:"BUILD · HUMAN CHECK ONLY",2:"BUILD · VS BOOKED VALUES",3:"EVALUATE · HUMAN CHECK ONLY"},
+  io:"IN  TreatyRecord · reference (templates / booked)→OUT  validated results · failure patterns",
+  ioSt:{3:"IN  TreatyRecord→OUT  human-checked performance score"},
+  st:[1,2,3],offNote:"off in production",
+  d:"Set-up and generalisation: build — compare to a reference, then feed back into the Facts Agent. Parallel run: no TPR record to compare to, so a person checks the extraction output to evaluate performance. Off in production."},
+ {id:"v_mt",x:430,y:1050,w:350,h:100,col:"#7B2D8E",fill:"#F5EDF8",
+  t:"MODULE C: Template Agent",
+  sub:{3:"REPORT GENERATION · SCRIPT",4:"REPORT GENERATION · SCRIPT"},
+  io:"IN  TreatyRecord→OUT  analysis report · entry report",st:[3,4],
+  d:"A script, not an agent: it lays the TreatyRecord out into the two reports. No model, no judgement."},
+ {id:"v_mc",x:830,y:1185,w:320,h:110,col:"#4A7DBD",fill:"#E7EFF8",
+  t:"MODULE B: Recipe Creation",
+  sub:{2:"LLM AGENT DRAFTS · BA REVIEWS",
+       3:"NEW CEDANT · NO RECIPE YET",
+       4:"NEW CEDANT · NO RECIPE YET"},
+  io:"IN  failure patterns→OUT  recipe per treaty / PAP",
+  ioSt:{3:"IN  new cedant (no recipe)→OUT  recipe per treaty / PAP",
+        4:"IN  new cedant (no recipe)→OUT  recipe per treaty / PAP"},
+  st:[2,3,4],
+  offNote:"not started",
+  d:"An LLM agent drafts a per-cedant recipe; the Business Analyst reviews it. In generalisation it learns from extraction failures. In the parallel run and in production it still runs for a new cedant that has no recipe yet."}
+];
+const OSIMPLE=[
+ {id:"v_efs",x:30,y:80,w:150,h:46,k:"sys",t:"EFS",sb:"RETROSPECTIVE STOCK",st:[1,2],
+  d:"The archive of historic submissions, pulled by treaty-year."},
+ {id:"v_lf",x:240,y:80,w:150,h:46,k:"sys",t:"Local Folder",sb:"AUTO-DOWNLOAD",st:[1,2],
+  d:"Where the retrospective batch lands before triage."},
+ {id:"v_pub",x:240,y:195,w:150,h:46,k:"sys",t:"Public Folder (R:)",sb:"LIVE UPLOAD",st:[3,4],
+  d:"The shared folder live submissions land in."},
+ {id:"v_ep",x:240,y:268,w:150,h:46,k:"tbd",t:"IT endpoint",sb:"ROUTE TBD",st:[4],
+  d:"A centralised, IT-managed intake route under discussion for production."},
+ {id:"v_allf",x:480,y:96,w:250,h:40,k:"proc",t:"All files · per treaty",sb:"",st:[1,2,3,4],
+  d:"Everything received for one treaty-year, before any filtering."},
+ {id:"v_core",x:450,y:395,w:150,h:46,k:"green",t:"Script Selected Core",sb:"",st:[1,2,3,4],
+  d:"The files the machine believes carry data."},
+ {id:"v_oth",x:615,y:395,w:145,h:46,k:"gray",t:"Others",sb:"TAGGED, KEPT",st:[1,2,3,4],
+  d:"Not discarded — tagged non-core and retained."},
+ {id:"v_hcat",x:880,y:85,w:190,h:46,k:"human",t:"Human Categorized Files",sb:"",st:[1],
+  d:"The Business Analysts' manual filtering result, then validated by the Domain Specialist. What is signed off becomes Gold Core."},
+ {id:"v_gold",x:880,y:200,w:190,h:44,k:"gold",t:"Gold Core",sb:"THE ANSWER KEY",st:[1],
+  d:"Built in set-up from validated human filtering. Set-up only — from generalisation there is no gold and no comparison; Module B reads the human-validated pack."},
+ {id:"v_goldB",x:450,y:724,w:150,h:44,k:"green",t:"Core files",sb:"FROM THE GOLD SET",
+  dyn:{4:"STRAIGHT FROM TRIAGE"},st:[1,4],
+  d:"The treaty's core files, handed to extraction. From the gold set in set-up; straight from triage in the parallel run and in production. In generalisation the validated core is this input, so there is no second box."},
+ {id:"v_pack",x:845,y:636,w:180,h:44,k:"green",t:"Validated core",sb:"FEEDS EXTRACTION",st:[2,3],
+  d:"The Module A flywheel's output, outside the module: the human ruling on the machine's triage. From generalisation on it is the core-file set Module B reads — nothing bypasses the gate."},
+ {id:"v_shop",x:610,y:724,w:150,h:44,k:"human",t:"Shopping List",sb:"SIGNED, VERSIONED",st:[1,2,3,4],
+  d:"The agreed field list, provided and signed by the Domain Specialist."},
+ {id:"v_struct",x:490,y:935,w:230,h:46,k:"blue",t:"Structured Output",sb:"TREATYRECORD PER TREATY",st:[1,2,3,4],
+  d:"One record per treaty-year — Module B's output. From the parallel run the two reports are built from here. In build and parallel-run stages this same output is scored in the Module B flywheel."},
+ {id:"v_hext",x:1035,y:714,w:185,h:40,k:"gray",t:"Hand-Extracted Templates",sb:"MVP 3 ONLY",st:[1],
+  d:"Hand-filled extraction templates — the answer key for the very first set-up (MVP 3) only. By MVP 20 no hand-filling is needed."},
+ {id:"v_booked",x:1035,y:714,w:185,h:40,k:"sys",t:"TPR booked values",sb:"WHAT WAS ACTUALLY BOOKED",st:[2],
+  d:"What was actually booked — an independent check in generalisation. Not used in the parallel run (live new business)."},
+ {id:"v_vout",x:1000,y:1104,w:200,h:44,k:"blue",t:"Validated output",sb:"RED & AMBER WORKED TO GREEN",st:[3],
+  d:"The flywheel's output in the parallel run: red and amber worked until they turn green, green straight through — what the Template Agent reads."},
+ {id:"v_unm",x:830,y:1104,w:150,h:44,k:"redf",t:"Unmatched Fields",sb:"WHAT THE AGENT GOT WRONG",st:[1,2],
+  d:"The fields the person had to correct — what the Data & AI Engineer improves the agent from."},
+ {id:"v_valid",x:1000,y:1104,w:200,h:44,k:"blue",t:"Matched Fields",sb:"",st:[1,2],
+  d:"The fields the person accepted as they were extracted. In the parallel run this is the performance score."},
+ {id:"v_recOut",x:890,y:1322,w:200,h:44,k:"blue",t:"Recipe per Treaty / PAP",sb:"VERSIONED",st:[2,3,4],
+  d:"The recipe module's published recipe. The Data & AI Engineer feeds it into the Recipe step inside Module B."},
+ {id:"v_tpr",x:30,y:760,w:150,h:46,k:"sys",t:"TPR system",sb:"BOOKED VALUES SOURCE",st:[2],
+  d:"Where booked values come from — generalisation only."},
+ {id:"v_anal",x:440,y:1180,w:165,h:54,k:"purp",t:"Analysis Report",sb:"SUBMISSION TEMPLATE",st:[3,4],
+  d:"The submission-template view the underwriter reads. Written by Module B from the parallel run onwards."},
+ {id:"v_entry",x:620,y:1180,w:165,h:54,k:"purp",t:"Entry Report",sb:"TPR INPUT",st:[3,4],
+  d:"Written by Module B from the parallel run onwards. Posted to TPR only in production."},
+ {id:"v_pubO",x:240,y:1185,w:150,h:46,k:"sys",t:"Public Folder (R:)",sb:"REPORTS OUT",st:[3,4],
+  d:"Where the underwriter picks up the analysis report."},
+ {id:"v_tprW",x:30,y:1275,w:150,h:46,k:"sys",t:"TPR system",sb:"WRITE TPR ONLY — NEVER UMS",st:[4],
+  d:"UMS is populated downstream and never written to directly. Production only — not the parallel run."}
+];
+const OACT=[
+ {id:"v_uw",x:58,y:195,t:"Underwriter",st:[3,4],d:"Uploads the live submission during peak season."},
+ {id:"v_dev",x:1410,y:52,t:"Data & AI Engineer",st:[1,2],
+  d:"Confirmed machine errors come to the developers, who turn each one into a rule or prompt update. Build stages only."},
+ {id:"v_devP",x:1410,y:52,t:"Data & AI Engineer",st:[3,4],
+  d:"Maintains Module A and Module B in the parallel run and in production. How the live maintenance flow works is still to be discussed."},
+ {id:"v_devB",x:1410,y:860,t:"Data & AI Engineer",st:[1,2,3,4],
+  d:"Takes the unmatched fields from the Module B flywheel back into the Facts Agent (build stages), and feeds a published or new-cedant recipe from the recipe module into the Recipe step."},
+ {id:"v_baM",x:1410,y:118,t:"Business Analyst",st:[1],d:"Does the manual filtering in set-up."},
+ {id:"v_dsA",x:1410,y:202,t:"Domain Specialist",st:[1],
+  d:"Andrew and Susana validate the manually filtered files into Gold Core, and provide the shopping list. Set-up only — the shopping list is then fixed."},
+ {id:"v_aaA",x:1410,y:359,t:"Business Analyst",st:[2,3],
+  d:"Rules on the machine result itself — that ruling is the pack. Not in set-up: comparison errors go straight to the Data & AI Engineer."},
+ {id:"v_baE",x:1410,y:732,t:"Business Analyst",st:[1],d:"Hand-fills the 20 templates in set-up."},
+ {id:"v_dsRev",x:1410,y:635,t:"Domain Specialist",st:[2,3],
+  d:"Reviews the humans' own output — the validated core and the validated extraction results. In set-up Andrew and Susana saw all 20; at volume the method is not agreed, so both routes are dotted."},
+ {id:"v_aaB",x:1410,y:992,t:"Business Analyst",st:[1,2,3],
+  d:"Checks extracted records: all of them in set-up, then only red and amber once the gate exists."},
+ {id:"v_aaB3",x:1410,y:800,t:"Business Analyst",st:[],
+  d:"Reviews the extraction output in the parallel run to evaluate performance. There is no comparison script."},
+ {id:"v_baC",x:1410,y:1217,t:"Business Analyst",st:[2,3,4],
+  d:"Reviews and publishes the recipes drafted by the LLM agent — including for a new cedant with no recipe yet."},
+ {id:"v_uwO",x:62,y:1185,t:"Underwriter",st:[3,4],d:"Works the file in parallel; consumes the reports in production."}
+];
+const OEDGES=[
+ {f:"v_efs",fa:"r",t:"v_lf",ta:"l",st:[1,2]},
+ {f:"v_lf",fa:"r",t:"v_allf",ta:"l",pts:[[440,103],[440,116]],st:[1,2]},
+ {f:"v_uw",fa:"r",t:"v_pub",ta:"l",st:[3,4]},
+ {f:"v_pub",fa:"r",t:"v_allf",ta:"l",pts:[[455,218],[455,116]],st:[3,4]},
+ {f:"v_ep",fa:"r",t:"v_allf",ta:"l",pts:[[455,291],[455,116]],cls:"tbd",st:[4]},
+ {f:"v_baM",fa:"l",t:"v_hcat",ta:"r",pts:[[1240,141],[1240,108]],
+  lbl:"manual filtering",lblAt:[1305,134],st:[1]},
+ {f:"v_dsA",fa:"l",t:"v_hcat",ta:"r",pts:[[1240,225],[1240,108]],
+  lbl:"validate",lblAt:[1305,218],st:[1]},
+ {f:"v_allf",fa:"b",t:"v_ma",ta:"tx:605",st:[1,2,3,4]},
+ {f:"v_ma",fa:"b",t:"v_core",ta:"t",pts:[[605,368],[525,368]],st:[1,2,3,4]},
+ {f:"v_ma",fa:"b",t:"v_oth",ta:"t",pts:[[605,368],[687,368]],st:[1,2,3,4]},
+ {f:"v_core",fa:"b",t:"v_fa",ta:"l",pts:[[525,456]],st:[1,2,3]},
+ {f:"v_hcat",fa:"b",t:"v_gold",ta:"t",lbl:"validated",lblAt:[1025,168],st:[1]},
+ {f:"v_gold",fa:"b",t:"v_fa",ta:"tx:975",st:[1]},
+ {f:"v_aaA",fa:"l",t:"v_fa",ta:"ry:382",st:[2,3]},
+ {f:"v_dev",fa:"lb",t:"v_fa",ta:"ry:440",pts:[[1250,87],[1250,440]],cls:"loop",
+  lbl:"updates RAG rules",lblAt:[1310,432],st:[2]},
+
+ {f:"v_fa",fa:"rb",t:"v_dev",ta:"l",pts:[[1360,531],[1360,75]],cls:"loop",
+  lbl:"machine's errors",lblAt:[1298,520],st:[1]},
+ {f:"v_fa",fa:"rb",t:"v_dev",ta:"l",pts:[[1360,531],[1360,75]],cls:"loop",
+  lbl:"overturned calls",lblAt:[1298,520],st:[2]},
+ {f:"v_fa",fa:"bx:935",t:"v_pack",ta:"t",st:[2,3]},
+ {f:"v_pack",fa:"l",t:"v_mb",ta:"tx:470",pts:[[814,658],[814,690],[470,690]],
+  lbl:"validated core → extraction",lblAt:[600,682],st:[2,3]},
+ {f:"v_dsRev",fa:"l",t:"v_pack",ta:"r",cls:"tbd",
+  lbl:"sample check",lblAt:[1180,650],st:[2,3]},
+ {f:"v_dsRev",fa:"r",t:"v_valid",ta:"ry:1140",pts:[[1520,658],[1520,1140]],cls:"tbd",
+  lbl:"sample check",lblAt:[1450,1155],st:[2]},
+ {f:"v_dsRev",fa:"r",t:"v_vout",ta:"ry:1140",pts:[[1520,658],[1520,1140]],cls:"tbd",
+  lbl:"sample check",lblAt:[1450,1155],st:[3]},
+ {f:"v_dev",fa:"l",t:"v_ma",ta:"tx:605",pts:[[605,75]],cls:"loop",
+  lbl:"improves rules & prompts",lblAt:[1000,66],st:[1,2]},
+ {f:"v_devP",fa:"l",t:"v_ma",ta:"tx:605",pts:[[605,75]],cls:"tbd",
+  lbl:"maintains A (TBD)",lblAt:[1000,66],st:[3,4]},
+ {f:"v_gold",fa:"l",t:"v_goldB",ta:"t",pts:[[814,222],[814,690],[525,690]],
+  lbl:"gold core — the answer key",lblAt:[720,655],st:[1]},
+ {f:"v_core",fa:"b",t:"v_goldB",ta:"t",lbl:"straight through",lblAt:[578,560],st:[4]},
+ {f:"v_tpr",fa:"r",t:"v_booked",ta:"tx:1060",pts:[[410,783],[410,700],[1060,700]],
+  lbl:"booked values · retrospective only",lblAt:[920,694],st:[2]},
+
+ {f:"v_recOut",fa:"l",t:"v_mb",ta:"ry:880",pts:[[810,1344],[810,880]],cls:"loop",st:[2,3,4]},
+ {f:"v_devB",fa:"l",t:"v_fb",ta:"ry:980",pts:[[1290,883],[1290,980]],cls:"loop",
+  lbl:"updates RAG rules",lblAt:[1355,952],st:[2]},
+ {f:"v_devB",fa:"t",t:"v_mb",ta:"ry:855",pts:[[1423,760],[800,760],[800,855]],cls:"loop",
+  lbl:"updates agent",lblAt:[1000,752],
+  dyn:{3:"new cedant recipe",4:"new cedant recipe"},st:[1,2,3,4]},
+ {f:"v_dsA",fa:"b",t:"v_shop",ta:"t",pts:[[1423,702],[685,702]],
+  lbl:"provides",lblAt:[900,712],st:[1]},
+ {f:"v_goldB",fa:"b",t:"v_mb",ta:"tx:525",st:[1,2,3,4]},
+ {f:"v_shop",fa:"b",t:"v_mb",ta:"tx:685",st:[1,2,3,4]},
+ {f:"v_mb",fa:"b",t:"v_struct",ta:"t",st:[1,2,3,4]},
+ {f:"v_struct",fa:"r",t:"v_fb",ta:"l",pts:[[790,958],[790,925]],st:[1,2,3]},
+ {f:"v_hext",fa:"b",t:"v_fb",ta:"tx:1127",st:[1]},
+ {f:"v_baE",fa:"l",t:"v_hext",ta:"ry:755",st:[1]},
+ {f:"v_booked",fa:"b",t:"v_fb",ta:"tx:1127",st:[2]},
+ {f:"v_aaB",fa:"l",t:"v_fb",ta:"ry:1015",st:[1,2,3]},
+ {f:"v_fb",fa:"bx:1100",t:"v_valid",ta:"t",lbl:"matched",lblAt:[1140,1094],st:[1,2]},
+ {f:"v_fb",fa:"bx:905",t:"v_unm",ta:"tx:905",st:[1,2]},
+ {f:"v_fb",fa:"bx:1100",t:"v_vout",ta:"t",st:[3]},
+ {f:"v_unm",fa:"b",t:"v_devB",ta:"lb",pts:[[905,1165],[1290,1165],[1290,895]],cls:"loop",
+  lbl:"agent's miss",lblAt:[990,1158],st:[1,2]},
+ {f:"v_struct",fa:"bx:700",t:"v_mt",ta:"tx:700",st:[4]},
+ {f:"v_vout",fa:"tx:1030",t:"v_mt",ta:"ry:1085",pts:[[1030,1085]],st:[3]},
+ {f:"v_mt",fa:"bx:522",t:"v_anal",ta:"tx:522",st:[3,4]},
+ {f:"v_mt",fa:"bx:702",t:"v_entry",ta:"tx:702",st:[3,4]},
+ {f:"v_valid",fa:"bx:1129",t:"v_mc",ta:"tx:1129",st:[2]},
+ {f:"v_vout",fa:"bx:1129",t:"v_mc",ta:"tx:1129",st:[3]},
+ {f:"v_baC",fa:"l",t:"v_mc",ta:"r",st:[2,3,4]},
+ {f:"v_mc",fa:"b",t:"v_recOut",ta:"t",st:[2,3,4]},
+ {f:"v_anal",fa:"l",t:"v_pubO",ta:"r",st:[3,4]},
+ {f:"v_pubO",fa:"l",t:"v_uwO",ta:"r",lbl:"reads report",lblAt:[160,1200],st:[3,4]},
+ {f:"v_entry",fa:"b",t:"v_tprW",ta:"r",pts:[[702,1298]],
+  lbl:"auto — RPA / API",lblAt:[540,1290],st:[4]}
+];
+const mapO=document.getElementById("mapO");
+const oDefs=el("defs");
+oDefs.innerHTML=`
+<marker id="om" viewBox="0 0 10 10" refX="8.4" refY="5" markerWidth="5.4" markerHeight="5.4" orient="auto-start-reverse">
+  <path d="M2 1.5L8 5L2 8.5" fill="none" stroke="#7C90A4" stroke-width="1.8" stroke-linecap="round"/></marker>
+<marker id="omo" viewBox="0 0 10 10" refX="8.4" refY="5" markerWidth="5.4" markerHeight="5.4" orient="auto-start-reverse">
+  <path d="M2 1.5L8 5L2 8.5" fill="none" stroke="#E0632A" stroke-width="1.9" stroke-linecap="round"/></marker>
+<marker id="omT" viewBox="0 0 10 10" refX="8.4" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+  <path d="M2 1.5L8 5L2 8.5" fill="none" stroke="#1C3557" stroke-width="2" stroke-linecap="round"/></marker>
+<marker id="omoT" viewBox="0 0 10 10" refX="8.4" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+  <path d="M2 1.5L8 5L2 8.5" fill="none" stroke="#C24E1C" stroke-width="2" stroke-linecap="round"/></marker>`;
+mapO.appendChild(oDefs);
+const gOBG=el("g"); mapO.appendChild(gOBG);
+[["USER / SYSTEM",105],["FILE STORAGE",315],["PROCESSING SCRIPTS",605],["VALIDATION",1025],["PROJECT TEAM",1420]]
+ .forEach(([t,cx])=>{
+  const bw=t==="PROJECT TEAM"?220:190;
+  gOBG.appendChild(el("rect",{class:"lanehdr-bg",x:cx-bw/2,y:14,width:bw,height:24,rx:3}));
+  gOBG.appendChild(el("text",{class:"lanehdr",x:cx,y:30,"text-anchor":"middle"},t));
+});
+[210,420,800,1280].forEach(x=>gOBG.appendChild(el("line",{class:"lanesep",x1:x,y1:48,x2:x,y2:1390})));
+const oTagR=el("text",{class:"sidetag",x:30,y:68},"RETROSPECTIVE");
+const oTagP=el("text",{class:"sidetag",x:30,y:184},"PROSPECTIVE · LIVE");
+gOBG.append(oTagR,oTagP);
+const gOE=el("g"); mapO.appendChild(gOE);
+const gOEL=el("g"); mapO.appendChild(gOEL);
+const gON=el("g"); mapO.appendChild(gON);
+const gOS=el("g"); mapO.appendChild(gOS);
+const oNM={};
+OBLOCKS.forEach(n=>oNM[n.id]=n); OSIMPLE.forEach(n=>oNM[n.id]=n);
+OACT.forEach(n=>{n.w=26;n.h=46;oNM[n.id]=n;
+  const hit=Object.keys(ROLES).filter(k=>ROLES[k].n===n.t);
+  n._role=hit.length?hit[0]:null;});
+function oanchor(n,side){const{x,y,w,h}=n;
+  if(side.startsWith("pt:")){const p=side.slice(3).split(",");return[+p[0],+p[1]];}
+  if(side.startsWith("ry:"))return[x+w,parseFloat(side.slice(3))];
+  if(side.startsWith("ly:"))return[x,parseFloat(side.slice(3))];
+  if(side.startsWith("tx:"))return[parseFloat(side.slice(3)),y];
+  if(side.startsWith("bx:"))return[parseFloat(side.slice(3)),y+h];
+  if(side==="lu")return[x,y+h*0.3];
+  if(side==="lb")return[x,y+h*0.75];
+  if(side==="ru")return[x+w,y+h*0.3];
+  if(side==="rb")return[x+w,y+h*0.75];
+  if(side==="tr")return[x+w*0.75,y];
+  if(side==="tq")return[x+w*0.25,y];
+  return side==="t"?[x+w/2,y]:side==="b"?[x+w/2,y+h]:side==="l"?[x,y+h/2]:[x+w,y+h/2];}
+const oEdgeEls=[];
+OEDGES.forEach(e=>{
+  const pts=route([oanchor(oNM[e.f],e.fa),...(e.pts||[]),oanchor(oNM[e.t],e.ta)],e.fa,e.ta);
+  const d=rpath(pts);
+  const g=el("g",{class:"eg"});
+  g.appendChild(el("path",{class:"edc",d}));
+  g.appendChild(el("path",{class:"ed"+(e.cls?" "+e.cls:""),d,
+    "marker-end":`url(#${e.cls==="loop"?"omo":"om"})`}));
+  gOE.appendChild(g);
+  let lblEl=null;
+  if(e.lbl||e.dyn){const at=e.lblAt;
+    lblEl=el("text",{class:"elb"+(e.cls==="loop"?" lo":""),x:at[0],y:at[1],
+      "text-anchor":"middle"},e.lbl||"");
+    gOEL.appendChild(lblEl);}
+  oEdgeEls.push({e,g,lblEl});
+});
+const oEls={};
+function oPickFn(n,who,col){return ()=>{
+  oPicked=(oPicked===n.id?null:n.id);
+  const dd=document.getElementById("detail");
+  dd.classList.toggle("isempty",!oPicked);
+  if(!oPicked){dd.innerHTML='<p class="empty">'+T("Click any box on the chart for what it does and who owns it.")+'</p>';}
+  else dd.innerHTML='<button type="button" class="close" data-close>'+T("Close")+'</button>'+
+    '<div class="who" style="color:'+col+'">'+who+'</div><h3>'+T(n.t)+'</h3><p>'+T(n.d)+'</p>';
+  paintO();
+};}
+OBLOCKS.forEach(n=>{
+  const g=el("g",{class:"nd oblock",tabindex:"0",role:"button","aria-label":n.t});
+  const r=el("rect",{class:"bg",x:n.x,y:n.y,width:n.w,height:n.h,rx:5,
+    fill:n.fill,stroke:n.col,"stroke-width":1.7});
+  if(n.dash)r.setAttribute("stroke-dasharray","7 4");
+  g.appendChild(r);
+  g.appendChild(el("text",{class:"btitle",x:n.x+16,y:n.y+28,fill:n.col},n.t));
+  const sb=el("text",{class:"bsub",x:n.x+16,y:n.y+50},""); g.appendChild(sb); n._sb=sb;
+  const io=(n.io||"").split("→");
+  const iot=el("text",{class:"bio",x:n.x+16,y:n.y+n.h-(io.length>1?26:14)});
+  io.forEach((L,i)=>iot.appendChild(el("tspan",{x:n.x+16,dy:i?13:0},T(L.trim()))));
+  g.appendChild(iot); n._iot=iot;
+  if(n.flag){
+    const key=Object.keys(n.flag)[0], tw=n.flag[key].length*5.4+14;
+    const fp=el("g",{class:"flagpill"});
+    fp.appendChild(el("rect",{x:n.x+n.w-tw,y:n.y-18,width:tw,height:15,rx:7}));
+    const ft=el("text",{x:n.x+n.w-tw/2,y:n.y-7,"text-anchor":"middle"},"");
+    fp.appendChild(ft); gOS.appendChild(fp); n._flag={fp,ft};
+  }
+  if(n.offNote){
+    const st=el("text",{class:"cstamp",x:n.x+n.w/2,y:n.y+n.h/2+4,"text-anchor":"middle"},"");
+    gOS.appendChild(st); n._stamp=st;
+  }
+  const pk=oPickFn(n,T("MODULE — THE PROGRAM'S BOUNDARY"),n.col);
+  g.addEventListener("click",pk);
+  g.addEventListener("keydown",ev=>{if(ev.key==="Enter"||ev.key===" "){ev.preventDefault();pk();}});
+  gON.appendChild(g); oEls[n.id]=g;
+});
+OSIMPLE.forEach(n=>{
+  const [f,sc]=OFILL[n.k]||["#fff","#B9C4D0"];
+  const g=el("g",{class:"nd k-"+n.k,tabindex:"0",role:"button","aria-label":n.t});
+  const r=el("rect",{class:"bg",x:n.x,y:n.y,width:n.w,height:n.h,rx:3,fill:f,stroke:sc});
+  if(n.k==="tbd")r.setAttribute("stroke-dasharray","5 4");
+  g.appendChild(r);
+  n._sb2=labelBox(g,n,n.t,n.sb);
+  const pk=oPickFn(n,T("SYSTEM / ARTEFACT"),"#5B6B7F");
+  g.addEventListener("click",pk);
+  g.addEventListener("keydown",ev=>{if(ev.key==="Enter"||ev.key===" "){ev.preventDefault();pk();}});
+  gON.appendChild(g); oEls[n.id]=g;
+});
+OACT.forEach(n=>{
+  const g=el("g",{class:"nd",tabindex:"0",role:"button","aria-label":n.t});
+  const cx=n.x+13, cy=n.y+8;
+  const rr=n._role?ROLES[n._role]:null;
+  const stl=rr?"stroke:"+rr.c:"";
+  g.appendChild(el("circle",{class:"actor-h",cx,cy,r:7,style:stl}));
+  g.appendChild(el("path",{class:"actor",style:stl,
+    d:`M${cx} ${cy+7} V${cy+22} M${cx-9} ${cy+13} H${cx+9} M${cx} ${cy+22} L${cx-8} ${cy+34} M${cx} ${cy+22} L${cx+8} ${cy+34}`}));
+  g.appendChild(el("text",{class:"alabel",x:cx,y:n.y+(n.ly||58),"text-anchor":"middle"},n.t));
+  if(n.tick)g.appendChild(el("line",{class:"htick",x1:cx,y1:n.y-2,x2:n.tick[0],y2:n.tick[1]}));
+  const pk=oPickFn(n,rr?T(rr.n)+" — "+T(rr.who):T("HUMAN — OUTSIDE THE PROGRAM"),rr?rr.c:"#93400F");
+  g.addEventListener("click",pk);
+  g.addEventListener("keydown",ev=>{if(ev.key==="Enter"||ev.key===" "){ev.preventDefault();pk();}});
+  gON.appendChild(g); oEls[n.id]=g;
+});
+/* hover trace + highlight on the overview */
+function oApplyTrace(id){
+  oEdgeEls.forEach(o=>{
+    const off=o.g.classList.contains("off");
+    const inc=!!id&&!off&&(o.e.f===id||o.e.t===id);
+    const fade=!!id&&!off&&!inc;
+    o.g.classList.toggle("trace",inc);
+    o.g.classList.toggle("fadeE",fade);
+    if(o.lblEl){o.lblEl.classList.toggle("trace",inc);o.lblEl.classList.toggle("fadeE",fade);}
+    const p=o.g.querySelector(".ed");
+    if(p)p.setAttribute("marker-end",
+      `url(#${o.e.cls==="loop"?(inc?"omoT":"omo"):(inc?"omT":"om")})`);
+  });
+}
+[...OBLOCKS,...OSIMPLE,...OACT].forEach(n=>{
+  const g=oEls[n.id]; if(!g)return;
+  g.addEventListener("mouseenter",()=>{clearTimeout(hoverT);
+    hoverT=setTimeout(()=>oApplyTrace(n.id),160);});
+  g.addEventListener("mouseleave",()=>{clearTimeout(hoverT);oApplyTrace(oPicked);});
+});
+/* open-question markers on the overview */
+const QMKO=[
+ {q:2,st:4,nid:"v_ep"},
+ {q:3,st:4,nid:"v_devP"}
+];
+const qmkOEls=mkQmk(mapO,oNM,QMKO);
+function paintO(){
+  paintQmk(qmkOEls);
+  oTagR.classList.toggle("off",!(stage===1||stage===2));
+  oTagP.classList.toggle("off",!(stage===3||stage===4));
+  const oLive={};
+  OSIMPLE.forEach(n=>{ if(n.st.includes(stage)) oLive[n.x+"|"+n.y]=1; });
+  OACT.forEach(n=>{ if(n.st.includes(stage)) oLive[n.x+"|"+n.y]=1; });
+  [...OBLOCKS,...OSIMPLE,...OACT].forEach(n=>{
+    const on=n.st.includes(stage);
+    const g=oEls[n.id];
+    g.classList.toggle("off",!on);
+    g.setAttribute("tabindex",on?"0":"-1");
+    g.setAttribute("aria-hidden",on?"false":"true");
+    const key=n.x+"|"+n.y;
+    let under=false;
+    if(!on){ if(oLive[key]) under=true; else oLive[key]=1; }
+    g.classList.toggle("under",under);
+    g.classList.toggle("picked",oPicked===n.id);
+    if(n._sb)n._sb.textContent=T((n.sub&&n.sub[stage])||"");
+    if(n._iot){
+      const raw=(n.ioSt&&n.ioSt[stage])||n.io||"";
+      const lines=raw.split("→").map(s=>s.trim()).filter(Boolean);
+      n._iot.textContent="";
+      n._iot.setAttribute("y", n.y+n.h-(lines.length>1?26:14));
+      lines.forEach((L,i)=>n._iot.appendChild(el("tspan",{x:n.x+16,dy:i?13:0},T(L))));
+    }
+    if(n._sb2)n._sb2.textContent=T((n.dyn&&n.dyn[stage])||n.sb||"");
+    if(n._flag){const fl=n.flag[stage];
+      n._flag.fp.style.display=(on&&fl)?"":"none"; if(fl)n._flag.ft.textContent=T(fl);}
+    if(n._stamp)n._stamp.textContent=on?"":T(typeof n.offNote==="object"?(n.offNote[stage]||""):n.offNote);
+  });
+  oEdgeEls.forEach(o=>{
+    const on=o.e.st.includes(stage)&&oNM[o.e.f].st.includes(stage)&&oNM[o.e.t].st.includes(stage);
+    o.g.classList.toggle("off",!on);
+    if(o.lblEl){
+      o.lblEl.classList.toggle("off",!on);
+      if(o.e.dyn)o.lblEl.textContent=T(o.e.dyn[stage]||o.e.lbl||"");
+    }
+  });
+  oApplyTrace(oPicked);
+}
+snapshotEn(document.body);
+setStage(1);
+setView("g");
+applyTweaks();
+applyZoom();
+applyLang();
+readHash();
+
+function bakeSvgPaints(root){
+  (root||document).querySelectorAll("svg [fill],svg [stroke],svg [color]").forEach(el=>{
+    const f=el.getAttribute("fill"), s=el.getAttribute("stroke"), c=el.getAttribute("color");
+    if(f&&f!=="none") el.style.setProperty("fill",f,"important");
+    if(s&&s!=="none") el.style.setProperty("stroke",s,"important");
+    if(c) el.style.setProperty("color",c,"important");
+  });
+}
+function flattenSvg(src){
+  const clone=src.cloneNode(true);
+  const srcEls=src.querySelectorAll("*"), dstEls=clone.querySelectorAll("*");
+  for(let i=srcEls.length-1;i>=0;i--){
+    const el=srcEls[i], d=dstEls[i]; if(!d) continue;
+    const cs=getComputedStyle(el);
+    if(cs.display==="none"||cs.visibility==="hidden"||cs.opacity==="0"){ d.remove(); continue; }
+    const tag=el.tagName.toLowerCase();
+    const fillAttr=el.getAttribute("fill");
+    const strokeOnly=tag==="use"||tag==="path"||tag==="line"||el.classList.contains("actor")||
+      el.classList.contains("ed")||el.classList.contains("lp");
+    ["stroke","strokeWidth","strokeDasharray","strokeLinecap","strokeLinejoin",
+     "fontFamily","fontSize","fontWeight","letterSpacing","opacity","color"].forEach(p=>{
+      const v=cs[p]; if(v) d.style[p]=v;
+    });
+    if(fillAttr==="none"||(strokeOnly&&!fillAttr)) d.style.fill="none";
+    else if(fillAttr) d.style.fill=fillAttr;
+    else if(cs.fill&&cs.fill!=="rgb(0, 0, 0)") d.style.fill=cs.fill;
+    if(tag==="use"){ d.style.fill="none"; if(el.getAttribute("color")) d.style.color=el.getAttribute("color"); }
+    if(cs.textAnchor&&cs.textAnchor!=="start") d.setAttribute("text-anchor",cs.textAnchor);
+  }
+  const hidden=document.querySelector("body > svg[aria-hidden] defs");
+  if(hidden){
+    let defs=clone.querySelector("defs");
+    if(!defs){ defs=document.createElementNS("http://www.w3.org/2000/svg","defs");
+      clone.insertBefore(defs,clone.firstChild); }
+    [...hidden.children].forEach(n=>{
+      const c=n.cloneNode(true);
+      c.querySelectorAll("path,circle,rect,line,polyline,polygon,g").forEach(el=>{
+        if(!el.hasAttribute("fill")) el.setAttribute("fill","none");
+      });
+      defs.appendChild(c);
+    });
+  }
+  const vb=src.viewBox.baseVal;
+  const w=vb&&vb.width?vb.width:(src.clientWidth||1240);
+  const h=vb&&vb.height?vb.height:(src.clientHeight||300);
+  clone.setAttribute("xmlns","http://www.w3.org/2000/svg");
+  clone.setAttribute("width",w); clone.setAttribute("height",h);
+  return {clone,w,h};
+}
+function rasterizeSvg(svg){
+  return new Promise(resolve=>{
+    const {clone,w,h}=flattenSvg(svg);
+    const xml=new XMLSerializer().serializeToString(clone);
+    const url=URL.createObjectURL(new Blob([xml],{type:"image/svg+xml;charset=utf-8"}));
+    const img=new Image();
+    img.onload=()=>{
+      const scale=2, canvas=document.createElement("canvas");
+      canvas.width=Math.max(1,w*scale); canvas.height=Math.max(1,h*scale);
+      const ctx=canvas.getContext("2d");
+      ctx.fillStyle="#ffffff"; ctx.fillRect(0,0,canvas.width,canvas.height);
+      ctx.drawImage(img,0,0,canvas.width,canvas.height);
+      URL.revokeObjectURL(url);
+      const pic=document.createElement("img");
+      pic.className="print-raster"; pic.alt=""; pic.src=canvas.toDataURL("image/png");
+      pic.style.cssText="width:100%;height:auto;display:block";
+      svg.style.display="none";
+      svg.insertAdjacentElement("afterend",pic);
+      resolve();
+    };
+    img.onerror=()=>{ URL.revokeObjectURL(url); resolve(); };
+    img.src=url;
+  });
+}
+function clearPrintRaster(){
+  document.querySelectorAll(".print-raster").forEach(n=>n.remove());
+  document.querySelectorAll("svg.map").forEach(s=>s.style.display="");
+}
+let printing=false;
+function printAsShown(){
+  if(printing) return;
+  printing=true;
+  bakeSvgPaints(document);
+  const maps=[...document.querySelectorAll("#boardG svg.map")].filter(s=>!s.closest("[hidden]"));
+  const done=()=>{ window.print(); setTimeout(()=>{ clearPrintRaster(); printing=false; },800); };
+  if(!maps.length){ done(); return; }
+  Promise.all(maps.map(rasterizeSvg)).then(()=>setTimeout(done,50));
+}
+window.addEventListener("beforeprint",()=>bakeSvgPaints(document));
+window.addEventListener("afterprint",()=>{ clearPrintRaster(); printing=false; });
+document.addEventListener("keydown",ev=>{
+  if(!(ev.ctrlKey||ev.metaKey)) return;
+  if(ev.key!=="p"&&ev.key!=="P") return;
+  ev.preventDefault();
+  printAsShown();
+},true);
+window.addEventListener("load",()=>{
+  const q=new URLSearchParams(location.search).get("export");
+  if(q!=="o"&&q!=="d") return;
+  setView(q);
+  const html=exportHtml(q);
+  const doc=new DOMParser().parseFromString(html,"text/html");
+  document.replaceChild(doc.documentElement, document.documentElement);
+});
+</script>
+
+
+
+</body></html>

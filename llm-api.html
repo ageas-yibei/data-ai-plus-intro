@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en" data-lang="en" class="wk-locked">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Developer cheat sheet for the two in-house OpenAI-compatible model hosts.">
+<title>AI Data+ · LLM API reference</title>
+<script>try{if(localStorage.getItem("aidp.lang")==="zh"){document.documentElement.setAttribute("data-lang","zh");document.documentElement.setAttribute("lang","zh-Hans");}}catch(e){}</script>
+<style>
+  :root{ --code-bg:#F1F4F8; }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);
+       line-height:1.55;-webkit-font-smoothing:antialiased;font-size:14.5px}
+  a{color:var(--orange)}
+  :focus-visible{outline:2px solid var(--orange);outline-offset:3px}
+
+  .wrap{max-width:900px;margin:0 auto;padding:32px 40px 90px}
+  .ey{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--purple);margin:0 0 8px}
+  h1{font-family:var(--disp);font-size:clamp(28px,3.4vw,40px);line-height:1.12;letter-spacing:-.025em;
+     margin:0 0 12px;font-weight:700;color:var(--navy)}
+  .lede{color:var(--slate);margin:0 0 6px;max-width:64ch;font-size:16px}
+  .zhnote{font-size:13px;color:var(--mute);margin:0}
+
+  .warn{display:flex;gap:12px;align-items:flex-start;margin:22px 0 0;padding:14px 18px;
+        background:#FBF0DA;border:1px solid #D6B656;border-radius:var(--r-card,10px);color:#7A5A10;max-width:74ch}
+  .warn b{font-family:var(--disp);display:block;font-size:14px;margin-bottom:3px}
+  .warn p{margin:0;font-size:13.5px;line-height:1.5;max-width:none}
+  .warn p + p{margin-top:6px}
+  .warn .ic{font-family:var(--mono);font-weight:700;font-size:15px;line-height:1.4}
+
+  .toc{margin:26px 0 0;padding:14px 18px;background:var(--card);border:1px solid var(--line);border-radius:var(--r-card,10px)}
+  .toc h2{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;color:var(--mute);margin:0 0 8px;font-weight:600}
+  .toc ol{margin:0;padding-left:20px;columns:2;column-gap:28px}
+  .toc li{margin:0 0 4px;font-size:13.5px}
+  .toc a{text-decoration:none}
+  .toc a:hover{text-decoration:underline}
+
+  h2.sec{font-family:var(--disp);font-size:23px;letter-spacing:-.02em;color:var(--navy);
+         margin:44px 0 4px;padding-top:20px;border-top:1px solid var(--line)}
+  h3{font-family:var(--disp);font-size:17px;letter-spacing:-.015em;color:var(--navy);margin:26px 0 8px}
+  h4{font-family:var(--mono);font-size:11px;letter-spacing:.12em;color:var(--mute);margin:20px 0 7px;font-weight:600}
+  p{margin:0 0 12px;max-width:70ch}
+  .sub{color:var(--slate);margin:0 0 14px;max-width:70ch}
+
+  .tw{overflow-x:auto;margin:0 0 16px;background:var(--card);border:1px solid var(--line);border-radius:var(--r-card,10px)}
+  table{border-collapse:collapse;width:100%;font-size:13.5px}
+  th,td{text-align:left;padding:8px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{font-family:var(--disp);font-weight:700;font-size:12.5px;color:var(--navy);background:#EDF1F5;white-space:nowrap}
+  tr:last-child td{border-bottom:0}
+  td.k{white-space:nowrap;color:var(--slate)}
+  code{font-family:var(--mono);font-size:12.5px;background:var(--code-bg);padding:1px 5px;border-radius:3px;
+       overflow-wrap:anywhere}
+  td code{background:transparent;padding:0}
+  .redact{font-family:var(--mono);font-size:12px;color:#8A6A14;background:#FBF0DA;border:1px solid #E3D0A0;
+          padding:1px 7px;border-radius:3px;white-space:nowrap}
+  .type{font-family:var(--mono);font-size:11px;letter-spacing:.06em;color:var(--slate)}
+  .type.vlm{color:var(--purple)}
+
+  pre{margin:0 0 16px;padding:14px 16px;background:var(--card);border:1px solid var(--line);
+      border-left:3px solid var(--navy);border-radius:var(--r-card,10px);overflow-x:auto}
+  pre code{background:none;padding:0;font-size:12.5px;line-height:1.55;display:block;white-space:pre}
+  pre.sh{border-left-color:var(--green)}
+  pre.py{border-left-color:var(--orange)}
+
+  ul.gotchas{margin:0;padding:0;list-style:none}
+  ul.gotchas li{position:relative;padding:0 0 0 20px;margin:0 0 10px;max-width:72ch}
+  ul.gotchas li::before{content:"";position:absolute;left:0;top:8px;width:7px;height:7px;border-radius:2px;
+                        background:var(--orange)}
+  ul.gotchas b{font-family:var(--disp)}
+
+  footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);
+         font-family:var(--mono);font-size:11px;color:var(--mute);letter-spacing:.03em}
+  footer a{color:var(--orange);text-decoration:none}
+  footer a:hover{text-decoration:underline}
+
+  @media (max-width:860px){.wrap{padding-left:22px;padding-right:22px}.toc ol{columns:1}}
+</style>
+</head>
+<body>
+<!-- wiki chrome · identical in every page of this site: edit one, edit all -->
+<style id="wk-chrome">
+  /* ---- project wiki chrome (shared across every page of this site) ---- */
+  :root{
+    --ink:#14243A; --navy:#1C3557; --slate:#5B6B7F; --mute:#8D9BAB;
+    --paper:#F5F7FA; --card:#FFFFFF; --line:#DCE3EA;
+    --orange:#E0632A; --purple:#7B2D8E; --green:#3F8F5F; --amber:#C98A1E; --halt:#B44538;
+    --person:#C4674A; --blue:#4A7DBD;
+    --disp:"Aptos Display","Segoe UI Variable Display","Segoe UI","Noto Sans SC","PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+    --body:"Aptos","Segoe UI Variable Text","Segoe UI","Noto Sans SC","PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+    --mono:ui-monospace,"Cascadia Mono","Segoe UI Mono",Consolas,monospace;
+    --wk-nav-h:46px;
+    --r-ctl:6px; --r-card:10px; --r-lg:14px;
+  }
+  .wknav *,.wkc *,.wklang *{box-sizing:border-box}
+  .wk-zh{display:none}
+  html[data-lang="zh"] .wk-zh,html[lang^="zh"] .wk-zh,body[data-lang="zh"] .wk-zh{display:inline}
+  html[data-lang="zh"] .wk-en,html[lang^="zh"] .wk-en,body[data-lang="zh"] .wk-en{display:none}
+
+  .wkskip{position:absolute;left:16px;top:-56px;z-index:400;padding:8px 14px;
+          background:var(--navy);color:#fff;text-decoration:none;border-radius:var(--r-ctl);
+          font-family:var(--disp);font-weight:600;font-size:13px}
+  .wkskip:focus{top:8px;color:#fff;outline:2px solid var(--orange);outline-offset:2px}
+
+  .wknav{position:sticky;top:0;z-index:200;background:rgba(255,255,255,.90);
+         -webkit-backdrop-filter:saturate(1.5) blur(10px);backdrop-filter:saturate(1.5) blur(10px);
+         border-bottom:1px solid rgba(20,36,58,.10);
+         font-family:var(--disp)}
+  .wknav-in{max-width:1200px;margin:0 auto;padding:0 40px;height:var(--wk-nav-h);display:flex;align-items:center;
+            gap:14px;overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none}
+  .wknav-in::-webkit-scrollbar{display:none}
+  .wkmark{flex:0 0 auto;display:inline-flex;align-items:baseline;gap:8px;text-decoration:none;white-space:nowrap}
+  .wkmark b{font-size:14px;font-weight:700;letter-spacing:-.012em;color:var(--ink)}
+  .wkmark b i{font-style:normal;color:var(--orange)}
+  .wkmark span{font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:#9AA6B4;font-weight:600}
+  .wkrule{flex:0 0 auto;width:1px;height:17px;background:rgba(20,36,58,.14)}
+  .wklinks{flex:1 1 auto;display:flex;align-items:center;gap:1px;white-space:nowrap}
+  .wknav a{position:relative;padding:7px 10px;border-radius:5px;font-size:13px;font-weight:600;
+           color:var(--slate);text-decoration:none;white-space:nowrap;transition:color .15s,background .15s}
+  .wknav .wklinks a:hover,.wknav .wkdev:hover{background:rgba(20,36,58,.055);color:var(--ink)}
+  .wknav a:focus-visible{outline:2px solid var(--orange);outline-offset:1px}
+  .wknav a[aria-current="page"]{color:var(--ink)}
+  .wknav a[aria-current="page"]::after{content:"";position:absolute;left:10px;right:10px;bottom:0;
+           height:2px;border-radius:2px;background:var(--orange)}
+  .wkdev{flex:0 0 auto;display:inline-flex;align-items:center;gap:6px}
+  .wkdev::before{content:"";position:absolute;left:-8px;top:9px;bottom:9px;width:1px;background:rgba(20,36,58,.14)}
+
+  .wklang{flex:0 0 auto;display:flex;height:28px;overflow:hidden;margin-left:4px;
+          background:var(--card);border:1px solid var(--line);border-radius:var(--r-ctl)}
+  .wklang button{font:inherit;font-family:var(--disp);font-weight:600;font-size:11.5px;
+                 padding:0 10px;border:0;background:transparent;color:var(--slate);cursor:pointer}
+  .wklang button + button{border-left:1px solid var(--line)}
+  .wklang button:hover{background:#EEF2F6;color:var(--navy)}
+  .wklang button[aria-selected="true"]{background:var(--navy);color:#fff}
+  .wklang button[aria-selected="true"]:hover{background:var(--navy);color:#fff}
+  .wklang button:focus-visible{outline:2px solid var(--orange);outline-offset:-2px}
+
+  @media (max-width:980px){.wknav-in{padding:0 22px}}
+  @media (max-width:780px){.wkmark span{display:none}}
+  @media print{.wknav,.wkskip,.wklang{display:none}}
+</style>
+
+<a class="wkskip" href="#main"><span class="wk-en">Skip to content</span><span class="wk-zh">跳到正文</span></a>
+<nav class="wknav" aria-label="Project wiki">
+  <div class="wknav-in">
+    <a class="wkmark" href="index.html">
+      <b>AI Data<i>+</i></b><span class="wk-en">project wiki</span><span class="wk-zh">项目手册</span>
+    </a>
+    <span class="wkrule" aria-hidden="true"></span>
+    <div class="wklinks">
+      <a href="index.html"><span class="wk-en">Overview</span><span class="wk-zh">总览</span></a>
+      <a href="flow.html"><span class="wk-en">How it works</span><span class="wk-zh">整体流程</span></a>
+      <a href="lifecycle.html"><span class="wk-en">Step by step</span><span class="wk-zh">逐步流程</span></a>
+      <a href="gate.html"><span class="wk-en">RAG Gate</span><span class="wk-zh">RAG 闸门</span></a>
+    </div>
+    <a class="wkdev" href="developer.html" aria-current="page"><span class="wk-en">Developer portal</span><span class="wk-zh">开发者门户</span></a>
+    <div class="wklang" role="group" aria-label="Language">
+      <button type="button" data-v="en" aria-selected="true">EN</button>
+      <button type="button" data-v="zh" aria-selected="false">中文</button>
+    </div>
+  </div>
+</nav>
+
+<script>
+"use strict";
+(function(){
+  function read(){
+    try{ return localStorage.getItem("aidp.lang")==="zh" ? "zh" : "en"; }
+    catch(e){ return "en"; }
+  }
+  function paint(v){
+    document.querySelectorAll(".wklang button").forEach(function(b){
+      b.setAttribute("aria-selected", b.getAttribute("data-v")===v ? "true" : "false");
+    });
+  }
+  function apply(v, silent){
+    var r=document.documentElement;
+    r.setAttribute("data-lang", v);
+    r.setAttribute("lang", v==="zh" ? "zh-Hans" : "en");
+    if(document.body) document.body.setAttribute("data-lang", v);
+    try{ localStorage.setItem("aidp.lang", v); }catch(e){}
+    paint(v);
+    if(!silent){
+      try{ document.dispatchEvent(new CustomEvent("aidp:lang", {detail:v})); }
+      catch(e){}
+    }
+  }
+  window.aidpSetLang = function(v){ apply(v==="zh"?"zh":"en", false); };
+  apply(read(), true);
+  document.addEventListener("click", function(e){
+    var b=e.target && e.target.closest && e.target.closest(".wklang button");
+    if(!b) return;
+    apply(b.getAttribute("data-v"), false);
+  });
+  document.addEventListener("aidp:lang", function(e){
+    if(e && e.detail) paint(e.detail==="zh"?"zh":"en");
+  });
+})();
+</script>
+<!-- /wiki chrome -->
+<!-- developer gate · identical in every page behind it: edit one, edit all -->
+<style id="wk-gate">
+  html.wk-locked{overflow:hidden}
+  html.wk-locked body > *:not(.wknav):not(.wklock):not(style):not(script){display:none !important}
+  html:not(.wk-locked) .wklock{display:none}
+  .wklock{position:fixed;left:0;right:0;top:46px;bottom:0;z-index:150;display:flex;
+          align-items:flex-start;justify-content:center;background:#F5F7FA;
+          font-family:"Aptos Display","Segoe UI Variable Display","Segoe UI","Noto Sans SC","PingFang SC","Microsoft YaHei",system-ui,sans-serif}
+  .wklock-in{width:min(430px,calc(100vw - 44px));margin-top:min(16vh,140px);background:#fff;
+             border:1px solid #DCE3EA;border-radius:14px;padding:30px 32px 28px;
+             box-shadow:0 18px 44px rgba(20,36,58,.10)}
+  .wklock .ic{width:34px;height:34px;color:#E0632A;margin-bottom:16px}
+  .wklock .ic svg{width:100%;height:100%;display:block}
+  .wklock h2{font-size:23px;line-height:1.15;letter-spacing:-.022em;color:#1C3557;margin:0 0 8px;font-weight:700}
+  .wklock p{margin:0 0 20px;font-size:14px;line-height:1.5;color:#5B6B7F;
+            font-family:"Aptos","Segoe UI Variable Text","Segoe UI","Noto Sans SC","PingFang SC","Microsoft YaHei",system-ui,sans-serif}
+  .wklock form{display:flex;gap:8px}
+  .wklock input{flex:1 1 auto;min-width:0;height:40px;padding:0 13px;font:inherit;font-size:14px;
+                font-family:ui-monospace,"Cascadia Mono",Consolas,monospace;letter-spacing:.08em;
+                color:#14243A;background:#F8FAFC;border:1px solid #DCE3EA;border-radius:7px}
+  .wklock input:focus{outline:0;border-color:#E0632A;background:#fff;box-shadow:0 0 0 3px rgba(224,99,42,.14)}
+  .wklock button{flex:0 0 auto;height:40px;padding:0 18px;font:inherit;font-weight:600;font-size:14px;
+                 color:#fff;background:#1C3557;border:0;border-radius:7px;cursor:pointer}
+  .wklock button:hover{background:#14243A}
+  .wklock button:focus-visible{outline:2px solid #E0632A;outline-offset:2px}
+  .wklock .msg{margin:14px 0 0;min-height:18px;font-size:13px;color:#B44538;font-weight:600}
+  .wklock .msg:empty{margin:0}
+  .wklock .back{margin:22px 0 0;font-size:12.5px;color:#8D9BAB}
+  .wklock .back a{color:#E0632A;text-decoration:none}
+  .wklock .back a:hover{text-decoration:underline}
+  .wklock-in.no{animation:wkshake .4s}
+  @keyframes wkshake{25%{transform:translateX(-6px)}50%{transform:translateX(6px)}75%{transform:translateX(-3px)}}
+  @media (prefers-reduced-motion:reduce){.wklock-in.no{animation:none}}
+  /* a locked page prints as nothing: the point of the lock is that the content is not shown */
+  @media print{.wklock{display:none}}
+</style>
+
+<div class="wklock" role="dialog" aria-modal="true" aria-labelledby="wklock-h">
+  <div class="wklock-in" id="wklock-card">
+    <div class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10.5" width="16" height="10.5" rx="2.4"/><path d="M8 10.5V7.2a4 4 0 0 1 8 0v3.3"/><path d="M12 14.6v2.4"/></svg></div>
+    <h2 id="wklock-h"><span class="wk-en">Developer portal</span><span class="wk-zh">开发者门户</span></h2>
+    <p>
+      <span class="wk-en">This part of the wiki is for the project team. Ask Yibei for the password.</span>
+      <span class="wk-zh">本站这一部分面向项目团队。密码请向 Yibei 索取。</span>
+    </p>
+    <form id="wklock-f" autocomplete="off">
+      <input type="password" id="wklock-i" aria-label="Password" autocomplete="current-password" spellcheck="false">
+      <button type="submit"><span class="wk-en">Unlock</span><span class="wk-zh">解锁</span></button>
+    </form>
+    <p class="msg" id="wklock-m" role="alert"></p>
+    <p class="back">
+      <span class="wk-en">The rest of the wiki needs no password — <a href="index.html">back to the overview</a>.</span>
+      <span class="wk-zh">本站其余页面无需密码 — <a href="index.html">返回总览</a>。</span>
+    </p>
+  </div>
+</div>
+
+<script>
+"use strict";
+/* The password is not in this file. Only the digest below is, and it is the
+   result of hashing the password with the salt 20,000 times. */
+(function(){
+  var SALT="a7f3c1e95b2d84061cf7e8b34d2a9105", ROUNDS=20000, WANT="641a125b10f26059080024fe3aa42734a9007ae9c723b86c22682aaab2b73c87", ROOT=document.documentElement;
+  var K=[0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5,0x3956c25b,0x59f111f1,0x923f82a4,0xab1c5ed5,0xd807aa98,0x12835b01,0x243185be,0x550c7dc3,0x72be5d74,0x80deb1fe,0x9bdc06a7,0xc19bf174,0xe49b69c1,0xefbe4786,0x0fc19dc6,0x240ca1cc,0x2de92c6f,0x4a7484aa,0x5cb0a9dc,0x76f988da,0x983e5152,0xa831c66d,0xb00327c8,0xbf597fc7,0xc6e00bf3,0xd5a79147,0x06ca6351,0x14292967,0x27b70a85,0x2e1b2138,0x4d2c6dfc,0x53380d13,0x650a7354,0x766a0abb,0x81c2c92e,0x92722c85,0xa2bfe8a1,0xa81a664b,0xc24b8b70,0xc76c51a3,0xd192e819,0xd6990624,0xf40e3585,0x106aa070,0x19a4c116,0x1e376c08,0x2748774c,0x34b0bcb5,0x391c0cb3,0x4ed8aa4a,0x5b9cca4f,0x682e6ff3,0x748f82ee,0x78a5636f,0x84c87814,0x8cc70208,0x90befffa,0xa4506ceb,0xbef9a3f7,0xc67178f2];
+  function sha256(str){
+    var H=[0x6a09e667,0xbb67ae85,0x3c6ef372,0xa54ff53a,0x510e527f,0x9b05688c,0x1f83d9ab,0x5be0cd19];
+    var b=[],i,c,cp;
+    for(i=0;i<str.length;i++){
+      c=str.charCodeAt(i);
+      if(c<0x80){b.push(c);}
+      else if(c<0x800){b.push(0xc0|(c>>6),0x80|(c&63));}
+      else if(c<0xd800||c>=0xe000){b.push(0xe0|(c>>12),0x80|((c>>6)&63),0x80|(c&63));}
+      else{i++;cp=0x10000+(((c&0x3ff)<<10)|(str.charCodeAt(i)&0x3ff));
+           b.push(0xf0|(cp>>18),0x80|((cp>>12)&63),0x80|((cp>>6)&63),0x80|(cp&63));}
+    }
+    var bits=b.length*8;
+    b.push(0x80);
+    while(b.length%64!==56){b.push(0);}
+    b.push(0,0,0,0,(bits>>>24)&255,(bits>>>16)&255,(bits>>>8)&255,bits&255);
+    function rr(n,x){return (x>>>n)|(x<<(32-n));}
+    var w=new Array(64),j,t,a,bb,cc,d,e,f,g,h,s0,s1,S0,S1,ch,mj,t1,t2;
+    for(j=0;j<b.length;j+=64){
+      for(t=0;t<16;t++){w[t]=(b[j+4*t]<<24)|(b[j+4*t+1]<<16)|(b[j+4*t+2]<<8)|b[j+4*t+3];}
+      for(t=16;t<64;t++){
+        s0=rr(7,w[t-15])^rr(18,w[t-15])^(w[t-15]>>>3);
+        s1=rr(17,w[t-2])^rr(19,w[t-2])^(w[t-2]>>>10);
+        w[t]=(w[t-16]+s0+w[t-7]+s1)|0;
+      }
+      a=H[0];bb=H[1];cc=H[2];d=H[3];e=H[4];f=H[5];g=H[6];h=H[7];
+      for(t=0;t<64;t++){
+        S1=rr(6,e)^rr(11,e)^rr(25,e);
+        ch=(e&f)^((~e)&g);
+        t1=(h+S1+ch+K[t]+w[t])|0;
+        S0=rr(2,a)^rr(13,a)^rr(22,a);
+        mj=(a&bb)^(a&cc)^(bb&cc);
+        t2=(S0+mj)|0;
+        h=g;g=f;f=e;e=(d+t1)|0;d=cc;cc=bb;bb=a;a=(t1+t2)|0;
+      }
+      H[0]=(H[0]+a)|0;H[1]=(H[1]+bb)|0;H[2]=(H[2]+cc)|0;H[3]=(H[3]+d)|0;
+      H[4]=(H[4]+e)|0;H[5]=(H[5]+f)|0;H[6]=(H[6]+g)|0;H[7]=(H[7]+h)|0;
+    }
+    var out="";
+    for(var k=0;k<8;k++){out+=("00000000"+(H[k]>>>0).toString(16)).slice(-8);}
+    return out;
+  }
+  function stretch(pw){
+    var d=sha256(SALT+pw);
+    for(var i=1;i<ROUNDS;i++){d=sha256(d+SALT);}
+    return d;
+  }
+  function remembered(){
+    try{return window.sessionStorage.getItem("aidp.dev");}catch(e){return null;}
+  }
+  function open_(){
+    ROOT.classList.remove("wk-locked");
+    try{window.sessionStorage.setItem("aidp.dev",WANT);}catch(e){}
+  }
+  if(remembered()===WANT){ROOT.classList.remove("wk-locked");}
+  document.addEventListener("DOMContentLoaded",function(){
+    var f=document.getElementById("wklock-f"),
+        i=document.getElementById("wklock-i"),
+        m=document.getElementById("wklock-m"),
+        card=document.getElementById("wklock-card");
+    if(!f) return;
+    if(ROOT.classList.contains("wk-locked")) i.focus();
+    f.addEventListener("submit",function(ev){
+      ev.preventDefault();
+      var zh=ROOT.getAttribute("data-lang")==="zh"||/^zh/.test(ROOT.getAttribute("lang")||"");
+      m.textContent=zh?"正在核对…":"Checking…";
+      window.setTimeout(function(){
+        if(stretch(i.value)===WANT){
+          m.textContent="";
+          open_();
+        }else{
+          m.textContent=zh?"密码不对。":"That is not the password.";
+          i.value="";i.focus();
+          card.classList.remove("no");void card.offsetWidth;card.classList.add("no");
+        }
+      },10);
+    });
+  });
+})();
+</script>
+<!-- /developer gate -->
+<div class="wrap" id="main">
+
+  <p class="ey">Ageas + TPRe · AI Data+ · developer portal</p>
+  <h1>Internal LLM API reference</h1>
+  <p class="lede">Developer cheat sheet for the two in-house OpenAI-compatible hosts. Both sit on the company intranet (<code>10.253.x.x</code>), so you must be on the internal network or VPN. Traffic is <b>HTTP, not HTTPS</b>.</p>
+  <p class="zhnote">本页为开发者速查表，仅维护英文版本。</p>
+
+  <div class="warn">
+    <span class="ic" aria-hidden="true">!</span>
+    <div>
+      <b>Keys are not published on this page</b>
+      <p>Everywhere a key belongs you will find <span class="redact">see the internal note</span>. The values live in <code>04. docs\LLM-API-REFERENCE.md</code> on the project share, and in each stage's own gitignored config (<code>triage/llm_config.json</code>).</p>
+      <p>These hosts are private company addresses. Keep the endpoints inside TPRe, and never point a cloud provider at a production submission.</p>
+    </div>
+  </div>
+
+  <div class="toc">
+    <h2>On this page</h2>
+    <ol>
+      <li><a href="#protocol">The protocol both hosts speak</a></li>
+      <li><a href="#mac">Mac Studio — LM Studio</a></li>
+      <li><a href="#tko">TKO data centre — OpenCode</a></li>
+      <li><a href="#stdlib">Stdlib-only call</a></li>
+      <li><a href="#gotchas">Gotchas</a></li>
+    </ol>
+  </div>
+
+  <h2 class="sec" id="protocol">The protocol both hosts speak</h2>
+  <p class="sub">Every endpoint speaks the OpenAI Chat Completions protocol.</p>
+<pre><code>GET  {base_url}/models
+POST {base_url}/chat/completions</code></pre>
+  <h4>Header on every call</h4>
+<pre><code>Authorization: Bearer &lt;api_key&gt;
+Content-Type: application/json</code></pre>
+
+  <h2 class="sec" id="mac">1. Mac Studio — LM Studio</h2>
+  <p class="sub">One LM Studio process on the Mac Studio. Reach it on the LAN at <code>:9090</code>, or on the machine itself at <code>localhost:1234</code>.</p>
+
+  <h3>Connection</h3>
+  <div class="tw"><table>
+    <tr><th>Field</th><th>Value</th></tr>
+    <tr><td class="k">LAN base URL</td><td><code>http://10.253.17.70:9090/v1</code></td></tr>
+    <tr><td class="k">Loopback base URL (on the Mac)</td><td><code>http://localhost:1234/v1</code></td></tr>
+    <tr><td class="k">API key / <code>COMPANY_API_KEY</code></td><td><span class="redact">see the internal note</span></td></tr>
+    <tr><td class="k">Admin dashboard (on the Mac)</td><td><code>http://localhost:1234/admin</code></td></tr>
+  </table></div>
+  <p>The dashboard shows loaded models, VRAM and request logs. It is loopback-only.</p>
+
+  <h3>Models currently on disk</h3>
+  <p class="sub">Pass the <b>full id</b> (the <code>org/name</code> string) as <code>"model"</code> in the request. <span class="type">llm</span> = text only; <span class="type vlm">vlm</span> = vision / multimodal.</p>
+  <div class="tw"><table>
+    <tr><th>Model id</th><th>Type</th><th>Size</th></tr>
+    <tr><td><code>Jackrong/MLX-Qwen3.5-27B-Claude-4.6-Opus-Reasoning-Distilled-v2-8bit</code></td><td class="type">llm</td><td class="k">26.64 GB</td></tr>
+    <tr><td><code>jwindle47/chandra-ocr-2-8bit-mlx</code></td><td class="type vlm">vlm</td><td class="k">4.80 GB</td></tr>
+    <tr><td><code>lmstudio-community/gemma-4-12B-it-MLX-8bit</code></td><td class="type vlm">vlm</td><td class="k">11.87 GB</td></tr>
+    <tr><td><code>lmstudio-community/gemma-4-26B-A4B-it-MLX-8bit</code></td><td class="type vlm">vlm</td><td class="k">26.06 GB</td></tr>
+    <tr><td><code>lmstudio-community/gemma-4-31B-it-MLX-8bit</code></td><td class="type vlm">vlm</td><td class="k">31.47 GB</td></tr>
+    <tr><td><code>lmstudio-community/gpt-oss-120b-MLX-8bit</code></td><td class="type">llm</td><td class="k">115.67 GB</td></tr>
+    <tr><td><code>lmstudio-community/Qwen3-14B-MLX-4bit</code></td><td class="type">llm</td><td class="k">15.2 MB</td></tr>
+    <tr><td><code>lmstudio-community/Qwen3-32B-MLX-8bit</code></td><td class="type">llm</td><td class="k">32.43 GB</td></tr>
+    <tr><td><code>lmstudio-community/Qwen3-Coder-30B-A3B-Instruct-MLX-8bit</code></td><td class="type">llm</td><td class="k">30.23 GB</td></tr>
+    <tr><td><code>lmstudio-community/Qwen3.5-9B-MLX-8bit</code></td><td class="type vlm">vlm</td><td class="k">9.74 GB</td></tr>
+    <tr><td><code>lmstudio-community/Qwen3.6-27B-MLX-8bit</code></td><td class="type vlm">vlm</td><td class="k">27.50 GB</td></tr>
+    <tr><td><code>LoJexLLM/Unlimited-OCR-MLX</code></td><td class="type vlm">vlm</td><td class="k">6.22 GB</td></tr>
+    <tr><td><code>mlx-community/DeepSeek-OCR-2-bf16</code></td><td class="type vlm">vlm</td><td class="k">6.32 GB</td></tr>
+    <tr><td><code>mlx-community/GLM-OCR-bf16</code></td><td class="type vlm">vlm</td><td class="k">2.07 GB</td></tr>
+    <tr><td><code>mlx-community/Llama-3.2-3B-Instruct-8bit</code></td><td class="type">llm</td><td class="k">8.8 MB</td></tr>
+    <tr><td><code>mlx-community/Meta-Llama-3.1-8B-Instruct-8bit</code></td><td class="type">llm</td><td class="k">7.96 GB</td></tr>
+    <tr><td><code>mlx-community/Meta-Llama-3.1-8B-Instruct-bf16</code></td><td class="type">llm</td><td class="k">14.97 GB</td></tr>
+    <tr><td><code>mlx-community/Muse-Glimmer-30B-8bit</code></td><td class="type vlm">vlm</td><td class="k">18.06 GB</td></tr>
+    <tr><td><code>mlx-community/olmOCR-7B-0725-8bit</code></td><td class="type vlm">vlm</td><td class="k">8.81 GB</td></tr>
+    <tr><td><code>mlx-community/Qwen3.8-27B-8bit</code></td><td class="type vlm">vlm</td><td class="k">27.50 GB</td></tr>
+    <tr><td><code>philipjohnbasile/Qwen3.6-27B-Fable-Fusion-711-MTPLX-8bit</code></td><td class="type vlm">vlm</td><td class="k">28.29 GB</td></tr>
+  </table></div>
+  <p>LM Studio loads <b>one model at a time</b>. Confirm what is actually loaded with <code>GET /v1/models</code> or the admin dashboard before you send traffic.</p>
+
+  <h4>Useful starting points</h4>
+  <div class="tw"><table>
+    <tr><th>Job</th><th>Model id</th></tr>
+    <tr><td class="k">Chat / text</td><td><code>mlx-community/Qwen3.8-27B-8bit</code></td></tr>
+    <tr><td class="k">Document OCR</td><td><code>mlx-community/olmOCR-7B-0725-8bit</code></td></tr>
+  </table></div>
+
+  <h3>Reasoning switch (this host)</h3>
+  <p class="sub">A Qwen chat-template switch, not <code>reasoning_effort</code>:</p>
+<pre><code>{
+  "chat_template_kwargs": { "enable_thinking": false }
+}</code></pre>
+  <p>Sending <code>reasoning_effort</code> here is silently ignored — the server thinks anyway.</p>
+
+  <h3>Minimal Python</h3>
+<pre class="py"><code>from openai import OpenAI
+
+client = OpenAI(
+    base_url="http://10.253.17.70:9090/v1",
+    api_key=COMPANY_API_KEY,        # see the internal note
+)
+
+# Text
+resp = client.chat.completions.create(
+    model="mlx-community/Qwen3.8-27B-8bit",
+    messages=[{"role": "user", "content": "Say hello in one sentence."}],
+    extra_body={"chat_template_kwargs": {"enable_thinking": False}},
+)
+print(resp.choices[0].message.content)
+
+# Vision / OCR — send a page image
+resp = client.chat.completions.create(
+    model="mlx-community/olmOCR-7B-0725-8bit",
+    messages=[{
+        "role": "user",
+        "content": [
+            {"type": "text", "text": "Transcribe this document page."},
+            {"type": "image_url", "image_url": {"url": "data:image/png;base64,&lt;...&gt;" }},
+        ],
+    }],
+)
+print(resp.choices[0].message.content)</code></pre>
+
+  <h3>Curl</h3>
+<pre class="sh"><code>curl -s http://10.253.17.70:9090/v1/models \
+  -H "Authorization: Bearer $COMPANY_API_KEY"
+
+curl -s http://10.253.17.70:9090/v1/chat/completions \
+  -H "Authorization: Bearer $COMPANY_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "mlx-community/Qwen3.8-27B-8bit",
+    "messages": [{"role": "user", "content": "ping"}],
+    "chat_template_kwargs": {"enable_thinking": false}
+  }'</code></pre>
+
+  <h2 class="sec" id="tko">2. TKO data centre — OpenCode</h2>
+  <p class="sub">Two separate OpenAI-compatible gateways on the same host. Each has its own port, key and model. They are <b>not</b> interchangeable: a request to <code>:4000</code> with the Gemma key (or the other way around) will fail.</p>
+
+  <h3>2a. Qwen3.8-27B — port 4000</h3>
+  <div class="tw"><table>
+    <tr><th>Field</th><th>Value</th></tr>
+    <tr><td class="k">Base URL</td><td><code>http://10.253.16.94:4000/v1</code></td></tr>
+    <tr><td class="k">API key</td><td><span class="redact">see the internal note</span></td></tr>
+    <tr><td class="k">Model id</td><td><code>qwen3.8-27b</code></td></tr>
+    <tr><td class="k">Display name</td><td>Qwen3.8-27B</td></tr>
+    <tr><td class="k">Default temperature</td><td><code>0.7</code></td></tr>
+    <tr><td class="k">Default reasoning</td><td><code>medium</code></td></tr>
+  </table></div>
+  <p><b>This gateway does not serve a vision model.</b> A vision request returns HTTP 404. Keep OCR on Mac Studio <code>:9090</code> (or use Gemma on <code>:4001</code>).</p>
+
+  <p>Reasoning is a <b>dial</b>, not an on/off switch. Send <code>reasoning_effort</code>:</p>
+  <div class="tw"><table>
+    <tr><th>Level</th><th>Sent as</th><th>Typical use</th></tr>
+    <tr><td class="k">low</td><td><code>"low"</code></td><td>Long batch jobs. Fastest.</td></tr>
+    <tr><td class="k">medium</td><td><code>"medium"</code></td><td>Server default.</td></tr>
+    <tr><td class="k">high</td><td><code>"xhigh"</code></td><td>Highest effort. The gateway's own word is <code>xhigh</code>, not <code>high</code>.</td></tr>
+  </table></div>
+  <p>Leaving the field out returns to the server default (<code>medium</code>). On this gateway that was measured at ~16 s for a short ping — over thousands of files that is hours of extra wall-clock. For batch work, set <code>"low"</code> explicitly.</p>
+
+<pre class="py"><code>from openai import OpenAI
+
+client = OpenAI(
+    base_url="http://10.253.16.94:4000/v1",
+    api_key=QWEN_KEY,               # see the internal note
+)
+
+resp = client.chat.completions.create(
+    model="qwen3.8-27b",
+    messages=[{"role": "user", "content": "Summarise this slip in three bullets."}],
+    temperature=0.7,
+    extra_body={"reasoning_effort": "low"},
+)
+print(resp.choices[0].message.content)</code></pre>
+
+<pre class="sh"><code>curl -s http://10.253.16.94:4000/v1/models \
+  -H "Authorization: Bearer $QWEN_KEY"
+
+curl -s http://10.253.16.94:4000/v1/chat/completions \
+  -H "Authorization: Bearer $QWEN_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "qwen3.8-27b",
+    "messages": [{"role": "user", "content": "ping"}],
+    "reasoning_effort": "low"
+  }'</code></pre>
+
+  <h3>2b. Gemma-4-26B-A4B — port 4001</h3>
+  <div class="tw"><table>
+    <tr><th>Field</th><th>Value</th></tr>
+    <tr><td class="k">Base URL</td><td><code>http://10.253.16.94:4001/v1</code></td></tr>
+    <tr><td class="k">API key</td><td><span class="redact">see the internal note</span></td></tr>
+    <tr><td class="k">Model id</td><td><code>gemma-4-26B-A4B</code></td></tr>
+    <tr><td class="k">Display name</td><td>Gemma-4-26B-A4B</td></tr>
+    <tr><td class="k">Default temperature</td><td><code>0.7</code></td></tr>
+    <tr><td class="k">Context window</td><td>200,000 tokens</td></tr>
+    <tr><td class="k">Max output</td><td>65,536 tokens</td></tr>
+    <tr><td class="k">Modalities</td><td>Text + image (multimodal)</td></tr>
+  </table></div>
+
+<pre class="py"><code>from openai import OpenAI
+
+client = OpenAI(
+    base_url="http://10.253.16.94:4001/v1",
+    api_key=GEMMA_KEY,              # see the internal note
+)
+
+resp = client.chat.completions.create(
+    model="gemma-4-26B-A4B",
+    messages=[{"role": "user", "content": "Extract the treaty type and limit from this text."}],
+    temperature=0.7,
+)
+print(resp.choices[0].message.content)</code></pre>
+
+<pre class="sh"><code>curl -s http://10.253.16.94:4001/v1/models \
+  -H "Authorization: Bearer $GEMMA_KEY"</code></pre>
+
+  <h2 class="sec" id="stdlib">Stdlib-only call (no <code>openai</code> package)</h2>
+  <p class="sub">How this project actually calls the endpoint: a locked workstation cannot <code>pip install</code>, so the pipeline speaks the protocol with <code>urllib</code>, reading the host and key out of its own gitignored config.</p>
+<pre class="py"><code>import json, urllib.request
+
+BASE = "http://10.253.16.94:4000/v1"
+KEY = cfg["api_key"]                # triage/llm_config.json, gitignored
+
+req = urllib.request.Request(
+    BASE + "/chat/completions",
+    data=json.dumps({
+        "model": "qwen3.8-27b",
+        "messages": [{"role": "user", "content": "ping"}],
+        "reasoning_effort": "low",
+    }).encode(),
+    headers={
+        "Authorization": f"Bearer {KEY}",
+        "Content-Type": "application/json",
+    },
+    method="POST",
+)
+with urllib.request.urlopen(req, timeout=120) as resp:
+    body = json.loads(resp.read().decode())
+print(body["choices"][0]["message"]["content"])</code></pre>
+
+  <h2 class="sec" id="gotchas">Gotchas</h2>
+  <ul class="gotchas">
+    <li><b>Exact model ids.</b> On Mac Studio use the full <code>org/name</code> slug from the table. On TKO use the short ids (<code>qwen3.8-27b</code>, <code>gemma-4-26B-A4B</code>). <code>GET /v1/models</code> is the source of truth for what is loaded.</li>
+    <li><b>The wrong reasoning field is silent.</b> Mac Studio wants <code>chat_template_kwargs.enable_thinking</code>. TKO <code>:4000</code> wants <code>reasoning_effort</code>. The other field is ignored and the server thinks at its default.</li>
+    <li><b>TKO keys are per port.</b> The <code>:4000</code> key does not work on <code>:4001</code>, and the other way around.</li>
+    <li><b>Mac Studio loads one model at a time.</b> A 404 or an unexpected reply usually means a different model is loaded than the one you named.</li>
+    <li><b>Timeouts.</b> Hybrid models with reasoning on can take minutes. 120 s is often too short; 600 s is a safer ceiling.</li>
+    <li><b>Confidentiality.</b> These hosts are private company addresses. Do not point cloud providers at production submissions.</li>
+  </ul>
+
+  <footer>
+    Ageas + TPRe · AI Data+ · <a href="developer.html">developer portal</a> · <a href="index.html">overview</a>
+  </footer>
+
+</div>
+</body>
+</html>

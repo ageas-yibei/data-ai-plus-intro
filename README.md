@@ -1,0 +1,77 @@
+# AI Data+ · project wiki
+
+The public face of the programme: what AI Data+ is, how it is built, who signs what,
+when a person has to look at a submission — and, for whoever has to run it, a developer
+portal with the reviewer's manual and the model endpoints.
+
+Published with GitHub Pages. Every page is **one self-contained HTML file** — no CDN,
+no external font, no build step. Open one off a USB stick and it still works, which is
+why the pages are the way they are.
+
+## The story
+
+| Page | What it answers |
+|---|---|
+| `index.html` | **Overview** — the landing page. One submission, scrolled from the pack that arrives to the data the underwriter reads. Ends with the contents of this wiki. |
+| `flow.html` | **How it works** — the whole programme in four pictures, then the process stage by stage. Three views (at a glance / module overview / full detail), printable. |
+| `lifecycle.html` | **Step by step** — the seven steps of one submission: who runs each, who signs it off, and every outcome a step can have. |
+| `gate.html` | **RAG Gate** — red / amber / green, and every rule behind the colour, in plain words beside its rule name in `triage/gate.py`. |
+
+## The developer portal
+
+| Page | What it is |
+|---|---|
+| `developer.html` | The portal itself: three cards — the manual, the endpoints, the code. |
+| `manual.html` | The illustrated manual for the Triage Validation Flywheel. Built from `validate/manual/` in the code repo by `build.py`, which inlines every screenshot; that is why it is one 3.4 MB file. To refresh it, rebuild there and copy the result over this file. |
+| `llm-api.html` | The two in-house OpenAI-compatible hosts: base URLs, model ids, the reasoning switch each expects, and the gotchas. **The API keys are deliberately not on this page** — it says "see the internal note" wherever one belongs. The values live in `04. docs\LLM-API-REFERENCE.md` on the project share and in each stage's gitignored config. Keep it that way while this repository is anywhere near public. |
+
+### The password on it
+
+The three developer pages ask for a password before they show anything. The password is
+not written down anywhere in this repository — ask Yibei, and pass it around out of band.
+The page starts with `class="wk-locked"` on `<html>`, so
+a browser with JavaScript off shows the lock and nothing else; unlocking is remembered
+in `sessionStorage` for that tab, and covers all three pages at once.
+
+The password itself is **not** in the files. What is stored is a digest: sha256 of
+salt + password, re-hashed with the salt 20,000 times. The page hashes what is typed the
+same way and compares — so reading the source gives you a hash, not a password.
+
+**Be honest about what this is.** It is a lock on a door, so a link that reaches the
+wrong person does not open: it is not encryption. The page body is still in the file, and
+anyone who reads the source can read it. That is why the real secrets stay out of these
+pages — `llm-api.html` says "see the internal note" wherever a key belongs, and *that* is
+the protection.
+
+```
+python tools/dev_gate.py --password <the password>      # re-apply, or change it
+python tools/wiki_chrome.py                             # re-apply the nav bar
+```
+
+Both scripts write the block into every page they cover, which is how the copies stay
+identical. The password is an argument and is in neither script — a password in a
+committed file is a published password. Run either one and commit the pages it rewrites.
+
+## Three things to keep in step
+
+- **The chrome.** Each page carries an identical copy of it, between
+  `<!-- wiki chrome -->` and `<!-- /wiki chrome -->` right after `<body>`, with the
+  password gate in the same shape below it on the three developer pages. The chrome
+  owns the colour tokens, the sticky nav, the language switch, and the skip link.
+  Edit `tools/wiki_chrome.py` and re-run it rather than editing seven copies by hand;
+  the manual and the API reference both mark *Developer portal* as their current page.
+- **Both languages.** Every visible string exists in English and Chinese, and the two are
+  edited in the same pass. An English change with no Chinese change is how the two
+  versions start meaning different things. In the chrome the pair is
+  `<span class="wk-en">` / `<span class="wk-zh">`; each page's own body text uses that
+  page's existing convention. The one deliberate exception is `llm-api.html`, a developer
+  cheat sheet kept in English, which says so on the page. Switching language happens
+  in the nav bar, once, for the whole wiki.
+- **The manual is a copy.** It is generated in the code repository, not edited here.
+
+The language choice is shared across the wiki through `localStorage["aidp.lang"]` and
+the switch in the nav bar, so a reader who switches to Chinese stays in Chinese as
+they move between pages. Pages that have extra work on a switch (rebuilding a
+chart, rewriting a title) listen for `aidp:lang`. The illustrated manual still
+writes `flywheel-manual-lang` as well, so a rebuild of that file does not forget
+the last choice, but it follows the wiki bar.

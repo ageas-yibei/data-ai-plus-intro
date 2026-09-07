@@ -1,12 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="How AI Data+ turns one treaty submission pack into structured data before the underwriting decision.">
 <title data-i="title">The lifecycle of one submission — AI Data+</title>
+<script>try{if(localStorage.getItem("aidp.lang")==="zh"){document.documentElement.setAttribute("data-lang","zh");document.documentElement.setAttribute("lang","zh-Hans");}}catch(e){}</script>
 <style>
   :root{
-    --navy:#13294B; --ink:#3A4A63; --mute:#8A97AA; --line:#D3DEEA; --sky:#EAF2F8;
+    --navy:#13294B; --ink:#3A4A63; --copy:#3A4A63; --mute:#8A97AA; --line:#D3DEEA; --sky:#EAF2F8;
     --orange:#E8752A; --orange-2:#F1A26C; --orange-3:#FCE9DC;
     --purple:#6B2C91; --purple-2:#EFE6F5; --green:#2E9E6B; --green-2:#E3F4EB; --red:#D9534F;
     --font:"Aptos Display","Aptos","Segoe UI Variable Display","Segoe UI",system-ui,-apple-system,sans-serif;
@@ -20,15 +22,10 @@
   .bg i:nth-child(1){left:-24vmax;top:-18vmax;background:#FCE9DC}
   .bg i:nth-child(2){right:-28vmax;bottom:-26vmax;background:#EAF2F8}
   .bg:after{content:"";position:absolute;inset:0;background-image:radial-gradient(#13294B .9px,transparent 1px);background-size:30px 30px;opacity:.05}
-  .top{display:flex;justify-content:space-between;align-items:baseline;padding:22px 40px;font-size:14px;color:var(--ink)}
-  .top .mark{font-weight:800;font-style:italic;color:var(--orange);font-size:18px}
-  .top .langs{display:flex;gap:16px;align-items:baseline}
-  .top .langs a{color:var(--orange);font-weight:700;text-decoration:none;border:1.5px solid var(--orange-2);border-radius:999px;padding:3px 10px;font-size:13px}
-  .top .mark small{font-style:normal;font-weight:500;color:var(--ink);margin-left:12px;font-size:14px}
 
   .intro{max-width:1200px;margin:0 auto;padding:14vh 40px 22vh}
   .intro h1{font-size:clamp(44px,7vw,104px);line-height:.95;letter-spacing:-.035em;margin:0 0 24px;font-weight:800;text-wrap:balance}
-  .intro p{font-size:clamp(18px,1.5vw,21px);line-height:1.45;color:var(--ink);max-width:600px;margin:0 0 30px;text-wrap:pretty}
+  .intro p{font-size:clamp(18px,1.5vw,21px);line-height:1.45;color:var(--copy);max-width:600px;margin:0 0 30px;text-wrap:pretty}
   .intro .hint{display:inline-flex;align-items:center;gap:10px;font-size:15px;color:var(--mute)}
   .intro .hint svg{width:16px;height:16px;animation:nudge 1.6s ease-in-out infinite}
   @keyframes nudge{0%,100%{transform:translateY(0)}50%{transform:translateY(5px)}}
@@ -38,7 +35,7 @@
   .stations,.side{min-width:0}
   .st{height:130vh;display:flex;flex-direction:column;justify-content:center;max-width:440px;transition:opacity .35s,transform .5s cubic-bezier(.2,.7,.2,1)}
   .st h2{font-size:clamp(32px,3.6vw,46px);line-height:1.02;letter-spacing:-.03em;margin:0 0 16px;font-weight:800;text-wrap:balance}
-  .st p{font-size:17px;line-height:1.5;color:var(--ink);margin:0 0 18px;text-wrap:pretty}
+  .st p{font-size:17px;line-height:1.5;color:var(--copy);margin:0 0 18px;text-wrap:pretty}
   .st .mod{display:inline-block;font-size:13px;background:var(--sky);border-radius:999px;padding:5px 12px;font-weight:600;color:var(--navy);white-space:nowrap}
   .st .mod.purple{background:var(--purple-2);color:var(--purple)}
   .st .mod.orange{background:var(--orange-3);color:#B4531A}
@@ -54,7 +51,7 @@
   
   
 
-  .hold{position:sticky;top:0;height:100vh;z-index:1;overflow:clip}
+  .hold{position:sticky;top:var(--wk-nav-h,46px);height:calc(100vh - var(--wk-nav-h,46px));z-index:1;overflow:clip}
   .tno{width:520px;height:800px;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) scale(var(--k))}
   .obj{position:absolute;left:0;top:0;width:0;height:0;will-change:transform,opacity}
   .obj>.in{position:absolute;left:0;top:0;transform:translate(-50%,-50%)}
@@ -66,13 +63,13 @@
   .fold-front .t{font-size:32px;font-weight:800;letter-spacing:-.03em;line-height:1}
   .fold-front .s{font-size:12px;opacity:.9;margin-top:6px;white-space:nowrap}
 
-  .file .doc{width:64px;height:78px;margin:0 auto;background:#fff;border:2px solid var(--navy);border-radius:6px;position:relative;box-shadow:0 6px 18px rgba(19,41,75,.12);transition:border-color .3s}
+  .file .doc{width:64px;height:78px;margin:0 auto;background:#fff;border:2px solid var(--navy);border-radius:6px;position:relative;box-shadow:0 6px 18px rgba(19,41,75),.12);transition:border-color .3s}
   .file .lines{position:absolute;left:9px;right:9px;top:24px}
   .file .lines i{display:block;height:4px;background:var(--line);border-radius:2px;margin-bottom:6px}
   .file .lines i:nth-child(2){width:70%}.file .lines i:nth-child(3){width:85%}
   .file .ext{position:absolute;left:-6px;bottom:8px;font-size:9px;font-weight:800;color:#fff;padding:2px 5px;border-radius:4px}
   .ext-pdf{background:#C8443A}.ext-xlsx{background:#1F7A45}.ext-docx{background:#2A5CB8}.ext-msg{background:#5C6B80}.ext-pptx{background:#C25A1A}
-  .file .fname{font-size:11px;text-align:center;margin-top:6px;color:var(--ink);white-space:nowrap;font-weight:500;transition:opacity .2s}
+  .file .fname{font-size:11px;text-align:center;margin-top:6px;color:var(--copy);white-space:nowrap;font-weight:500;transition:opacity .2s}
   .file.tagged .fname,.file.q .fname{opacity:0}
   .file.tagged.core .doc{border-color:var(--orange)}
   .file.tagged.other .doc{border-color:var(--mute)}
@@ -82,7 +79,7 @@
   .lbl small{display:block;font-size:11px;font-weight:500;color:var(--mute);margin-top:2px}
   .lbl.core{color:var(--orange)}.lbl.other{color:var(--mute)}
 
-  .agent{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:8px;border-radius:999px;background:#fff;border:2px solid var(--navy);font-size:13px;font-weight:800;box-shadow:0 10px 26px rgba(19,41,75,.14);white-space:nowrap}
+  .agent{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:8px;border-radius:999px;background:#fff;border:2px solid var(--navy);font-size:13px;font-weight:800;box-shadow:0 10px 26px rgba(19,41,75),.14);white-space:nowrap}
   .agent small{font-weight:600;color:var(--mute);font-size:11px}
   .agent.purple{border-color:var(--purple);color:var(--purple)}
   .agent.green{border-color:var(--green);color:#1F7A45}
@@ -90,12 +87,12 @@
   .chk{position:absolute;inset:0;display:flex;gap:10px;align-items:center;justify-content:center;border-radius:999px;border:1.5px dashed var(--purple);color:var(--purple);font-size:12px;font-weight:700;background:#fff;white-space:nowrap}
   .chk svg{width:16px;height:16px}
 
-  .rec{position:absolute;inset:0;background:#fff;border:2px solid var(--navy);border-radius:14px;overflow:hidden;box-shadow:0 14px 40px rgba(19,41,75,.14)}
+  .rec{position:absolute;inset:0;background:#fff;border:2px solid var(--navy);border-radius:14px;overflow:hidden;box-shadow:0 14px 40px rgba(19,41,75),.14)}
   .rec .h{background:var(--navy);color:#fff;padding:8px 14px;font-size:14px;font-weight:800;display:flex;justify-content:space-between;align-items:baseline}
   .rec .h small{font-weight:500;opacity:.75;font-size:11px}
   .rec .r{display:flex;justify-content:space-between;align-items:center;height:28px;padding:0 14px;font-size:12px;border-bottom:1px solid var(--line);position:relative}
   .rec .r:last-child{border-bottom:0}
-  .rec .r .k{color:var(--ink)}
+  .rec .r .k{color:var(--copy)}
   .rec .r .v{font-weight:800;opacity:0;transform:translateY(-6px);transition:opacity .25s,transform .25s}
   .rec .r .d{width:70px;height:6px;border-radius:3px;border:1.5px dashed var(--line)}
   .rec .r.filled .v{opacity:1;transform:none}
@@ -107,13 +104,13 @@
   .gate .lights{display:inline-flex;gap:5px}
   .gate .lights i{width:11px;height:11px;border-radius:50%}
   .gate .lights i.r{background:#F3C4C2}.gate .lights i.a{background:#F8E0B0}.gate .lights i.g{background:var(--green);box-shadow:0 0 0 3px var(--green-2)}
-  .gate small{font-weight:600;color:var(--ink);font-size:11px}
+  .gate small{font-weight:600;color:var(--copy);font-size:11px}
   .rec .pass{position:absolute;right:10px;top:6px;background:var(--green);color:#fff;font-size:11px;font-weight:800;padding:3px 9px;border-radius:999px;opacity:0;transform:scale(.6);transition:opacity .25s,transform .3s cubic-bezier(.34,1.56,.64,1)}
   .rec.pass .pass{opacity:1;transform:scale(1)}
   .rec.pass .h small{opacity:0}
   .bot{position:relative;width:100%;text-align:center}
-  .bot .ico{width:84px;height:84px;margin:0 auto;border-radius:22px;background:#fff;box-shadow:0 0 0 8px #fff,0 12px 28px rgba(19,41,75,.14)}
-  .bot .illu{width:120px;height:112px;margin:0 auto;filter:drop-shadow(0 10px 18px rgba(19,41,75,.14))}
+  .bot .ico{width:84px;height:84px;margin:0 auto;border-radius:22px;background:#fff;box-shadow:0 0 0 8px #fff,0 12px 28px rgba(19,41,75),.14)}
+  .bot .illu{width:120px;height:112px;margin:0 auto;filter:drop-shadow(0 10px 18px rgba(19,41,75),.14))}
   .bot.side .lab{position:absolute;left:calc(50% + 76px);top:50%;transform:translateY(-50%);width:200px;text-align:left}
   .bot.side .lab b,.bot.side .lab small{display:block;background:none;box-shadow:none;margin:0;text-wrap:balance}
   .bot.side .lab small{margin-top:4px}
@@ -124,7 +121,7 @@
   .bot.purple b{color:var(--purple)} .bot.green b{color:#1F7A45}
   .gt{position:relative;width:100%}
   .gt svg{width:100%;height:auto;display:block;overflow:visible}
-  .gt.gtb{filter:drop-shadow(0 8px 14px rgba(19,41,75,.18))}
+  .gt.gtb{filter:drop-shadow(0 8px 14px rgba(19,41,75),.18))}
   .gt .beam{fill:url(#gb-grey);transition:opacity .3s}
   .gt.green .beam{fill:url(#gb-green)} .gt.amber .beam{fill:url(#gb-amber)}
   .gt .sweep{stroke:#9FB3C8;opacity:.6;animation:gsweep 2.2s linear infinite}
@@ -138,7 +135,7 @@
   .chip{position:absolute;inset:0;display:flex;justify-content:space-between;align-items:center;padding:0 12px;background:var(--orange);color:#fff;border-radius:999px;font-size:12px;font-weight:700;box-shadow:0 8px 20px rgba(232,117,42,.35);white-space:nowrap}
   .chip .k{opacity:.85;font-weight:500;margin-right:10px}
 
-  .sheet{position:absolute;inset:0;background:#fff;border:2px solid var(--navy);border-radius:8px;padding:12px 12px 10px;box-shadow:0 10px 26px rgba(19,41,75,.14);display:flex;flex-direction:column}
+  .sheet{position:absolute;inset:0;background:#fff;border:2px solid var(--navy);border-radius:8px;padding:12px 12px 10px;box-shadow:0 10px 26px rgba(19,41,75),.14);display:flex;flex-direction:column}
   .sheet .h{font-size:13px;font-weight:800;line-height:1.1}
   .sheet .l{margin-top:10px;flex:1}
   .sheet .l i{display:block;height:5px;border-radius:3px;background:var(--line);margin-bottom:7px}
@@ -147,7 +144,7 @@
   .sheet.analysis{border-color:var(--orange)}.sheet.analysis .h{color:var(--orange)}
   .sheet.entry .l i{background:var(--sky);border:1px solid var(--line)}
 
-  .bot.switch .illu{width:60px;height:80px;filter:drop-shadow(0 8px 14px rgba(19,41,75,.18))}
+  .bot.switch .illu{width:60px;height:80px;filter:drop-shadow(0 8px 14px rgba(19,41,75),.18))}
   .bot.switch .lab{left:calc(50% + 46px);width:190px;top:14px;transform:none}
   .k-sort .armw,.k-sort .arm{transform-box:view-box;transform-origin:30px 30px}
   .k-sort .arm{transition:transform .28s cubic-bezier(.34,1.56,.64,1)}
@@ -155,7 +152,7 @@
   .k-sort .armw{animation:wiggle 3.2s ease-in-out infinite}
   .bot.lens-on-files .illu{width:112px;height:112px;filter:drop-shadow(0 8px 14px rgba(107,44,145,.22))}
   .bot.lens-on-files .lab{left:calc(50% + 62px);width:150px}
-  .who .srv{width:60px;height:56px;margin:0 auto 8px;border-radius:12px;background:var(--navy);position:relative;padding:12px 10px;display:flex;flex-direction:column;gap:8px;box-shadow:0 10px 24px rgba(19,41,75,.22)}
+  .who .srv{width:60px;height:56px;margin:0 auto 8px;border-radius:12px;background:var(--navy);position:relative;padding:12px 10px;display:flex;flex-direction:column;gap:8px;box-shadow:0 10px 24px rgba(19,41,75),.22)}
   .who .srv i{display:block;height:6px;border-radius:3px;background:rgba(255,255,255,.35)}
   .who .srv:after{content:"";position:absolute;right:10px;top:12px;width:6px;height:6px;border-radius:50%;background:var(--green)}
   .who.sysc .srv{animation:floaty-s 5s ease-in-out infinite;animation-delay:-2.5s}
@@ -164,7 +161,7 @@
   .who .fig:before{content:"";position:absolute;left:17px;top:2px;width:22px;height:22px;border-radius:50%;background:var(--navy)}
   .who .fig:after{content:"";position:absolute;left:5px;top:28px;width:46px;height:28px;border-radius:23px 23px 6px 6px;background:var(--navy)}
   .who b{display:block;font-size:15px}
-  .who span{display:block;font-size:12px;color:var(--ink);line-height:1.3;margin-top:3px;white-space:nowrap}
+  .who span{display:block;font-size:12px;color:var(--copy);line-height:1.3;margin-top:3px;white-space:nowrap}
 
   .sys{position:relative;width:100%;background:var(--navy);color:#fff;border-radius:14px;padding:12px 14px;text-align:center}
   .sys b{font-size:16px;display:block}
@@ -203,9 +200,9 @@
   @media (prefers-reduced-motion:reduce){.fold-back,.fold-tab,.fold-front,.file>.in>*,.illu svg.k-sort,.illu svg.k-read .lens,.illu svg.k-write .stamp,.rec,.sheet,.who .fig,.dot.now,.bg i,.flow .ln{animation:none}}
   @media (prefers-reduced-motion:reduce){.intro .hint svg{animation:none}.st{transition:none}}
   @media (max-width:980px){
-    .top,.intro,.outro{padding-left:22px;padding-right:22px}
+    .intro,.outro{padding-left:22px;padding-right:22px}
     #track{grid-template-columns:1fr;gap:0;padding:0 22px}
-    .side{order:-1;position:sticky;top:0;height:58vh;z-index:2;background:#fff}
+    .side{order:-1;position:sticky;top:var(--wk-nav-h,46px);height:58vh;z-index:2;background:#fff}
     .hold{position:static;height:58vh}
     .pipe,.dot{display:none}
     .stations{position:relative;z-index:1}
@@ -222,10 +219,6 @@
   html[lang="zh-Hans"] .st .mod{white-space:nowrap}
   html[lang="zh-Hans"] .outro p{font-size:clamp(22px,2.4vw,32px);line-height:1.4;letter-spacing:.01em}
   html[lang="zh-Hans"] .chip{font-size:12px}
-  .top .langs{display:flex;gap:16px;align-items:baseline}
-  .top .langs button{font:inherit;color:var(--orange);font-weight:700;background:#fff;border:1.5px solid var(--orange-2);border-radius:999px;padding:3px 11px;font-size:13px;cursor:pointer}
-  .top .langs button:hover{background:var(--orange-3)}
-  .top .langs button:focus-visible{outline:2px solid var(--purple);outline-offset:3px}
   /* scanner idle motion */
   @keyframes sweep{0%{transform:translateY(0);opacity:0}10%{opacity:.8}90%{opacity:.6}100%{transform:translateY(56px);opacity:0}}
   @keyframes beam{0%,100%{opacity:.55}50%{opacity:1}}
@@ -235,7 +228,134 @@
 </style>
 </head>
 <body>
+<!-- wiki chrome · identical in every page of this site: edit one, edit all -->
+<style id="wk-chrome">
+  /* ---- project wiki chrome (shared across every page of this site) ---- */
+  :root{
+    --ink:#14243A; --navy:#1C3557; --slate:#5B6B7F; --mute:#8D9BAB;
+    --paper:#F5F7FA; --card:#FFFFFF; --line:#DCE3EA;
+    --orange:#E0632A; --purple:#7B2D8E; --green:#3F8F5F; --amber:#C98A1E; --halt:#B44538;
+    --person:#C4674A; --blue:#4A7DBD;
+    --disp:"Aptos Display","Segoe UI Variable Display","Segoe UI","Noto Sans SC","PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+    --body:"Aptos","Segoe UI Variable Text","Segoe UI","Noto Sans SC","PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+    --mono:ui-monospace,"Cascadia Mono","Segoe UI Mono",Consolas,monospace;
+    --wk-nav-h:46px;
+    --r-ctl:6px; --r-card:10px; --r-lg:14px;
+  }
+  .wknav *,.wkc *,.wklang *{box-sizing:border-box}
+  .wk-zh{display:none}
+  html[data-lang="zh"] .wk-zh,html[lang^="zh"] .wk-zh,body[data-lang="zh"] .wk-zh{display:inline}
+  html[data-lang="zh"] .wk-en,html[lang^="zh"] .wk-en,body[data-lang="zh"] .wk-en{display:none}
 
+  .wkskip{position:absolute;left:16px;top:-56px;z-index:400;padding:8px 14px;
+          background:var(--navy);color:#fff;text-decoration:none;border-radius:var(--r-ctl);
+          font-family:var(--disp);font-weight:600;font-size:13px}
+  .wkskip:focus{top:8px;color:#fff;outline:2px solid var(--orange);outline-offset:2px}
+
+  .wknav{position:sticky;top:0;z-index:200;background:rgba(255,255,255,.90);
+         -webkit-backdrop-filter:saturate(1.5) blur(10px);backdrop-filter:saturate(1.5) blur(10px);
+         border-bottom:1px solid rgba(20,36,58,.10);
+         font-family:var(--disp)}
+  .wknav-in{max-width:1200px;margin:0 auto;padding:0 40px;height:var(--wk-nav-h);display:flex;align-items:center;
+            gap:14px;overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none}
+  .wknav-in::-webkit-scrollbar{display:none}
+  .wkmark{flex:0 0 auto;display:inline-flex;align-items:baseline;gap:8px;text-decoration:none;white-space:nowrap}
+  .wkmark b{font-size:14px;font-weight:700;letter-spacing:-.012em;color:var(--ink)}
+  .wkmark b i{font-style:normal;color:var(--orange)}
+  .wkmark span{font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:#9AA6B4;font-weight:600}
+  .wkrule{flex:0 0 auto;width:1px;height:17px;background:rgba(20,36,58,.14)}
+  .wklinks{flex:1 1 auto;display:flex;align-items:center;gap:1px;white-space:nowrap}
+  .wknav a{position:relative;padding:7px 10px;border-radius:5px;font-size:13px;font-weight:600;
+           color:var(--slate);text-decoration:none;white-space:nowrap;transition:color .15s,background .15s}
+  .wknav .wklinks a:hover,.wknav .wkdev:hover{background:rgba(20,36,58,.055);color:var(--ink)}
+  .wknav a:focus-visible{outline:2px solid var(--orange);outline-offset:1px}
+  .wknav a[aria-current="page"]{color:var(--ink)}
+  .wknav a[aria-current="page"]::after{content:"";position:absolute;left:10px;right:10px;bottom:0;
+           height:2px;border-radius:2px;background:var(--orange)}
+  .wkdev{flex:0 0 auto;display:inline-flex;align-items:center;gap:6px}
+  .wkdev::before{content:"";position:absolute;left:-8px;top:9px;bottom:9px;width:1px;background:rgba(20,36,58,.14)}
+
+  .wklang{flex:0 0 auto;display:flex;height:28px;overflow:hidden;margin-left:4px;
+          background:var(--card);border:1px solid var(--line);border-radius:var(--r-ctl)}
+  .wklang button{font:inherit;font-family:var(--disp);font-weight:600;font-size:11.5px;
+                 padding:0 10px;border:0;background:transparent;color:var(--slate);cursor:pointer}
+  .wklang button + button{border-left:1px solid var(--line)}
+  .wklang button:hover{background:#EEF2F6;color:var(--navy)}
+  .wklang button[aria-selected="true"]{background:var(--navy);color:#fff}
+  .wklang button[aria-selected="true"]:hover{background:var(--navy);color:#fff}
+  .wklang button:focus-visible{outline:2px solid var(--orange);outline-offset:-2px}
+
+  @media (max-width:980px){.wknav-in{padding:0 22px}}
+  @media (max-width:780px){.wkmark span{display:none}}
+  @media print{.wknav,.wkskip,.wklang{display:none}}
+</style>
+
+<a class="wkskip" href="#main"><span class="wk-en">Skip to content</span><span class="wk-zh">跳到正文</span></a>
+<nav class="wknav" aria-label="Project wiki">
+  <div class="wknav-in">
+    <a class="wkmark" href="index.html">
+      <b>AI Data<i>+</i></b><span class="wk-en">project wiki</span><span class="wk-zh">项目手册</span>
+    </a>
+    <span class="wkrule" aria-hidden="true"></span>
+    <div class="wklinks">
+      <a href="index.html" aria-current="page"><span class="wk-en">Overview</span><span class="wk-zh">总览</span></a>
+      <a href="flow.html"><span class="wk-en">How it works</span><span class="wk-zh">整体流程</span></a>
+      <a href="lifecycle.html"><span class="wk-en">Step by step</span><span class="wk-zh">逐步流程</span></a>
+      <a href="gate.html"><span class="wk-en">RAG Gate</span><span class="wk-zh">RAG 闸门</span></a>
+    </div>
+    <a class="wkdev" href="developer.html"><span class="wk-en">Developer portal</span><span class="wk-zh">开发者门户</span></a>
+    <div class="wklang" role="group" aria-label="Language">
+      <button type="button" data-v="en" aria-selected="true">EN</button>
+      <button type="button" data-v="zh" aria-selected="false">中文</button>
+    </div>
+  </div>
+</nav>
+
+<script>
+"use strict";
+(function(){
+  function read(){
+    try{ return localStorage.getItem("aidp.lang")==="zh" ? "zh" : "en"; }
+    catch(e){ return "en"; }
+  }
+  function paint(v){
+    document.querySelectorAll(".wklang button").forEach(function(b){
+      b.setAttribute("aria-selected", b.getAttribute("data-v")===v ? "true" : "false");
+    });
+  }
+  function apply(v, silent){
+    var r=document.documentElement;
+    r.setAttribute("data-lang", v);
+    r.setAttribute("lang", v==="zh" ? "zh-Hans" : "en");
+    if(document.body) document.body.setAttribute("data-lang", v);
+    try{ localStorage.setItem("aidp.lang", v); }catch(e){}
+    paint(v);
+    if(!silent){
+      try{ document.dispatchEvent(new CustomEvent("aidp:lang", {detail:v})); }
+      catch(e){}
+    }
+  }
+  window.aidpSetLang = function(v){ apply(v==="zh"?"zh":"en", false); };
+  apply(read(), true);
+  document.addEventListener("click", function(e){
+    var b=e.target && e.target.closest && e.target.closest(".wklang button");
+    if(!b) return;
+    apply(b.getAttribute("data-v"), false);
+  });
+  document.addEventListener("aidp:lang", function(e){
+    if(e && e.detail) paint(e.detail==="zh"?"zh":"en");
+  });
+})();
+</script>
+<!-- /wiki chrome -->
+<style>
+  /* Overview keeps the original cinematic palette. Wiki-bar tokens must not win here. */
+  :root{
+    --navy:#13294B; --ink:#3A4A63; --copy:#3A4A63; --mute:#8A97AA; --line:#D3DEEA; --sky:#EAF2F8;
+    --orange:#E8752A; --orange-2:#F1A26C; --orange-3:#FCE9DC;
+    --purple:#6B2C91; --purple-2:#EFE6F5; --green:#2E9E6B; --green-2:#E3F4EB; --red:#D9534F;
+  }
+</style>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
   <linearGradient id="gb-grey" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9FB3C8" stop-opacity=".35"/><stop offset="1" stop-color="#9FB3C8" stop-opacity="0"/></linearGradient>
   <linearGradient id="gb-green" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2E9E6B" stop-opacity=".62"/><stop offset="1" stop-color="#2E9E6B" stop-opacity="0"/></linearGradient>
@@ -243,12 +363,8 @@
   <linearGradient id="beamg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#E8752A" stop-opacity=".42"/><stop offset="1" stop-color="#E8752A" stop-opacity="0"/></linearGradient>
 </defs></svg>
 <div class="bg" aria-hidden="true"><i></i><i></i></div>
-<div class="top">
-  <div class="mark">AI Data+ <small>Ageas + TPRe</small></div>
-  <div class="langs"><span data-i="toplabel">The lifecycle of one submission</span><button type="button" id="langBtn" aria-label="Switch language">中文</button></div>
-</div>
 
-<section class="intro">
+<section class="intro" id="main">
   <h1 data-i="h1">The lifecycle of<br>one submission.</h1>
   <p data-i="intro">Each treaty renewal arrives as a submission pack: a slip, schedules, spreadsheets, emails, a deck. Today its numbers are keyed in by hand, two months after the decision. This is how AI Data+ turns that pack into structured data before the&nbsp;decision.</p>
   <div class="hint"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v11M3.5 8.5 8 13l4.5-4.5"/></svg> <span data-i="hint">Scroll to view the lifecycle of one submission</span></div>
@@ -295,6 +411,65 @@
 <section class="outro">
   <p data-i="outro">Same pack, same files. Structured before the decision instead of keyed in two months after&nbsp;it.</p>
   <small data-i="foot">AI Data+ · Ageas + TPRe · September 2026 · Record values are&nbsp;illustrative.</small>
+</section>
+
+<style id="wk-contents">
+  .wkc{max-width:1200px;margin:0 auto;padding:0 40px 16vh}
+  .wkc-ey{font-size:11px;font-weight:600;letter-spacing:.14em;font-family:var(--mono,ui-monospace,Consolas,monospace);color:#6B2C91;margin:0 0 10px;text-transform:none}
+  .wkc h2{font-size:clamp(26px,3vw,38px);line-height:1.05;letter-spacing:-.03em;margin:0 0 12px;font-weight:800;color:#13294B}
+  .wkc-sub{font-size:16px;line-height:1.5;color:var(--copy);max-width:52ch;margin:0 0 26px;text-wrap:pretty}
+  .wkc-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+  .wkc-card{position:relative;display:block;padding:20px 22px 22px;background:#fff;border:1px solid #D3DEEA;
+            border-radius:14px;text-decoration:none;color:inherit;
+            transition:transform .18s cubic-bezier(.2,.7,.2,1),box-shadow .18s,border-color .18s}
+  .wkc-card:hover{transform:translateY(-2px);border-color:#C3D0DD;box-shadow:0 14px 30px rgba(19,41,75),.09)}
+  .wkc-card:focus-visible{outline:2px solid #E8752A;outline-offset:3px}
+  .wkc-n{display:block;font-size:11px;font-weight:800;letter-spacing:.1em;color:#8A97AA;margin-bottom:10px}
+  .wkc-card b{display:block;font-size:21px;line-height:1.15;letter-spacing:-.02em;color:#13294B;margin-bottom:7px}
+  .wkc-d{display:block;font-size:14px;line-height:1.5;color:var(--copy);max-width:44ch;text-wrap:pretty}
+  .wkc-go{position:absolute;right:20px;top:18px;font-size:16px;color:#C8D3E0;transition:color .18s,transform .18s}
+  .wkc-card:hover .wkc-go{color:#E8752A;transform:translateX(2px)}
+  html[lang^="zh"] .wkc h2{font-size:clamp(24px,2.6vw,34px);line-height:1.25;letter-spacing:.01em}
+  html[lang^="zh"] .wkc-sub,html[lang^="zh"] .wkc-d{line-height:1.7}
+  @media (max-width:980px){.wkc{padding-left:22px;padding-right:22px}.wkc-grid{grid-template-columns:1fr}}
+  @media (prefers-reduced-motion:reduce){.wkc-card,.wkc-go{transition:none}}
+</style>
+
+<section class="wkc" aria-labelledby="wkc-h">
+  <p class="wkc-ey"><span class="wk-en">Project wiki</span><span class="wk-zh">项目手册</span></p>
+  <h2 id="wkc-h"><span class="wk-en">The rest of the story</span><span class="wk-zh">其余的部分</span></h2>
+  <p class="wkc-sub"><span class="wk-en">This page is the shape of it. These four go into how it is built, who signs what, and when a person has to look.</span><span class="wk-zh">这一页说的是大致轮廓。下面四页讲清楚：怎么搭起来、谁签什么字、什么时候必须有人看。</span></p>
+  <div class="wkc-grid">
+
+    <a class="wkc-card" href="flow.html">
+      <span class="wkc-n">01</span>
+      <b><span class="wk-en">How it works</span><span class="wk-zh">整体流程</span></b>
+      <span class="wkc-d"><span class="wk-en">The whole programme in four pictures, then the process stage by stage — three views, one chart, printable.</span><span class="wk-zh">先用四张图看懂整个项目，再按阶段展开流程——三种视图，一张图，可打印。</span></span>
+      <span class="wkc-go" aria-hidden="true">→</span>
+    </a>
+
+    <a class="wkc-card" href="lifecycle.html">
+      <span class="wkc-n">02</span>
+      <b><span class="wk-en">Step by step</span><span class="wk-zh">逐步流程</span></b>
+      <span class="wkc-d"><span class="wk-en">One submission, seven steps: who runs each one, who signs it off, and every outcome a step can have.</span><span class="wk-zh">一份申请，七个步骤：每步由谁执行、由谁签核，以及可能出现的每种结果。</span></span>
+      <span class="wkc-go" aria-hidden="true">→</span>
+    </a>
+
+    <a class="wkc-card" href="gate.html">
+      <span class="wkc-n">03</span>
+      <b><span class="wk-en">RAG Gate</span><span class="wk-zh">RAG 闸门</span></b>
+      <span class="wkc-d"><span class="wk-en">Red, amber, green. Every rule that decides how much attention one treaty needs, in plain words and in code.</span><span class="wk-zh">红、黄、绿。决定一份合约需要多少人工的每一条规则，大白话一道、代码名一道。</span></span>
+      <span class="wkc-go" aria-hidden="true">→</span>
+    </a>
+
+    <a class="wkc-card" href="developer.html">
+      <span class="wkc-n">04</span>
+      <b><span class="wk-en">Developer portal</span><span class="wk-zh">开发者门户</span></b>
+      <span class="wkc-d"><span class="wk-en">For whoever has to run it: the reviewer’s illustrated manual, the in-house model endpoints, and the code itself.</span><span class="wk-zh">给动手的人：复核人的图解手册、公司内部的模型端点，以及代码本身。</span></span>
+      <span class="wkc-go" aria-hidden="true">→</span>
+    </a>
+
+  </div>
 </section>
 
 <script>
@@ -506,15 +681,16 @@
   function applyLang(){
     L=I18N[lang];
     document.documentElement.lang=lang==='zh'?'zh-Hans':'en';
+    document.documentElement.setAttribute('data-lang', lang==='zh'?'zh':'en');
     document.querySelectorAll('[data-i]').forEach(el=>{const k=el.dataset.i; if(L[k]!=null) el.innerHTML=L[k];});
     document.title=L.title;
-    document.getElementById('langBtn').textContent=L.btn;
     buildScene(); lastP=-1; render();
   }
-  document.getElementById('langBtn').addEventListener('click',()=>{
-    lang=lang==='zh'?'en':'zh';
-    try{localStorage.setItem('aidp.lang',lang);}catch(e){}
-    try{const u=new URL(location.href); u.searchParams.set('lang',lang); history.replaceState(null,'',u);}catch(e){}
+  document.addEventListener('aidp:lang', e=>{
+    const v=e.detail==='zh'?'zh':'en';
+    if(v===lang) return;
+    lang=v;
+    try{const u=new URL(location.href); u.searchParams.set('lang',lang); history.replaceState(null,'',u);}catch(err){}
     applyLang();
   });
 

@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en" data-lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Data+ · Submission file lifecycle (MVP)</title>
+<script>try{if(localStorage.getItem("aidp.lang")==="zh"){document.documentElement.setAttribute("data-lang","zh");document.documentElement.setAttribute("lang","zh-Hans");}}catch(e){}</script>
+<style>
+  :root{
+    --rail:#C9D3DE;
+    --modA:#3F8F5F; --modB:#4A7DBD; --modC:#7B2D8E;
+    --person-bg:#FBE7DA; --person-line:#E8A377;
+    --machine:#3A5F8F; --machine-bg:#E2ECF7; --machine-line:#6C8EBF;
+    --sign:#5E2B73; --sign-bg:#F3EAF6; --sign-line:#9673A6;
+  }
+  *{box-sizing:border-box}
+  html,body{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  html[data-lang="en"] .zh{display:none}
+  html[data-lang="zh"] .en{display:none}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);-webkit-font-smoothing:antialiased;line-height:1.5;font-size:15px}
+  .wrap{max-width:760px;margin:0 auto;padding:32px 40px 80px}
+
+  .top{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:14px}
+  .brand{font-family:var(--mono);font-weight:400;font-size:11px;letter-spacing:.14em;color:var(--purple);margin:0 0 8px}
+  .scope{margin:8px 0 0;font-size:15px;color:var(--slate);max-width:52ch;line-height:1.5}
+  h1{font-family:var(--disp);font-size:clamp(28px,3.4vw,40px);line-height:1.12;margin:0;font-weight:700;letter-spacing:-.025em;color:var(--navy)}
+  .ctls{display:flex;gap:8px;flex-wrap:wrap;flex:0 0 auto}
+  .ctl{display:flex;height:32px;overflow:hidden;background:var(--card);border:1px solid var(--line);border-radius:var(--r-ctl,6px)}
+  .ctl button{font-family:var(--disp);font-weight:600;font-size:12.5px;padding:0 12px;border:0;background:transparent;color:var(--slate);cursor:pointer;white-space:nowrap}
+  .ctl button + button{border-left:1px solid var(--line)}
+  .ctl button:hover{background:#EEF2F6;color:var(--navy)}
+  .ctl button[aria-selected="true"]{background:var(--navy);color:#fff}
+  .ctl button:focus-visible{outline:2px solid var(--orange);outline-offset:-2px}
+
+  .key{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;font-size:12.5px;color:var(--slate);padding:10px 0 4px;border-top:1px solid var(--line)}
+  .who{display:inline-flex;align-items:center;gap:5px;border:1px solid;border-radius:999px;padding:2px 9px 2px 6px;font-family:var(--disp);font-weight:600;font-size:12px;line-height:1.3;white-space:nowrap}
+  .who svg{width:13px;height:13px;flex:0 0 auto}
+  .who.p{color:var(--person);background:var(--person-bg);border-color:var(--person-line)}
+  .who.m{color:var(--machine);background:var(--machine-bg);border-color:var(--machine-line)}
+  .who.s{color:var(--sign);background:var(--sign-bg);border-color:var(--sign-line)}
+
+  /* module groups: subtle band behind the steps; one continuous rail runs through everything */
+  .flow{position:relative}
+  .flow::before{content:"";position:absolute;left:19px;top:20px;bottom:20px;width:2px;background:var(--rail)}
+  .step::before,.fork::before,.start::before{display:none}
+  .mod{position:relative;margin:0 -10px 6px -10px;padding:6px 10px 2px 10px;border-radius:12px;background:color-mix(in srgb,var(--mc) 7%,transparent)}
+  .modhead{display:flex;justify-content:flex-end;margin:0 0 4px 0}
+  .modtag{font-family:var(--disp);font-weight:700;font-size:11px;color:var(--mc);border:1px solid color-mix(in srgb,var(--mc) 45%,transparent);border-radius:4px;padding:1px 6px;margin-right:6px}
+  .modname{font-family:var(--disp);font-weight:600;font-size:12px;color:var(--mc)}
+  .mod .num{border-color:var(--mc);color:var(--mc)}
+  .mod .step.check .card{border:1.5px dashed var(--mc)}
+  .mod .step:last-child{padding-bottom:8px}
+
+  /* rail */
+  .flow{margin-top:20px}
+  .step{position:relative;display:grid;grid-template-columns:40px 1fr;gap:0 14px;padding-bottom:14px}
+  .step::before{content:"";position:absolute;left:19px;top:40px;bottom:0;width:2px;background:var(--rail)}
+  .step.last::before{display:none}
+  .num{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--card);border:2px solid var(--ac,var(--navy));color:var(--ac,var(--navy));font-family:var(--disp);font-weight:700;font-size:15px;position:relative;z-index:1}
+  .num svg{width:20px;height:20px}
+  .step.check .num{border-style:dashed}
+
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r-card,10px);overflow:visible}
+  .head{display:grid;grid-template-columns:64px 1fr auto;gap:0 14px;align-items:center;padding:10px 12px 10px 10px;cursor:pointer;border-radius:var(--r-card,10px)}
+  .head:focus-visible{outline:2px solid var(--orange);outline-offset:-2px}
+  .pic{width:64px;height:64px;display:flex;align-items:center;justify-content:center;color:var(--ac,var(--navy))}
+  .pic svg{width:46px;height:46px;display:block}
+  .phrase{font-family:var(--disp);font-weight:700;font-size:19px;line-height:1.2;color:var(--navy);margin:0}
+  .whos{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px;align-items:center}
+  .whos .arrow{color:var(--mute);font-size:12px}
+  .side{display:flex;align-items:center;gap:6px}
+  .chev{color:var(--mute);transition:transform .15s}
+  .chev svg{width:14px;height:14px;display:block}
+  .card.open .chev{transform:rotate(180deg)}
+
+  /* tooltip */
+  .info{position:relative;display:inline-flex;width:24px;height:24px;border-radius:50%;align-items:center;justify-content:center;color:var(--mute);border:1px solid var(--line);background:var(--card);cursor:help}
+  .info:hover,.info:focus-visible,.info.on{color:var(--navy);border-color:var(--navy);outline:none}
+  .info svg{width:13px;height:13px}
+  .tt{display:none;position:absolute;right:0;top:calc(100% + 8px);width:min(300px,78vw);background:var(--navy);color:#fff;padding:9px 12px;border-radius:8px;font-size:13px;line-height:1.45;z-index:9;text-align:left;font-family:var(--body);font-weight:400;box-shadow:0 6px 18px rgba(20,36,58,.18)}
+  .tt::before{content:"";position:absolute;right:8px;top:-6px;border:6px solid transparent;border-top:0;border-bottom-color:var(--navy)}
+  .info:hover .tt,.info:focus-visible .tt,.info.on .tt{display:block}
+
+  .body{display:none;border-top:1px solid var(--line);padding:10px 12px 12px;background:#FBFCFD;border-radius:0 0 12px 12px}
+  .card.open .body{display:block}
+  .pills{display:flex;flex-wrap:wrap;gap:6px}
+  .pill{display:inline-flex;align-items:center;gap:5px;border:1px solid;border-radius:999px;padding:3px 10px 3px 8px;font-family:var(--disp);font-weight:600;font-size:12.5px;background:var(--ob);border-color:var(--ol);color:var(--oc)}
+  .pill svg{width:13px;height:13px}
+  .pill small{font-weight:500;opacity:.8}
+  .o-wait{--ob:#F4F6F8;--ol:#8D9BAB;--oc:#5B6B7F}
+  .o-ok{--ob:#E3F1E8;--ol:#82B366;--oc:#2F6B47}
+  .o-run{--ob:#E2ECF7;--ol:#6C8EBF;--oc:#3A5F8F}
+  .o-spot{--ob:#FBF0D5;--ol:#D6B656;--oc:#8A6A14}
+  .o-fix{--ob:#F8DEDC;--ol:#B85450;--oc:#93413D}
+  .o-hand{--ob:#FBE7DA;--ol:#E8A377;--oc:#C4674A}
+  .o-sign{--ob:#F3EAF6;--ol:#9673A6;--oc:#5E2B73}
+  .note{margin:9px 0 0;font-size:12px;color:var(--slate)}
+  .note.warn{color:#B85450;font-weight:600}
+
+  /* fork */
+  .fork{position:relative;display:grid;grid-template-columns:40px 1fr;gap:0 14px;padding-bottom:14px}
+  .fork::before{content:"";position:absolute;left:19px;top:0;bottom:0;width:2px;background:var(--rail)}
+  .fork .num{border-color:var(--modC);color:var(--modC)}
+  .fork-title{display:flex;align-items:center;gap:8px;margin:9px 0 10px;font-family:var(--disp);font-weight:700;font-size:15px;color:var(--modC)}
+  .fork-title::after{content:"";flex:1;height:2px;background:#D9C2E1}
+  .lanes{display:grid;grid-template-columns:1fr 1fr;gap:12px;position:relative}
+  .lanes::before{content:"";position:absolute;left:25%;right:25%;top:-10px;height:2px;background:#D9C2E1}
+  .lane{position:relative;padding-top:10px}
+  .lane::before{content:"";position:absolute;left:50%;top:-10px;height:10px;width:2px;background:#D9C2E1}
+  .lane .card{height:100%}
+  .lane .head{grid-template-columns:64px 1fr auto;gap:0 10px;align-items:start}
+  .lane .pic{margin-top:14px}
+  .lane .phrase{font-size:17px}
+  .lane-tag{display:inline-block;font-family:var(--disp);font-weight:700;font-size:11.5px;color:var(--lc);border:1px solid var(--lc);border-radius:4px;padding:1px 7px;margin-bottom:5px}
+
+  .end{position:relative;display:grid;grid-template-columns:40px 1fr;gap:0 14px;align-items:center}
+  .end .num{border-color:var(--green);color:var(--green)}
+  .end .phrase{color:#2F6B47}
+  .start{padding-bottom:14px}
+  .start::before{content:"";position:absolute;left:19px;top:40px;bottom:0;width:2px;background:var(--rail)}
+  .start .num{border-color:var(--slate);color:var(--slate)}
+  .start .phrase{color:var(--navy)}
+  .end .card{display:grid;grid-template-columns:64px 1fr auto;gap:0 14px;align-items:center;padding:10px 12px 10px 10px}
+
+  footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);
+         font-family:var(--mono);font-size:11px;color:var(--mute);letter-spacing:.03em}
+  footer a{color:var(--orange);text-decoration:none}
+  footer a:hover{text-decoration:underline}
+
+  @media (max-width:980px){.wrap{padding-left:22px;padding-right:22px}}
+  @media (max-width:600px){
+    .mod{margin:0 -6px 6px;padding:6px 6px 2px}
+    .flow::before{left:17px}
+    .head,.end .card{grid-template-columns:52px 1fr auto}
+    .pic{width:52px;height:52px}.pic svg{width:38px;height:38px}
+    .phrase{font-size:16px}
+    .lanes{grid-template-columns:1fr}.lanes::before,.lane::before{display:none}
+  }
+  @media (prefers-reduced-motion:reduce){.chev{transition:none}}
+  @media print{
+    body{background:#fff}.ctls{display:none}.card{break-inside:avoid}
+    .card .body{display:block !important}.tt{display:none !important}
+    @page{size:A4;margin:12mm}
+  }
+</style>
+</head>
+<body>
+<!-- wiki chrome · identical in every page of this site: edit one, edit all -->
+<style id="wk-chrome">
+  /* ---- project wiki chrome (shared across every page of this site) ---- */
+  :root{
+    --ink:#14243A; --navy:#1C3557; --slate:#5B6B7F; --mute:#8D9BAB;
+    --paper:#F5F7FA; --card:#FFFFFF; --line:#DCE3EA;
+    --orange:#E0632A; --purple:#7B2D8E; --green:#3F8F5F; --amber:#C98A1E; --halt:#B44538;
+    --person:#C4674A; --blue:#4A7DBD;
+    --disp:"Aptos Display","Segoe UI Variable Display","Segoe UI","Noto Sans SC","PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+    --body:"Aptos","Segoe UI Variable Text","Segoe UI","Noto Sans SC","PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+    --mono:ui-monospace,"Cascadia Mono","Segoe UI Mono",Consolas,monospace;
+    --wk-nav-h:46px;
+    --r-ctl:6px; --r-card:10px; --r-lg:14px;
+  }
+  .wknav *,.wkc *,.wklang *{box-sizing:border-box}
+  .wk-zh{display:none}
+  html[data-lang="zh"] .wk-zh,html[lang^="zh"] .wk-zh,body[data-lang="zh"] .wk-zh{display:inline}
+  html[data-lang="zh"] .wk-en,html[lang^="zh"] .wk-en,body[data-lang="zh"] .wk-en{display:none}
+
+  .wkskip{position:absolute;left:16px;top:-56px;z-index:400;padding:8px 14px;
+          background:var(--navy);color:#fff;text-decoration:none;border-radius:var(--r-ctl);
+          font-family:var(--disp);font-weight:600;font-size:13px}
+  .wkskip:focus{top:8px;color:#fff;outline:2px solid var(--orange);outline-offset:2px}
+
+  .wknav{position:sticky;top:0;z-index:200;background:rgba(255,255,255,.90);
+         -webkit-backdrop-filter:saturate(1.5) blur(10px);backdrop-filter:saturate(1.5) blur(10px);
+         border-bottom:1px solid rgba(20,36,58,.10);
+         font-family:var(--disp)}
+  .wknav-in{max-width:1200px;margin:0 auto;padding:0 40px;height:var(--wk-nav-h);display:flex;align-items:center;
+            gap:14px;overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none}
+  .wknav-in::-webkit-scrollbar{display:none}
+  .wkmark{flex:0 0 auto;display:inline-flex;align-items:baseline;gap:8px;text-decoration:none;white-space:nowrap}
+  .wkmark b{font-size:14px;font-weight:700;letter-spacing:-.012em;color:var(--ink)}
+  .wkmark b i{font-style:normal;color:var(--orange)}
+  .wkmark span{font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:#9AA6B4;font-weight:600}
+  .wkrule{flex:0 0 auto;width:1px;height:17px;background:rgba(20,36,58,.14)}
+  .wklinks{flex:1 1 auto;display:flex;align-items:center;gap:1px;white-space:nowrap}
+  .wknav a{position:relative;padding:7px 10px;border-radius:5px;font-size:13px;font-weight:600;
+           color:var(--slate);text-decoration:none;white-space:nowrap;transition:color .15s,background .15s}
+  .wknav .wklinks a:hover,.wknav .wkdev:hover{background:rgba(20,36,58,.055);color:var(--ink)}
+  .wknav a:focus-visible{outline:2px solid var(--orange);outline-offset:1px}
+  .wknav a[aria-current="page"]{color:var(--ink)}
+  .wknav a[aria-current="page"]::after{content:"";position:absolute;left:10px;right:10px;bottom:0;
+           height:2px;border-radius:2px;background:var(--orange)}
+  .wkdev{flex:0 0 auto;display:inline-flex;align-items:center;gap:6px}
+  .wkdev::before{content:"";position:absolute;left:-8px;top:9px;bottom:9px;width:1px;background:rgba(20,36,58,.14)}
+
+  .wklang{flex:0 0 auto;display:flex;height:28px;overflow:hidden;margin-left:4px;
+          background:var(--card);border:1px solid var(--line);border-radius:var(--r-ctl)}
+  .wklang button{font:inherit;font-family:var(--disp);font-weight:600;font-size:11.5px;
+                 padding:0 10px;border:0;background:transparent;color:var(--slate);cursor:pointer}
+  .wklang button + button{border-left:1px solid var(--line)}
+  .wklang button:hover{background:#EEF2F6;color:var(--navy)}
+  .wklang button[aria-selected="true"]{background:var(--navy);color:#fff}
+  .wklang button[aria-selected="true"]:hover{background:var(--navy);color:#fff}
+  .wklang button:focus-visible{outline:2px solid var(--orange);outline-offset:-2px}
+
+  @media (max-width:980px){.wknav-in{padding:0 22px}}
+  @media (max-width:780px){.wkmark span{display:none}}
+  @media print{.wknav,.wkskip,.wklang{display:none}}
+</style>
+
+<a class="wkskip" href="#main"><span class="wk-en">Skip to content</span><span class="wk-zh">跳到正文</span></a>
+<nav class="wknav" aria-label="Project wiki">
+  <div class="wknav-in">
+    <a class="wkmark" href="index.html">
+      <b>AI Data<i>+</i></b><span class="wk-en">project wiki</span><span class="wk-zh">项目手册</span>
+    </a>
+    <span class="wkrule" aria-hidden="true"></span>
+    <div class="wklinks">
+      <a href="index.html"><span class="wk-en">Overview</span><span class="wk-zh">总览</span></a>
+      <a href="flow.html"><span class="wk-en">How it works</span><span class="wk-zh">整体流程</span></a>
+      <a href="lifecycle.html" aria-current="page"><span class="wk-en">Step by step</span><span class="wk-zh">逐步流程</span></a>
+      <a href="gate.html"><span class="wk-en">RAG Gate</span><span class="wk-zh">RAG 闸门</span></a>
+    </div>
+    <a class="wkdev" href="developer.html"><span class="wk-en">Developer portal</span><span class="wk-zh">开发者门户</span></a>
+    <div class="wklang" role="group" aria-label="Language">
+      <button type="button" data-v="en" aria-selected="true">EN</button>
+      <button type="button" data-v="zh" aria-selected="false">中文</button>
+    </div>
+  </div>
+</nav>
+
+<script>
+"use strict";
+(function(){
+  function read(){
+    try{ return localStorage.getItem("aidp.lang")==="zh" ? "zh" : "en"; }
+    catch(e){ return "en"; }
+  }
+  function paint(v){
+    document.querySelectorAll(".wklang button").forEach(function(b){
+      b.setAttribute("aria-selected", b.getAttribute("data-v")===v ? "true" : "false");
+    });
+  }
+  function apply(v, silent){
+    var r=document.documentElement;
+    r.setAttribute("data-lang", v);
+    r.setAttribute("lang", v==="zh" ? "zh-Hans" : "en");
+    if(document.body) document.body.setAttribute("data-lang", v);
+    try{ localStorage.setItem("aidp.lang", v); }catch(e){}
+    paint(v);
+    if(!silent){
+      try{ document.dispatchEvent(new CustomEvent("aidp:lang", {detail:v})); }
+      catch(e){}
+    }
+  }
+  window.aidpSetLang = function(v){ apply(v==="zh"?"zh":"en", false); };
+  apply(read(), true);
+  document.addEventListener("click", function(e){
+    var b=e.target && e.target.closest && e.target.closest(".wklang button");
+    if(!b) return;
+    apply(b.getAttribute("data-v"), false);
+  });
+  document.addEventListener("aidp:lang", function(e){
+    if(e && e.detail) paint(e.detail==="zh"?"zh":"en");
+  });
+})();
+</script>
+<!-- /wiki chrome -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-person" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="7.5" r="3.6"/><path d="M4.5 20.5a7.5 7.5 0 0 1 15 0"/></g></symbol>
+    <symbol id="i-gear" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.2"/><path d="M12 4v2.6M12 17.4V20M4 12h2.6M17.4 12H20M6.3 6.3l1.9 1.9M15.8 15.8l1.9 1.9M17.7 6.3l-1.9 1.9M8.2 15.8l-1.9 1.9"/></g></symbol>
+    <symbol id="i-stamp" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11V6.5a3 3 0 0 1 6 0V11"/><path d="M5 11h14l1.5 4.5h-17z"/><path d="M6 19.5h12"/></g></symbol>
+    <symbol id="i-chev" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 9l7 7 7-7"/></g></symbol>
+    <symbol id="i-i" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 10.5V17"/><path d="M12 7v.1"/></g></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12.5l5 5 10-11"/></g></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7v5.2l3.4 2"/></g></symbol>
+    <symbol id="i-alert" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5L22 20H2z"/><path d="M12 9.5v4.5"/><path d="M12 17.2v.1"/></g></symbol>
+    <symbol id="i-mag" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.5" cy="10.5" r="6"/><path d="M15 15l5.5 5.5"/></g></symbol>
+    <symbol id="i-loop" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></g></symbol>
+    <symbol id="i-split" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v6"/><path d="M12 9L6 14v6M12 9l6 5v6"/></g></symbol>
+    <symbol id="i-folder" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7l2-3.5h6l2 3.5h8v13H3z"/><path d="M3 11h18"/></g></symbol>
+    <symbol id="i-flag" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5.5 21V4"/><path d="M5.5 4.5h11.5l-3 3.5 3 3.5H5.5"/></g></symbol>
+
+    <!-- illustration parts -->
+    <symbol id="p-doc" viewBox="0 0 24 30"><path d="M2 2h13l7 7v19H2z" fill="#fff" stroke="#1C3557" stroke-width="1.8" stroke-linejoin="round"/><path d="M15 2v7h7" fill="none" stroke="#1C3557" stroke-width="1.8" stroke-linejoin="round"/><path d="M6 14h12M6 18.5h12M6 23h8" stroke="#B9C4D0" stroke-width="1.8" stroke-linecap="round"/></symbol>
+    <symbol id="p-doc-core" viewBox="0 0 24 30"><path d="M2 2h13l7 7v19H2z" fill="#E3F1E8" stroke="#3F8F5F" stroke-width="1.8" stroke-linejoin="round"/><path d="M15 2v7h7" fill="none" stroke="#3F8F5F" stroke-width="1.8" stroke-linejoin="round"/><path d="M6 14h12M6 18.5h12M6 23h8" stroke="#82B366" stroke-width="1.8" stroke-linecap="round"/></symbol>
+    <symbol id="p-record" viewBox="0 0 40 30"><rect x="1.5" y="1.5" width="37" height="27" rx="3" fill="#fff" stroke="#6C8EBF" stroke-width="1.8"/><path d="M1.5 8.5h37" stroke="#6C8EBF" stroke-width="1.8"/><path d="M6 14h8M6 19h8M6 24h8" stroke="#8FAAD1" stroke-width="1.8" stroke-linecap="round"/><rect x="18" y="12" width="16" height="4" rx="1" fill="#E2ECF7"/><rect x="18" y="17" width="12" height="4" rx="1" fill="#E2ECF7"/><rect x="18" y="22" width="14" height="4" rx="1" fill="#E2ECF7"/></symbol>
+    <symbol id="p-person" viewBox="0 0 30 34"><circle cx="15" cy="9" r="6.5" fill="#FBE7DA" stroke="#C4674A" stroke-width="1.8"/><path d="M3 33a12 12 0 0 1 24 0z" fill="#FBE7DA" stroke="#C4674A" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+    <symbol id="p-stamp" viewBox="0 0 30 30"><circle cx="15" cy="15" r="13" fill="#F3EAF6" stroke="#9673A6" stroke-width="1.8"/><path d="M9 15.5l4 4 8-9" fill="none" stroke="#7B2D8E" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="p-mag" viewBox="0 0 30 30"><circle cx="12" cy="12" r="8.5" fill="rgba(255,255,255,.7)" stroke="#1C3557" stroke-width="2"/><path d="M18.5 18.5L27 27" stroke="#1C3557" stroke-width="3" stroke-linecap="round"/></symbol>
+    <symbol id="p-arrow" viewBox="0 0 30 20"><path d="M2 10h22M18 4l6 6-6 6" fill="none" stroke="#8D9BAB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="p-bot" viewBox="0 0 30 30"><rect x="4" y="9" width="22" height="17" rx="4" fill="#E2ECF7" stroke="#6C8EBF" stroke-width="1.8"/><circle cx="11" cy="17" r="2.2" fill="#4A7DBD"/><circle cx="19" cy="17" r="2.2" fill="#4A7DBD"/><path d="M15 9V4M12 4h6" stroke="#6C8EBF" stroke-width="1.8" stroke-linecap="round"/><path d="M11 22h8" stroke="#6C8EBF" stroke-width="1.8" stroke-linecap="round"/></symbol>
+
+    <!-- simple step icons -->
+    <symbol id="s-folder" viewBox="0 0 48 48"><g fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 14l4-6h12l3 6h17v24H6z" fill="currentColor" fill-opacity=".12"/><path d="M6 20h36"/></g></symbol>
+    <symbol id="s-pull" viewBox="0 0 48 48"><g fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M24 6v22"/><path d="M15 19l9 9 9-9"/><path d="M8 32v8h32v-8" fill="currentColor" fill-opacity=".12"/></g></symbol>
+    <symbol id="s-sort" viewBox="0 0 48 48"><g fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M8 10h32L28 24v13l-8 4V24z" fill="currentColor" fill-opacity=".12"/></g></symbol>
+    <symbol id="s-check" viewBox="0 0 48 48"><g fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="24" cy="24" r="17" fill="currentColor" fill-opacity=".12"/><path d="M15 24l7 7 12-13"/></g></symbol>
+    <symbol id="s-record" viewBox="0 0 48 48"><g fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="10" width="32" height="28" rx="3" fill="currentColor" fill-opacity=".12"/><path d="M8 18h32M16 26h6M16 32h6M27 26h7M27 32h7"/></g></symbol>
+    <symbol id="s-reports" viewBox="0 0 48 48"><g fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="6" width="22" height="28" rx="2" fill="currentColor" fill-opacity=".12"/><rect x="19" y="14" width="22" height="28" rx="2" fill="#fff"/><rect x="19" y="14" width="22" height="28" rx="2" fill="currentColor" fill-opacity=".12"/><path d="M25 24h10M25 30h10"/></g></symbol>
+    <symbol id="s-person" viewBox="0 0 48 48"><g fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="24" cy="16" r="8" fill="currentColor" fill-opacity=".12"/><path d="M8 42a16 16 0 0 1 32 0z" fill="currentColor" fill-opacity=".12"/></g></symbol>
+    <symbol id="s-db" viewBox="0 0 48 48"><g fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M8 12v24c0 3.3 7.2 6 16 6s16-2.7 16-6V12" fill="currentColor" fill-opacity=".12"/><ellipse cx="24" cy="12" rx="16" ry="6" fill="#fff"/><ellipse cx="24" cy="12" rx="16" ry="6" fill="currentColor" fill-opacity=".12"/><path d="M8 24c0 3.3 7.2 6 16 6s16-2.7 16-6"/></g></symbol>
+    <symbol id="s-archive" viewBox="0 0 48 48"><g fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="9" width="36" height="9" rx="2" fill="currentColor" fill-opacity=".12"/><path d="M9 18v22h30V18"/><path d="M20 26h8"/></g></symbol>
+  </defs>
+</svg>
+
+<div class="wrap" id="main">
+
+  <div class="top">
+    <div>
+      <p class="brand">Ageas + TPRe · AI Data+</p>
+      <h1><span class="en">Submission file lifecycle</span><span class="zh">申请文件生命周期</span></h1>
+      <p class="scope"><span class="en">MVP stage · retrospective submissions, manual triggers, full human validation</span><span class="zh">MVP 阶段 · 回溯案例、人工触发、全量人工验证</span></p>
+    </div>
+    <div class="ctls">
+      <div class="ctl" role="group"><button type="button" id="btnExpand"><span class="en">Expand all</span><span class="zh">全部展开</span></button><button type="button" id="btnCollapse"><span class="en">Collapse all</span><span class="zh">全部收起</span></button></div>
+    </div>
+  </div>
+
+  <div class="key">
+    <span class="who m"><svg><use href="#i-gear"/></svg><span class="en">machine does it</span><span class="zh">机器执行</span></span>
+    <span class="who p"><svg><use href="#i-person"/></svg><span class="en">person does it</span><span class="zh">人员执行</span></span>
+    <span class="who s"><svg><use href="#i-stamp"/></svg><span class="en">signs off</span><span class="zh">签核</span></span>
+    <span style="display:inline-flex;gap:8px;align-items:center;margin-left:6px"><span style="width:12px;height:12px;border-radius:3px;background:var(--modA)"></span>A <span style="width:12px;height:12px;border-radius:3px;background:var(--modB)"></span>B <span style="width:12px;height:12px;border-radius:3px;background:var(--modC)"></span>C</span>
+    <span style="margin-left:auto"><span class="en">ⓘ hover for detail · click a step for outcomes</span><span class="zh">ⓘ 悬停看详情 · 点击步骤看结果</span></span>
+  </div>
+
+  <div class="flow">
+
+    <!-- start -->
+    <div class="end start" style="--ac:#8D9BAB">
+      <span class="num"><svg><use href="#i-folder"/></svg></span>
+      <div class="card">
+        <div class="pic"><svg viewBox="0 0 48 48"><use href="#s-folder"/></svg></div>
+        <div>
+          <p class="phrase"><span class="en">One submission</span><span class="zh">一份申请</span></p>
+          <div class="whos"><span style="font-size:12.5px;color:var(--slate)"><span class="en">TNO + underwriting year · every email &amp; attachment</span><span class="zh">TNO + 承保年度 · 全部邮件与附件</span></span></div>
+        </div>
+        <span class="side"><span class="info" tabindex="0"><svg><use href="#i-i"/></svg><span class="tt"><span class="en">One TNO-UY folder holds everything the cedant sent for this treaty-year. This page follows those files to the end.</span><span class="zh">一个 TNO-UY 文件夹包含分出公司为该合约年度发来的全部材料。本页跟踪这些文件直到结束。</span></span></span></span>
+      </div>
+    </div>
+
+    <!-- 1 pulled -->
+    <section class="step" style="--ac:#5B6B7F">
+      <span class="num">1</span>
+      <div class="card">
+        <div class="head" role="button" tabindex="0" aria-expanded="false">
+          <div class="pic"><svg viewBox="0 0 48 48"><use href="#s-pull"/></svg></div>
+          <div>
+            <p class="phrase"><span class="en">File download</span><span class="zh">文件下载</span></p>
+            <div class="whos"><span class="who p"><svg><use href="#i-person"/></svg>Yibei</span></div>
+          </div>
+          <span class="side">
+            <span class="info" tabindex="0"><svg><use href="#i-i"/></svg><span class="tt"><span class="en">A script fetches the files from EFS; each submission is identified by TNO and underwriting year. Nothing is filtered. Yibei triggers the script at MVP; automatic through Jinchao's API at production. No sign-off.</span><span class="zh">脚本从 EFS 拉取文件；每份申请以 TNO 和承保年度标识。不做筛选。MVP 阶段由 Yibei 触发脚本，上线后通过 Jinchao 的 API 自动完成。无需签核。</span></span></span>
+            <span class="chev"><svg><use href="#i-chev"/></svg></span>
+          </span>
+        </div>
+        <div class="body"><div class="pills">
+          <span class="pill o-wait"><svg><use href="#i-clock"/></svg><span class="en">Still in EFS</span><span class="zh">仍在 EFS</span></span>
+          <span class="pill o-ok"><svg><use href="#i-check"/></svg><span class="en">All files in folder</span><span class="zh">文件已齐全</span></span>
+          <span class="pill o-fix"><svg><use href="#i-alert"/></svg><span class="en">Files missing</span><span class="zh">文件缺失</span> <small>→ Yibei + Jinchao</small></span>
+        </div></div>
+      </div>
+    </section>
+
+    <!-- MODULE A -->
+    <div class="mod" style="--mc:var(--modA)">
+      <div class="modhead">
+        <span class="modtag">A</span>
+        <span class="modname">Submission Agent</span>
+      </div>
+    <!-- 2 sorted -->
+    <section class="step" style="--ac:#3F8F5F">
+      <span class="num">2</span>
+      <div class="card">
+        <div class="head" role="button" tabindex="0" aria-expanded="false">
+          <div class="pic"><svg viewBox="0 0 48 48"><use href="#s-sort"/></svg></div>
+          <div>
+            <p class="phrase"><span class="en">File filtering</span><span class="zh">文件筛选</span></p>
+            <div class="whos"><span class="who p"><svg><use href="#i-person"/></svg>Yibei</span><span class="who m"><svg><use href="#i-gear"/></svg>Submission Agent</span></div>
+          </div>
+          <span class="side">
+            <span class="info" tabindex="0"><svg><use href="#i-i"/></svg><span class="tt"><span class="en">Yibei triggers the Submission Agent. A deterministic rule picks the Core files; the LLM only classifies what the rule can't. Every file is kept, tagged Core or Others. Signed off at step 3.</span><span class="zh">Yibei 触发 Submission Agent。确定性规则先选出核心文件，规则未命中的才交给 LLM 分类。所有文件都保留，标记为核心或其他。在第 3 步签核。</span></span></span>
+            <span class="chev"><svg><use href="#i-chev"/></svg></span>
+          </span>
+        </div>
+        <div class="body"><div class="pills">
+          <span class="pill o-wait"><svg><use href="#i-clock"/></svg><span class="en">Not run yet</span><span class="zh">尚未运行</span></span>
+          <span class="pill o-ok"><svg><use href="#i-check"/></svg><span class="en">Sorted</span><span class="zh">已分拣</span></span>
+          <span class="pill o-fix"><svg><use href="#i-alert"/></svg><span class="en">Run failed</span><span class="zh">运行失败</span> <small>→ Yibei</small></span>
+        </div></div>
+      </div>
+    </section>
+
+    <!-- 3 sorting checked -->
+    <section class="step check" style="--ac:#3F8F5F">
+      <span class="num">3</span>
+      <div class="card">
+        <div class="head" role="button" tabindex="0" aria-expanded="false">
+          <div class="pic"><svg viewBox="0 0 48 48"><use href="#s-check"/></svg></div>
+          <div>
+            <p class="phrase"><span class="en">Result validation</span><span class="zh">结果验证</span></p>
+            <div class="whos"><span class="who p"><svg><use href="#i-person"/></svg><span class="en">Reviewer</span><span class="zh">复核人</span></span><span class="arrow">→</span><span class="who s"><svg><use href="#i-stamp"/></svg>Andrew / Susana</span></div>
+          </div>
+          <span class="side">
+            <span class="info" tabindex="0"><svg><use href="#i-i"/></svg><span class="tt"><span class="en">Validation Flywheel, Module A. The vendor reviewer checks the split; the Domain Specialist signs it off as "validated Core". Corrections go back to Yibei to teach the agent. Green/amber/red gates from MVP 500; full review at MVP 20. Logged to validations/validations.csv.</span><span class="zh">验证飞轮，模块 A。外包复核人检查分拣结果；领域专家签核为"已确认核心"。纠正结果反馈给 Yibei 改进 agent。绿黄红门控自 MVP 500 启用；MVP 20 全检。记录于 validations/validations.csv。</span></span></span>
+            <span class="chev"><svg><use href="#i-chev"/></svg></span>
+          </span>
+        </div>
+        <div class="body"><div class="pills">
+          <span class="pill o-wait"><svg><use href="#i-clock"/></svg><span class="en">To be reviewed</span><span class="zh">待复核</span> <small>→ <span class="en">Reviewer</span><span class="zh">复核人</span></small></span>
+          <span class="pill o-spot"><svg><use href="#i-mag"/></svg><span class="en">Reviewed, to be signed off</span><span class="zh">已复核，待签核</span> <small>→ Andrew / Susana</small></span>
+          <span class="pill o-ok"><svg><use href="#i-check"/></svg><span class="en">Signed off</span><span class="zh">已签核</span></span>
+          <span class="pill o-fix"><svg><use href="#i-loop"/></svg><span class="en">Corrected</span><span class="zh">已纠正</span> <small>→ Yibei</small></span>
+        </div></div>
+      </div>
+    </section>
+
+    </div>
+
+    <!-- MODULE B -->
+    <div class="mod" style="--mc:var(--modB)">
+      <div class="modhead">
+        <span class="modtag">B</span>
+        <span class="modname">Facts Agent</span>
+      </div>
+    <!-- 4 read -->
+    <section class="step" style="--ac:#4A7DBD">
+      <span class="num">4</span>
+      <div class="card">
+        <div class="head" role="button" tabindex="0" aria-expanded="false">
+          <div class="pic"><svg viewBox="0 0 48 48"><use href="#s-record"/></svg></div>
+          <div>
+            <p class="phrase"><span class="en">Data extraction</span><span class="zh">数据提取</span></p>
+            <div class="whos"><span class="who p"><svg><use href="#i-person"/></svg>Henri</span><span class="who m"><svg><use href="#i-gear"/></svg>Facts Agent</span></div>
+          </div>
+          <span class="side">
+            <span class="info" tabindex="0"><svg><use href="#i-i"/></svg><span class="tt"><span class="en">Henri triggers the Facts Agent. It reads the validated Core files into one TreatyRecord: every field on the signed Shopping List, with where each value was found. Locates, never invents. If no recipe fits this treaty, Aidon writes one (with a coding agent) and the run repeats. Signed off at step 5.</span><span class="zh">Henri 触发 Facts Agent。它将已确认的核心文件读取为一条 TreatyRecord：按已签核的 Shopping List 逐字段提取并记录出处。只定位，不臆造。若没有适用的 recipe，由 Aidon（借助编码 agent）编写后重跑。在第 5 步签核。</span></span></span>
+            <span class="chev"><svg><use href="#i-chev"/></svg></span>
+          </span>
+        </div>
+        <div class="body"><div class="pills">
+          <span class="pill o-wait"><svg><use href="#i-clock"/></svg><span class="en">Waiting for validated Core</span><span class="zh">等待已确认核心</span></span>
+          <span class="pill o-ok"><svg><use href="#i-check"/></svg><span class="en">Record extracted</span><span class="zh">记录已提取</span></span>
+          <span class="pill o-spot"><svg><use href="#i-loop"/></svg><span class="en">No recipe fits</span><span class="zh">无适用 recipe</span> <small>→ <span class="en">BA writes one</span><span class="zh">BA 编写</span></small></span>
+          <span class="pill o-fix"><svg><use href="#i-alert"/></svg><span class="en">Fields missing</span><span class="zh">字段缺失</span> <small>→ Henri (e.g. image tables)</small></span>
+        </div></div>
+      </div>
+    </section>
+
+    <!-- 5 facts checked -->
+    <section class="step check" style="--ac:#4A7DBD">
+      <span class="num">5</span>
+      <div class="card">
+        <div class="head" role="button" tabindex="0" aria-expanded="false">
+          <div class="pic"><svg viewBox="0 0 48 48"><use href="#s-check"/></svg></div>
+          <div>
+            <p class="phrase"><span class="en">Result validation</span><span class="zh">结果验证</span></p>
+            <div class="whos"><span class="who p"><svg><use href="#i-person"/></svg><span class="en">Reviewer</span><span class="zh">复核人</span></span><span class="arrow">→</span><span class="who s"><svg><use href="#i-stamp"/></svg>Andrew / Susana</span></div>
+          </div>
+          <span class="side">
+            <span class="info" tabindex="0"><svg><use href="#i-i"/></svg><span class="tt"><span class="en">Validation Flywheel, Module B. The vendor reviewer checks the record field by field; the Domain Specialist signs it off and rules on any field that differs from what TPR booked. Answer key = TPR booked values, retrospective cases only. Corrections go back to Henri.</span><span class="zh">验证飞轮，模块 B。外包复核人逐字段检查记录；领域专家签核，并裁定与 TPR 入账值不一致的字段。标准答案 = TPR 入账值，仅回溯案例。纠正结果反馈给 Henri。</span></span></span>
+            <span class="chev"><svg><use href="#i-chev"/></svg></span>
+          </span>
+        </div>
+        <div class="body"><div class="pills">
+          <span class="pill o-wait"><svg><use href="#i-clock"/></svg><span class="en">To be reviewed</span><span class="zh">待复核</span> <small>→ <span class="en">Reviewer</span><span class="zh">复核人</span></small></span>
+          <span class="pill o-spot"><svg><use href="#i-mag"/></svg><span class="en">Reviewed, to be signed off</span><span class="zh">已复核，待签核</span> <small>→ Andrew / Susana</small></span>
+          <span class="pill o-ok"><svg><use href="#i-check"/></svg><span class="en">Signed off</span><span class="zh">已签核</span></span>
+          <span class="pill o-fix"><svg><use href="#i-loop"/></svg><span class="en">Corrected</span><span class="zh">已纠正</span> <small>→ Henri</small></span>
+        </div></div>
+      </div>
+    </section>
+
+    </div>
+
+    <!-- MODULE C -->
+    <div class="mod" style="--mc:var(--modC)">
+      <div class="modhead">
+        <span class="modtag">C</span>
+        <span class="modname">Template Agent</span>
+      </div>
+    <!-- 6 rendered -->
+    <section class="step" style="--ac:#7B2D8E">
+      <span class="num">6</span>
+      <div class="card">
+        <div class="head" role="button" tabindex="0" aria-expanded="false">
+          <div class="pic"><svg viewBox="0 0 48 48"><use href="#s-reports"/></svg></div>
+          <div>
+            <p class="phrase"><span class="en">Report generation</span><span class="zh">报告生成</span></p>
+            <div class="whos"><span class="who p"><svg><use href="#i-person"/></svg>Henri</span><span class="who m"><svg><use href="#i-gear"/></svg>Template Agent</span></div>
+          </div>
+          <span class="side">
+            <span class="info" tabindex="0"><svg><use href="#i-i"/></svg><span class="tt"><span class="en">Henri triggers the Template Agent. From the one validated record it fills the Analysis Report (for the underwriter) and the Entry Report (for TPR). No sign-off: the numbers were signed off at step 5.</span><span class="zh">Henri 触发 Template Agent。用同一条已确认的记录填出分析报告（给核保人）和录入报告（给 TPR）。无需签核：数据已在第 5 步签核。</span></span></span>
+            <span class="chev"><svg><use href="#i-chev"/></svg></span>
+          </span>
+        </div>
+        <div class="body"><div class="pills">
+          <span class="pill o-wait"><svg><use href="#i-clock"/></svg><span class="en">Not run yet</span><span class="zh">尚未运行</span></span>
+          <span class="pill o-ok"><svg><use href="#i-check"/></svg><span class="en">Both reports in R:</span><span class="zh">两份报告已入 R:</span></span>
+          <span class="pill o-fix"><svg><use href="#i-alert"/></svg><span class="en">Template failed</span><span class="zh">模板失败</span> <small>→ Henri</small></span>
+        </div></div>
+      </div>
+    </section>
+
+    </div>
+
+    <!-- 7 fork -->
+    <section class="fork">
+      <span class="num">7</span>
+      <div>
+        <div class="fork-title"><span class="en">Both at the same time</span><span class="zh">两者同时进行</span></div>
+        <div class="lanes">
+
+          <div class="lane" style="--lc:#7B2D8E;--ac:#7B2D8E">
+            <div class="card">
+              <div class="head" role="button" tabindex="0" aria-expanded="false">
+                <div class="pic"><svg viewBox="0 0 48 48"><use href="#s-person"/></svg></div>
+                <div>
+                  <span class="lane-tag"><span class="en">Analysis Report</span><span class="zh">分析报告</span></span>
+                  <p class="phrase"><span class="en">Underwriting decision</span><span class="zh">核保决策</span></p>
+                  <div class="whos"><span class="who p"><svg><use href="#i-person"/></svg><span class="en">Underwriter · 17F</span><span class="zh">核保人 · 17F</span></span><span class="who s"><svg><use href="#i-stamp"/></svg><span class="en">the decision</span><span class="zh">决策</span></span></div>
+                </div>
+                <span class="side">
+                  <span class="info" tabindex="0"><svg><use href="#i-i"/></svg><span class="tt"><span class="en">The underwriter reads the Analysis Report and makes the renewal or new-business decision from structured data, not raw documents. Nothing downstream waits on it.</span><span class="zh">核保人阅读分析报告，基于结构化数据（而非原始文件）作出续转或新业务决策。下游不等待此决策。</span></span></span>
+                  <span class="chev"><svg><use href="#i-chev"/></svg></span>
+                </span>
+              </div>
+              <div class="body"><div class="pills">
+                <span class="pill o-wait"><svg><use href="#i-clock"/></svg><span class="en">Not read yet</span><span class="zh">尚未阅读</span></span>
+                <span class="pill o-hand"><svg><use href="#i-person"/></svg><span class="en">Being reviewed</span><span class="zh">审阅中</span></span>
+                <span class="pill o-sign"><svg><use href="#i-stamp"/></svg><span class="en">Decision made</span><span class="zh">已决策</span></span>
+              </div></div>
+            </div>
+          </div>
+
+          <div class="lane" style="--lc:#7B2D8E;--ac:#7B2D8E">
+            <div class="card">
+              <div class="head" role="button" tabindex="0" aria-expanded="false">
+                <div class="pic"><svg viewBox="0 0 48 48"><use href="#s-db"/></svg></div>
+                <div>
+                  <span class="lane-tag"><span class="en">Entry Report</span><span class="zh">录入报告</span></span>
+                  <p class="phrase"><span class="en">TPR entry</span><span class="zh">TPR 录入</span></p>
+                  <div class="whos"><span class="who s"><svg><use href="#i-stamp"/></svg><span class="en">Underwriter</span><span class="zh">核保人</span></span><span class="arrow">→</span><span class="who p"><svg><use href="#i-person"/></svg>Yibei</span></div>
+                </div>
+                <span class="side">
+                  <span class="info" tabindex="0"><svg><use href="#i-i"/></svg><span class="tt"><span class="en">The underwriter countersigns the entry data (not the decision); Yibei books it into TPR — RPA / API at production. Runs in parallel with the Analysis Report.</span><span class="zh">核保人会签录入数据（而非决策）；Yibei 录入 TPR——上线后为 RPA／API。与分析报告并行。</span></span></span>
+                  <span class="chev"><svg><use href="#i-chev"/></svg></span>
+                </span>
+              </div>
+              <div class="body">
+                <div class="pills">
+                  <span class="pill o-wait"><svg><use href="#i-clock"/></svg><span class="en">Waiting for countersign</span><span class="zh">待会签</span></span>
+                  <span class="pill o-sign"><svg><use href="#i-stamp"/></svg><span class="en">Countersigned</span><span class="zh">已会签</span></span>
+                  <span class="pill o-ok"><svg><use href="#i-check"/></svg><span class="en">Booked in TPR</span><span class="zh">已录入 TPR</span></span>
+                  <span class="pill o-fix"><svg><use href="#i-alert"/></svg><span class="en">Booking failed</span><span class="zh">录入失败</span> <small>→ Yibei + Jinchao</small></span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- end -->
+    <div class="end" style="--ac:#3F8F5F">
+      <span class="num"><svg><use href="#i-flag"/></svg></span>
+      <div class="card">
+        <div class="pic"><svg viewBox="0 0 48 48"><use href="#s-archive"/></svg></div>
+        <div>
+          <p class="phrase"><span class="en">Archive</span><span class="zh">归档</span></p>
+          <div class="whos"><span class="who m"><svg><use href="#i-gear"/></svg><span class="en">automatic</span><span class="zh">自动</span></span></div>
+        </div>
+        <span class="side"><span class="info" tabindex="0"><svg><use href="#i-i"/></svg><span class="tt"><span class="en">Once both lanes finish, every exhibit is kept and the TNO is closed. Nothing is lost after peak season.</span><span class="zh">两条路径完成后，所有材料保留，TNO 关闭。旺季后不会丢失任何文件。</span></span></span></span>
+      </div>
+    </div>
+
+  </div>
+
+  <footer>
+    <span class="en"><a href="flow.html">How it works</a> · <a href="gate.html">RAG Gate</a> · Updated 2026-09-07</span>
+    <span class="zh"><a href="flow.html">整体流程</a> · <a href="gate.html">RAG 闸门</a> · 更新于 2026-09-07</span>
+  </footer>
+
+</div>
+
+<script>
+"use strict";
+function setLang(v){
+  var r=document.documentElement;
+  r.setAttribute("data-lang",v);r.setAttribute("lang",v==="zh"?"zh-Hans":"en");
+  document.title=v==="zh"?"AI Data+ · 申请文件生命周期（MVP）":"AI Data+ · Submission file lifecycle (MVP)";
+}
+document.addEventListener("aidp:lang", function(e){ setLang(e.detail==="zh"?"zh":"en"); });
+setLang(document.documentElement.getAttribute("data-lang")||"en");
+
+var cards=document.querySelectorAll(".card");
+function setOpen(card,open){
+  var head=card.querySelector(".head"); if(!head) return;
+  card.classList.toggle("open",open); head.setAttribute("aria-expanded",open?"true":"false");
+}
+cards.forEach(function(c){
+  var head=c.querySelector(".head"); if(!head) return;
+  function tog(){setOpen(c,!c.classList.contains("open"));}
+  head.addEventListener("click",function(e){ if(e.target.closest(".info")) return; tog(); });
+  head.addEventListener("keydown",function(e){ if(e.target.closest(".info")) return; if(e.key==="Enter"||e.key===" "){e.preventDefault();tog();} });
+});
+/* tooltips: tap toggles on touch devices, keyboard Enter/Space too */
+document.querySelectorAll(".info").forEach(function(i){
+  i.addEventListener("click",function(e){e.stopPropagation();
+    var on=i.classList.contains("on");
+    document.querySelectorAll(".info.on").forEach(function(x){x.classList.remove("on");});
+    if(!on) i.classList.add("on");
+  });
+  i.addEventListener("keydown",function(e){ if(e.key==="Escape") i.classList.remove("on"); });
+});
+document.addEventListener("click",function(){document.querySelectorAll(".info.on").forEach(function(x){x.classList.remove("on");});});
+document.getElementById("btnExpand").addEventListener("click",function(){cards.forEach(function(c){setOpen(c,true);});});
+document.getElementById("btnCollapse").addEventListener("click",function(){cards.forEach(function(c){setOpen(c,false);});});
+</script>
+</body>
+</html>
