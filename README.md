@@ -2,7 +2,7 @@
 
 The public face of the programme: what AI Data+ is, how it is built, who signs what,
 when a person has to look at a submission — and, for whoever has to run it, a developer
-portal with the reviewer's manual and the model endpoints.
+portal with the flywheel manual and the model endpoints.
 
 Published with GitHub Pages. Every page is **one self-contained HTML file** — no CDN,
 no external font, no build step. Open one off a USB stick and it still works, which is
@@ -21,8 +21,8 @@ why the pages are the way they are.
 
 | Page | What it is |
 |---|---|
-| `developer.html` | The portal itself: three cards — the manual, the endpoints, the code. |
-| `manual.html` | The illustrated manual for the Triage Validation Flywheel. Built from `validate/manual/` in the code repo by `build.py`, which inlines every screenshot; that is why it is one 3.4 MB file. To refresh it, rebuild there and copy the result over this file. |
+| `developer.html` | The portal itself, in three parts: General (LLM API), Submission Agent (flywheel manual, the code), Facts Agent (to be filled). |
+| `manual.html` | The flywheel manual. Built from `validate/manual/` in the code repo by `build.py`, which inlines every screenshot; that is why it is one 3.4 MB file. To refresh it, rebuild there and copy the result over this file. |
 | `llm-api.html` | The two in-house OpenAI-compatible hosts: base URLs, model ids, the reasoning switch each expects, and the gotchas. **The API keys are deliberately not on this page** — it says "see the internal note" wherever one belongs. The values live in `04. docs\LLM-API-REFERENCE.md` on the project share and in each stage's gitignored config. Keep it that way while this repository is anywhere near public. |
 
 ### The password on it

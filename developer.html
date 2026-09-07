@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="What a developer needs to run AI Data+ rather than read about it: the reviewer's manual, the model endpoints, the code.">
+<meta name="description" content="LLM API, the code, and the flywheel manual.">
 <title>AI Data+ · Developer portal</title>
 <script>try{if(localStorage.getItem("aidp.lang")==="zh"){document.documentElement.setAttribute("data-lang","zh");document.documentElement.setAttribute("lang","zh-Hans");}}catch(e){}</script>
 <style>
@@ -15,41 +15,24 @@
   a{color:var(--orange)}
   :focus-visible{outline:2px solid var(--orange);outline-offset:3px}
 
-  .wrap{max-width:1200px;margin:0 auto;padding:32px 40px 90px}
-  .head{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;flex-wrap:wrap}
-  .ey{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--purple);margin:0 0 8px}
+  .wrap{max-width:960px;margin:0 auto;padding:40px 40px 90px}
   h1{font-family:var(--disp);font-size:clamp(28px,3.4vw,40px);line-height:1.12;letter-spacing:-.025em;
      margin:0;font-weight:700;color:var(--navy)}
-  .lede{max-width:58ch;color:var(--slate);margin:12px 0 0;font-size:16px}
 
-  .cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin:34px 0 0}
+  .part{margin-top:36px}
+  .part h2{font-family:var(--disp);font-size:15px;font-weight:600;letter-spacing:-.01em;
+           color:var(--navy);margin:0 0 10px}
+  .cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
   .card{position:relative;display:flex;flex-direction:column;background:var(--card);border:1px solid var(--line);
-        border-radius:var(--r-lg,14px);padding:20px 22px 22px;text-decoration:none;color:inherit;
+        border-radius:var(--r-card,10px);padding:22px 22px 20px;text-decoration:none;color:inherit;
         transition:transform .18s cubic-bezier(.2,.7,.2,1),box-shadow .18s,border-color .18s}
-  .card:hover{transform:translateY(-2px);border-color:#C3D0DD;box-shadow:0 14px 30px rgba(20,36,58,.09)}
-  .card .n{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;color:var(--mute);margin-bottom:12px}
-  .card h2{font-family:var(--disp);font-size:20px;line-height:1.15;letter-spacing:-.02em;margin:0 0 8px;color:var(--navy)}
-  .card p{margin:0;color:var(--slate);font-size:14px;max-width:40ch}
-  .card .meta{margin-top:auto;padding-top:16px;font-family:var(--mono);font-size:10.5px;letter-spacing:.05em;color:var(--mute)}
-  .card .go{position:absolute;right:20px;top:17px;color:#C8D3E0;font-size:15px;transition:color .18s,transform .18s}
-  .card:hover .go{color:var(--orange);transform:translateX(2px)}
-  .tag{display:inline-block;font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;padding:2px 7px;
-       border-radius:999px;border:1px solid;margin-bottom:10px}
-  .tag.warn{color:#93413D;background:#F8DEDC;border-color:#D8A6A3}
-  .tag.here{color:#2F6B47;background:#E3F1E8;border-color:#A8CDB6}
-  .tag.out{color:var(--slate);background:#EEF2F6;border-color:#C9D3DE}
-
-  .note{margin:34px 0 0;background:var(--card);border:1px solid var(--line);border-left:4px solid var(--navy);
-        border-radius:var(--r-card,10px);padding:16px 20px;max-width:76ch}
-  .note h3{font-family:var(--disp);font-size:15px;margin:0 0 6px;color:var(--navy);letter-spacing:-.01em}
-  .note p{margin:0;color:var(--slate);font-size:14px}
-  .note p + p{margin-top:7px}
-  code{font-family:var(--mono);font-size:12.5px;background:#EDF1F5;padding:1px 5px;border-radius:3px}
-
-  footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);
-         font-family:var(--mono);font-size:11px;color:var(--mute);letter-spacing:.03em}
-  footer a{color:var(--orange);text-decoration:none}
-  footer a:hover{text-decoration:underline}
+  a.card:hover{transform:translateY(-2px);border-color:#C3D0DD;box-shadow:0 14px 30px rgba(20,36,58,.09)}
+  .card h3{font-family:var(--disp);font-size:18px;line-height:1.2;letter-spacing:-.02em;margin:0 0 6px;color:var(--navy)}
+  .card p{margin:0;color:var(--slate);font-size:14px;max-width:32ch}
+  .card .go{position:absolute;right:18px;top:18px;color:#C8D3E0;font-size:15px;transition:color .18s,transform .18s}
+  a.card:hover .go{color:var(--orange);transform:translateX(2px)}
+  .card.wait{border-style:dashed;background:transparent;color:var(--mute)}
+  .card.wait h3,.card.wait p{color:var(--mute)}
 
   @media (max-width:980px){.wrap{padding-left:22px;padding-right:22px}.cards{grid-template-columns:1fr}}
 </style>
@@ -321,73 +304,53 @@
 <!-- /developer gate -->
 <div class="wrap" id="main">
 
-  <div class="head">
-    <div>
-      <p class="ey">Ageas + TPRe · AI Data+</p>
-      <h1><span class="en">Developer portal</span><span class="zh">开发者门户</span></h1>
-      <p class="lede">
-        <span class="en">What you need to run AI Data+ rather than read about it: the manual the reviewers work from, the model endpoints the agents call, and the code itself.</span>
-        <span class="zh">这里放的是"动手"所需的东西：复核人使用的手册、各 Agent 调用的模型端点，以及代码本身。</span>
-      </p>
+  <h1><span class="en">Developer portal</span><span class="zh">开发者门户</span></h1>
+
+  <section class="part" aria-labelledby="part-gen">
+    <h2 id="part-gen"><span class="en">General</span><span class="zh">通用</span></h2>
+    <div class="cards">
+      <a class="card" href="llm-api.html">
+        <span class="go" aria-hidden="true">→</span>
+        <h3><span class="en">LLM API</span><span class="zh">模型接口</span></h3>
+        <p>
+          <span class="en">The two in-house hosts. Keys are not on this page.</span>
+          <span class="zh">两台内部主机。密钥不在本页。</span>
+        </p>
+      </a>
     </div>
-  </div>
+  </section>
 
-  <div class="cards">
+  <section class="part" aria-labelledby="part-a">
+    <h2 id="part-a">Submission Agent</h2>
+    <div class="cards">
+      <a class="card" href="manual.html">
+        <span class="go" aria-hidden="true">→</span>
+        <h3><span class="en">Flywheel manual</span><span class="zh">飞轮手册</span></h3>
+        <p>
+          <span class="en">How to rule on a submission.</span>
+          <span class="zh">如何裁定一份提交。</span>
+        </p>
+      </a>
+      <a class="card" href="https://github.com/ageas-yibei/tpre-data-triage" target="_blank" rel="noopener">
+        <span class="go" aria-hidden="true">↗</span>
+        <h3><span class="en">The code</span><span class="zh">代码</span></h3>
+        <p>ageas-yibei/tpre-data-triage</p>
+      </a>
+    </div>
+  </section>
 
-    <a class="card" href="manual.html">
-      <span class="go" aria-hidden="true">→</span>
-      <span class="n">01</span>
-      <span class="tag here"><span class="en">IN THIS WIKI</span><span class="zh">本站内</span></span>
-      <h2><span class="en">Reviewer manual</span><span class="zh">复核手册</span></h2>
-      <p>
-        <span class="en">The illustrated manual for the Triage Validation Flywheel: every screen a reviewer meets, what it is asking, and how to answer it. Filter it by your role; both languages live in the one page.</span>
-        <span class="zh">分拣验证飞轮的图解手册：复核人会看到的每一屏在问什么、该怎么回答。可按角色筛选；中英文同在一页。</span>
-      </p>
-      <span class="meta"><span class="en">manual.html · EN / 中文 · 3.4 MB, one file</span><span class="zh">manual.html · 中英双语 · 单文件 3.4 MB</span></span>
-    </a>
-
-    <a class="card" href="llm-api.html">
-      <span class="go" aria-hidden="true">→</span>
-      <span class="n">02</span>
-      <span class="tag warn"><span class="en">INTERNAL NETWORK</span><span class="zh">仅限内网</span></span>
-      <h2><span class="en">LLM API reference</span><span class="zh">模型接口说明</span></h2>
-      <p>
-        <span class="en">The two in-house OpenAI-compatible hosts: base URLs, which models are loaded, the reasoning switch each one expects, and the gotchas that otherwise cost a day. The keys stay in the internal note.</span>
-        <span class="zh">两台公司内部的 OpenAI 兼容服务：地址、已加载的模型、各自的"思考"开关，以及不知道就会白耗一天的坑。密钥不在本站，见内部说明。</span>
-      </p>
-      <span class="meta"><span class="en">llm-api.html · reachable on the intranet only</span><span class="zh">llm-api.html · 仅内网可达</span></span>
-    </a>
-
-    <a class="card" href="https://github.com/ageas-yibei/tpre-data-triage" target="_blank" rel="noopener">
-      <span class="go" aria-hidden="true">↗</span>
-      <span class="n">03</span>
-      <span class="tag out">GITHUB</span>
-      <h2><span class="en">The code</span><span class="zh">代码仓库</span></h2>
-      <p>
-        <span class="en">The triage stage itself: the rules that sort a submission, the RAG gate, the core pack handed downstream, and the validation app. Pure standard-library Python, offline by design.</span>
-        <span class="zh">分拣阶段的实现：文件分拣规则、RAG 闸门、交付下游的核心包，以及验证应用。纯标准库 Python，按离线环境设计。</span>
-      </p>
-      <span class="meta">ageas-yibei/tpre-data-triage</span>
-    </a>
-
-  </div>
-
-  <div class="note">
-    <h3><span class="en">Two machines, one rule</span><span class="zh">两台机器，一条规矩</span></h3>
-    <p>
-      <span class="en">The workstation holds the real submissions and has no git. The coding PC has git and never holds a document. Code and conclusions move between them as two zips built by <code>bundle.py</code> — never a document, never a key.</span>
-      <span class="zh">工作站存放真实的申请材料，且没有 git；编码用的 PC 有 git，永远不存放任何文件。两者之间只通过 <code>bundle.py</code> 生成的两个压缩包传递代码与结论——不传文件，不传密钥。</span>
-    </p>
-    <p>
-      <span class="en">Everything in the pipeline runs on the Python standard library alone. Nothing here may grow a required dependency, and only two programs are allowed to open a network connection at all.</span>
-      <span class="zh">整条流水线仅依赖 Python 标准库。任何环节都不得引入必需的第三方依赖，且只有两个程序被允许发起网络连接。</span>
-    </p>
-  </div>
-
-  <footer>
-    <span class="en">Ageas + TPRe · AI Data+ · <a href="index.html">back to the overview</a></span>
-    <span class="zh">Ageas + TPRe · AI Data+ · <a href="index.html">返回总览</a></span>
-  </footer>
+  <section class="part" aria-labelledby="part-b">
+    <h2 id="part-b">Facts Agent</h2>
+    <div class="cards">
+      <div class="card wait">
+        <h3><span class="en">To be filled</span><span class="zh">待补充</span></h3>
+        <p>
+          <span class="en">Nothing here yet.</span>
+          <span class="zh">尚无内容。</span>
+        </p>
+      </div>
+    </div>
+  </section>
 
 </div>
 
