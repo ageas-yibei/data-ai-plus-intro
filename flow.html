@@ -5,36 +5,31 @@
 <title>AI Data+ · at a glance</title>
 <script>try{if(localStorage.getItem("aidp.lang")==="zh"){document.documentElement.setAttribute("data-lang","zh");document.documentElement.setAttribute("lang","zh-Hans");}}catch(e){}</script>
 <style>
-  :root{
-    --ink:#0F2137; --navy:#1C3557; --slate:#5B6B7F; --mute:#8D9BAB;
-    --purple:#7B2D8E; --orange:#E8622A; --cyan:#2E9FB8; --green:#3F8F5F; --amber:#C98A1E;
-    --blue:#4A7DBD;
-    --paper:#F2F5F8; --card:#FFFFFF; --line:#D9E0E8;
-    --disp:"Aptos Display","Segoe UI Variable Display","Segoe UI","Noto Sans SC","PingFang SC","Microsoft YaHei",system-ui,sans-serif;
-    --body:"Aptos","Segoe UI Variable Text","Segoe UI","Noto Sans SC","PingFang SC","Microsoft YaHei",system-ui,sans-serif;
-    --mono:ui-monospace,"Cascadia Mono","Segoe UI Mono",Consolas,monospace;
-  }
+  /* Palette, type ladder and surfaces come from the shared page kit further
+     down this file. Declared here: only what belongs to this chart page. */
   *{box-sizing:border-box}
   html,body,svg,.board,.banner{
     -webkit-print-color-adjust:exact;print-color-adjust:exact;color-adjust:exact}
-  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);
+  body{--wkw:1200px;                    /* the nav's column, so the two line up */
+       margin:0;background:var(--paper);color:var(--copy);font-family:var(--body);
        -webkit-font-smoothing:antialiased;line-height:1.5}
-  .wrap{max-width:1560px;margin:0 auto;padding:32px 40px 80px}
-
-  .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.14em;
-           color:var(--purple);margin:0 0 8px}
-  h1{font-family:var(--disp);font-size:clamp(28px,3.4vw,40px);line-height:1.12;margin:0 0 22px;
-     font-weight:700;letter-spacing:-.025em;color:var(--navy)}
-  h1 em{font-style:normal;color:inherit;font-weight:700}
-  .lede{max-width:64ch;color:var(--slate);margin:0 0 24px;font-size:15px}
+  .wrap{max-width:var(--wkw);margin:0 auto;
+        padding-left:var(--pad-x);padding-right:var(--pad-x);padding-bottom:80px}
+  .wkhead h1 em{font-style:normal;color:inherit;font-weight:inherit}
 
   /* ---------- stage rail ---------- */
-  .railrow{display:flex;gap:11px 22px;align-items:center;margin:0 0 18px;flex-wrap:wrap;
-        position:sticky;top:var(--wk-nav-h,46px);z-index:60;
-        background:var(--paper);
-        padding:8px 0 10px;margin-top:-8px}
+  /* one panel, rounded like every other surface, so the sticky bar does not read
+     as a white rectangle laid over the page. The view toggle sits on its own row
+     at the top left and NEVER moves; the stage rail takes the row below it, and is
+     the thing that comes and goes with the view. */
+  .railrow{display:flex;gap:10px 16px;align-items:center;flex-wrap:wrap;
+        position:sticky;top:calc(var(--wk-nav-h,46px) + 8px);z-index:60;
+        margin:0 0 24px;padding:10px 12px;
+        background:rgba(255,255,255,.86);
+        -webkit-backdrop-filter:saturate(1.6) blur(12px);backdrop-filter:saturate(1.6) blur(12px);
+        border:1px solid var(--line);border-radius:var(--r-card);box-shadow:var(--sh-1)}
   .rail{display:flex;flex:1 1 680px;min-width:0;height:40px;border:0;background:transparent;
-        overflow:visible;filter:drop-shadow(0 1px 2px rgba(15,33,55,.06))}
+        overflow:visible;filter:drop-shadow(0 1px 2px rgba(19,41,75,.05))}
   .stage{flex:1 1 0;min-width:0;position:relative;background:var(--line);border:0;
          padding:0 12px 0 28px;cursor:pointer;font:inherit;color:inherit;white-space:nowrap;
          display:flex;align-items:center;justify-content:center;gap:7px;
@@ -51,9 +46,9 @@
          clip-path:polygon(0 0,calc(100% - 13px) 0,100% 50%,calc(100% - 13px) 100%,0 100%)}
   .stage:last-child{clip-path:polygon(0 0,100% 0,100% 100%,0 100%,13px 50%)}
   .stage:last-child::before{clip-path:polygon(0 0,100% 0,100% 100%,0 100%,13px 50%)}
-  .stage:hover::before{background:#EDF3F8}
+  .stage:hover::before{background:var(--sky)}
   .stage[aria-selected="true"]::before{background:var(--navy)}
-  .stage:focus-visible{outline:0;background:var(--orange)}
+  .stage:focus-visible{outline:2px solid var(--orange);outline-offset:-2px}
   @media (max-width:1180px){
     .stage{padding:0 8px 0 24px}
     .stage:first-child{padding-left:12px}
@@ -61,59 +56,60 @@
   }
   .stage .lbl{display:flex;align-items:baseline;gap:7px;min-width:0}
   .stage .nm{overflow:hidden;text-overflow:ellipsis}
-  .stage .num{font-family:var(--mono);font-size:10px;color:var(--mute);letter-spacing:.06em}
+  .stage .num{font-family:var(--mono);font-size:10px;color:var(--slate);letter-spacing:.06em}
   .stage .nm{font-family:var(--disp);font-weight:700;font-size:13.5px;color:var(--navy)}
-  .stage .tag{font-family:var(--mono);font-size:9.5px;color:var(--mute);letter-spacing:.04em}
+  .stage .tag{font-family:var(--mono);font-size:9.5px;color:var(--slate);letter-spacing:.04em}
   .stage[aria-selected="true"]{background:var(--navy);color:#fff}
   .stage[aria-selected="true"] .num,.stage[aria-selected="true"] .nm,.stage[aria-selected="true"] .tag{color:#fff}
   .ctl{display:flex;flex:0 0 auto;align-items:stretch;height:40px;overflow:hidden;
         box-sizing:border-box;background:var(--card);border:1px solid var(--line);
-        border-radius:var(--r-ctl,6px);box-shadow:0 1px 2px rgba(20,36,58,.05)}
+        border-radius:var(--r-ctl);box-shadow:var(--sh-1)}
   .ctl button{font-family:var(--disp);font-weight:600;font-size:12.5px;padding:0 15px;
         border:0;border-radius:0;background:transparent;color:var(--slate);cursor:pointer;
         white-space:nowrap;transition:background .15s,color .15s}
   .ctl button + button{border-left:1px solid var(--line)}
-  .ctl button:hover{background:#EEF2F6;color:var(--navy)}
+  .ctl button:hover{background:var(--sky);color:var(--navy)}
   .ctl button:focus-visible{outline:2px solid var(--orange);outline-offset:-2px}
   .ctl button[aria-selected="true"]{background:var(--navy);color:#fff}
   .ctl button[aria-selected="true"]:hover{background:var(--navy);color:#fff}
-  .exportbtn{font-family:var(--disp);font-weight:600;font-size:12.5px;height:30px;padding:0 13px;
+  .exportbtn{font-family:var(--disp);font-weight:600;font-size:12.5px;height:32px;padding:0 14px;
         display:flex;align-items:center;gap:8px;
-        border:1px solid var(--line);border-radius:var(--r-ctl,6px);background:transparent;color:var(--navy);
-        cursor:pointer;white-space:nowrap;transition:border-color .15s,background .15s}
+        border:1px solid var(--line);border-radius:var(--r-ctl);background:var(--card);color:var(--navy);
+        cursor:pointer;white-space:nowrap;box-shadow:var(--sh-1);
+        transition:border-color .15s,background .15s,box-shadow .15s}
   .exportbtn .g{font-family:var(--mono);font-size:13px;color:var(--slate)}
-  .exportbtn:hover{border-color:#AEBBC8;background:var(--card)}
+  .exportbtn:hover{border-color:var(--line-2);background:var(--sky);color:var(--navy)}
   .exportbtn:hover .g{color:var(--orange)}
   .exportbtn:focus-visible{outline:2px solid var(--orange);outline-offset:2px}
   .oblock .btitle{font-family:var(--disp);font-weight:700;font-size:14px}
   .oblock .bsub{font-family:var(--mono);font-size:9px;letter-spacing:.06em;fill:var(--slate)}
-  .oblock .bio{font-family:var(--mono);font-size:8.5px;letter-spacing:.02em;fill:#7A8794}
-  .htick{stroke:#8D9BAB;stroke-width:1.3;stroke-dasharray:2 3}
+  .oblock .bio{font-family:var(--mono);font-size:8.5px;letter-spacing:.02em;fill:var(--slate)}
+  .htick{stroke:var(--mute);stroke-width:1.3;stroke-dasharray:2 3}
 
 
-  .keyrow{display:flex;flex-wrap:wrap;gap:7px 16px;align-items:center;margin:0 0 9px;
+  .keyrow{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;margin:0 0 12px;
           font-family:var(--mono);font-size:10px;letter-spacing:.04em;color:var(--slate)}
   .keyrow .k{display:flex;align-items:center;gap:6px}
   .keyrow .sw{width:15px;height:11px;border-radius:2px;border:1px solid;flex:0 0 auto}
   .keyrow .ln{width:20px;border-top:1.6px solid #7C90A4;flex:0 0 auto}
   .keyrow .ln.lo{border-top:2px dashed var(--orange)}
-  .keyrow .ln.tb{border-top:1.6px dashed #8D9BAB}
+  .keyrow .ln.tb{border-top:1.6px dashed var(--mute)}
   .keyrow .dia{width:11px;height:11px;background:#fff;border:1px solid var(--slate);
           transform:rotate(45deg);flex:0 0 auto}
-  .keyrow .dashbox{width:17px;height:11px;border:1.4px dashed #3F8F5F;border-radius:2px;flex:0 0 auto}
+  .keyrow .dashbox{width:17px;height:11px;border:1.4px dashed var(--green);border-radius:2px;flex:0 0 auto}
   .keyrow .k.fade{opacity:.42}
 
   /* ---------- board / svg ---------- */
-  .board{background:var(--card);border:1px solid var(--line);border-radius:var(--r-card,10px);
-         padding:4px;overflow:auto}
+  .board{background:var(--card);border:1px solid var(--line);border-radius:var(--r-card);
+         box-shadow:var(--sh-1);padding:8px;overflow:auto}
   .boardwrap{position:relative}
   .boardwrap::after{content:"";position:absolute;top:1px;right:1px;bottom:1px;width:32px;
-         pointer-events:none;border-radius:0 3px 3px 0;
+         pointer-events:none;border-radius:0 var(--r-card) var(--r-card) 0;
          background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,.94))}
-  .utils{display:flex;align-items:center;gap:5px;flex:0 0 auto;order:2}
-  .vtoggle{order:3;margin-left:auto}
-  .rail{order:1}
-  .zoomer{height:30px;background:transparent;box-shadow:none}
+  .vtoggle{order:1;margin-left:0}
+  .utils{display:flex;align-items:center;gap:8px;flex:0 0 auto;order:2;margin-left:auto}
+  .rail{order:3;flex:1 0 100%}
+  .zoomer{height:32px}
   .zoomer button{font-family:var(--mono);font-size:14px;min-width:28px;padding:0 7px;
          color:var(--navy);line-height:1}
   .zoomer button + button{border-left:0}
@@ -124,7 +120,7 @@
 
   .lanehdr{font-family:var(--mono);font-size:11px;letter-spacing:.16em;fill:#fff}
   .lanehdr-bg{fill:var(--navy)}
-  .lanesep{stroke:#E4E9EF;stroke-width:1;stroke-dasharray:2 6}
+  .lanesep{stroke:var(--line);stroke-width:1;stroke-dasharray:2 6}
   .sidetag{font-family:var(--mono);font-size:10px;letter-spacing:.08em;fill:var(--slate);font-weight:600}
 
   .cont{fill:none;stroke-width:1.6;rx:4}
@@ -132,7 +128,7 @@
   .ctitle{font-family:var(--disp);font-weight:700;font-size:13px;
           paint-order:stroke;stroke:#fff;stroke-width:5px;stroke-linejoin:round}
   .ctag{font-family:var(--mono);font-size:9px;letter-spacing:.08em;fill:var(--mute)}
-  .cstamp{font-family:var(--mono);font-size:11px;fill:#7A8794;letter-spacing:.04em;
+  .cstamp{font-family:var(--mono);font-size:11px;fill:var(--slate);letter-spacing:.04em;
           paint-order:stroke;stroke:#fff;stroke-width:8px;stroke-linejoin:round}
 
   .nd{cursor:pointer;transition:opacity .3s ease}
@@ -155,21 +151,21 @@
   .ed.loop{stroke:var(--orange);stroke-width:2;stroke-dasharray:7 5;animation:dashmove 1.1s linear infinite}
   @keyframes dashmove{to{stroke-dashoffset:-12}}
   .ed.tbd{stroke-dasharray:5 4}
-  .elb{font-family:var(--mono);font-size:9.5px;fill:#5B6B7F;paint-order:stroke;
+  .elb{font-family:var(--mono);font-size:9.5px;fill:var(--slate);paint-order:stroke;
        stroke:#fff;stroke-width:3.5px;stroke-linejoin:round}
-  .elb.lo{fill:#B8600F;font-weight:600}
-  .elb.trace{fill:#1C3557;font-weight:600}
+  .elb.lo{fill:var(--orange-ink);font-weight:600}
+  .elb.trace{fill:var(--navy);font-weight:600}
   .elb.fadeE{opacity:.14}
-  .eg.trace .ed{stroke:#1C3557;stroke-width:2.7}
-  .eg.trace .ed.loop{stroke:#C24E1C;stroke-width:2.8}
-  .eg.trace .elb{fill:#1C3557;font-weight:600}
+  .eg.trace .ed{stroke:var(--navy);stroke-width:2.7}
+  .eg.trace .ed.loop{stroke:var(--orange-ink);stroke-width:2.8}
+  .eg.trace .elb{fill:var(--navy);font-weight:600}
   .eg.fadeE{opacity:.14}
 
   .off{opacity:.13;pointer-events:none}
   .nd.off{opacity:.34}
   [data-inactive="ghost"] .nd.off text{opacity:0}
-  [data-inactive="ghost"] .nd.off rect.bg,[data-inactive="ghost"] .nd.off path.bg{fill:#fff;stroke:#C3CEDA}
-  [data-inactive="ghost"] .nd.off .actor,[data-inactive="ghost"] .nd.off .actor-h{stroke:#C3CEDA!important}
+  [data-inactive="ghost"] .nd.off rect.bg,[data-inactive="ghost"] .nd.off path.bg{fill:#fff;stroke:var(--line-2)}
+  [data-inactive="ghost"] .nd.off .actor,[data-inactive="ghost"] .nd.off .actor-h{stroke:var(--line-2)!important}
   [data-inactive="dim"] .nd.off{opacity:.22}
   [data-inactive="hide"] .nd.off,[data-inactive="hide"] .eg.off,
   [data-inactive="hide"] text.elb.off,[data-inactive="hide"] .semi{opacity:0}
@@ -181,100 +177,103 @@
   [data-detail="sparse"] .ctag,[data-detail="sparse"] .sidetag,
   [data-detail="sparse"] .cstamp{display:none}
 
-  [data-ink="mono"] .nd rect.bg,[data-ink="mono"] .nd path.bg{fill:#FBFCFD;stroke:#9AA9B8}
-  [data-ink="mono"] .nd.k-human rect.bg{fill:#FBE7DA;stroke:#E0632A}
-  [data-ink="mono"] .oblock rect.bg{fill:#FBFCFD;stroke:#8D9BAB}
-  [data-ink="mono"] .oblock .btitle,[data-ink="mono"] .ctitle{fill:#5B6B7F}
-  [data-ink="mono"] .cont{stroke:#8D9BAB}
+  [data-ink="mono"] .nd rect.bg,[data-ink="mono"] .nd path.bg{fill:var(--sky-2);stroke:#9AA9B8}
+  [data-ink="mono"] .nd.k-human rect.bg{fill:var(--orange-3);stroke:var(--orange)}
+  [data-ink="mono"] .oblock rect.bg{fill:var(--sky-2);stroke:var(--mute)}
+  [data-ink="mono"] .oblock .btitle,[data-ink="mono"] .ctitle{fill:var(--slate)}
+  [data-ink="mono"] .cont{stroke:var(--mute)}
   [data-ink="mono"] .lanehdr-bg{fill:#6D7C8C}
-  [data-ink="mono"] .actor,[data-ink="mono"] .actor-h{stroke:#E0632A!important}
+  [data-ink="mono"] .actor,[data-ink="mono"] .actor-h{stroke:var(--orange)!important}
   [data-ink="mono"][data-inactive="ghost"] .nd.off rect.bg,
-  [data-ink="mono"][data-inactive="ghost"] .nd.off path.bg{fill:#fff;stroke:#C3CEDA}
+  [data-ink="mono"][data-inactive="ghost"] .nd.off path.bg{fill:#fff;stroke:var(--line-2)}
   [data-ink="mono"][data-inactive="ghost"] .nd.off .actor,
-  [data-ink="mono"][data-inactive="ghost"] .nd.off .actor-h{stroke:#C3CEDA!important}
+  [data-ink="mono"][data-inactive="ghost"] .nd.off .actor-h{stroke:var(--line-2)!important}
 
   .utils{position:relative}
-  .tweaks{position:absolute;right:0;top:38px;z-index:20;width:272px;background:var(--card);
-        border:1px solid var(--line);border-radius:var(--r-card,10px);padding:15px 16px 16px;
-        box-shadow:0 14px 38px rgba(20,36,58,.20);text-align:left}
-  .tweaks h4{font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;
-        color:var(--mute);margin:0 0 13px;font-weight:400}
-  .trow{margin-bottom:13px}
+  .tweaks{position:absolute;right:0;top:40px;z-index:20;width:272px;background:var(--card);
+        border:1px solid var(--line);border-radius:var(--r-card);padding:16px;
+        box-shadow:var(--sh-3);text-align:left}
+  .tweaks h4{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+        color:var(--mute);margin:0 0 16px;font-weight:600}
+  .trow{margin-bottom:16px}
   .trow:last-child{margin-bottom:0}
   .tlab{display:block;font-family:var(--disp);font-weight:700;font-size:12px;color:var(--navy)}
-  .thint{display:block;font-family:var(--mono);font-size:9.5px;color:var(--mute);
-        margin:1px 0 6px;letter-spacing:.02em}
-  .tseg{display:flex;border:1px solid var(--line);border-radius:3px;overflow:hidden}
+  .thint{display:block;font-family:var(--mono);font-size:9.5px;color:var(--slate);
+        margin:2px 0 8px;letter-spacing:.02em}
+  .tseg{display:flex;border:1px solid var(--line);border-radius:var(--r-ctl);overflow:hidden}
   .tseg button{flex:1;font-family:var(--disp);font-weight:600;font-size:11.5px;padding:6px 4px;
         border:0;background:transparent;color:var(--slate);cursor:pointer;
         transition:background .15s,color .15s}
   .tseg button + button{border-left:1px solid var(--line)}
-  .tseg button:hover{background:#EEF2F6;color:var(--navy)}
+  .tseg button:hover{background:var(--sky);color:var(--navy)}
   .tseg button[aria-pressed="true"]{background:var(--navy);color:#fff}
   .tseg button:focus-visible{outline:2px solid var(--orange);outline-offset:-2px}
   .semi{opacity:.22}
 
   .flagpill{font-family:var(--mono);font-size:8.5px;letter-spacing:.05em}
-  .flagpill rect{fill:#FFF3D6;stroke:var(--amber)}
-  .flagpill text{fill:#8A6410}
+  .flagpill rect{fill:var(--amber-2);stroke:var(--amber)}
+  .flagpill text{fill:var(--amber-ink)}
 
   .qmk{cursor:pointer}
-  .qmk circle{fill:#FFF3D6;stroke:#C9A227;stroke-width:1.4}
-  .qmk text{font-family:var(--disp);font-size:12.5px;font-weight:700;fill:#8A6410;
+  .qmk circle{fill:var(--amber-2);stroke:var(--amber);stroke-width:1.4}
+  .qmk text{font-family:var(--disp);font-size:12.5px;font-weight:700;fill:var(--amber-ink);
             pointer-events:none}
-  .qmk:hover circle,.qmk:focus-visible circle{fill:#F7DFA0}
+  .qmk:hover circle,.qmk:focus-visible circle{fill:color-mix(in srgb,var(--amber) 40%,#fff)}
   .qmk:focus-visible{outline:none}
-  .qmk:focus-visible circle{stroke:#8A6410;stroke-width:2}
+  .qmk:focus-visible circle{stroke:var(--amber-ink);stroke-width:2}
 
   /* ---------- detail ---------- */
   .detail{margin-top:16px;background:var(--card);border:1px solid var(--line);
-          border-radius:var(--r-card,10px);padding:14px 18px;min-height:60px;
-          position:sticky;bottom:14px;z-index:6;box-shadow:0 8px 26px rgba(20,36,58,.16)}
-  .detail.isempty{background:transparent;border:none;padding:6px 2px;min-height:0;
+          border-radius:var(--r-card);padding:16px 20px;min-height:64px;
+          position:sticky;bottom:16px;z-index:6;box-shadow:var(--sh-3)}
+  .detail.isempty{background:transparent;border:none;padding:8px 2px;min-height:0;
           position:static;box-shadow:none}
   .detail .close{float:right;font-family:var(--mono);font-size:10px;letter-spacing:.08em;
           text-transform:uppercase;background:transparent;border:1px solid var(--line);
-          border-radius:2px;color:var(--slate);padding:3px 9px;cursor:pointer;margin-left:14px}
-  .detail .close:hover{color:var(--ink);border-color:#B9C4D0}
+          border-radius:var(--r-ctl);color:var(--slate);padding:4px 10px;cursor:pointer;margin-left:16px;
+          transition:color .15s,border-color .15s}
+  .detail .close:hover{color:var(--ink);border-color:var(--line-2)}
   .detail .close:focus-visible{outline:2px solid var(--orange);outline-offset:2px}
   .detail .who{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;
                margin-bottom:4px}
-  .detail h3{font-family:var(--disp);font-size:16px;margin:0 0 4px;color:var(--navy)}
-  .detail p{margin:0;color:var(--slate);font-size:14px;max-width:82ch}
-  .detail .empty{color:var(--mute);font-size:13.5px}
+  .detail h3{font-family:var(--disp);font-weight:700;font-size:var(--t-h3);margin:0 0 6px;
+             letter-spacing:-.015em;color:var(--navy)}
+  .detail p{margin:0;color:var(--copy);font-size:var(--t-body);line-height:1.55;max-width:82ch}
+  .detail .empty{color:var(--slate);font-size:14px}
 
   /* ---------- table + flags ---------- */
-  h2{font-family:var(--disp);font-size:20px;color:var(--navy);margin:34px 0 4px}
-  .sub{color:var(--slate);font-size:14px;margin:0 0 14px}
-  .tw{overflow-x:auto;background:var(--card);border:1px solid var(--line);border-radius:var(--r-card,10px)}
-  table{border-collapse:collapse;width:100%;min-width:820px;font-size:13.5px}
-  th,td{text-align:left;padding:10px 14px;border-bottom:1px solid var(--line);vertical-align:top}
-  thead th{background:var(--navy);color:#fff;font-family:var(--mono);font-size:10.5px;
-           letter-spacing:.1em;text-transform:uppercase;font-weight:400;border:0}
+  h2{font-family:var(--disp);font-weight:800;font-size:var(--t-h2);letter-spacing:-.022em;
+     color:var(--navy);margin:44px 0 6px;text-wrap:balance}
+  .sub{color:var(--copy);font-size:15px;line-height:1.5;margin:0 0 16px;max-width:66ch;text-wrap:pretty}
+  .tw{overflow-x:auto;background:var(--card);border:1px solid var(--line);
+      border-radius:var(--r-card);box-shadow:var(--sh-1)}
+  table{border-collapse:collapse;width:100%;min-width:820px;font-size:var(--t-body)}
+  th,td{text-align:left;padding:12px 16px;border-bottom:1px solid var(--line);vertical-align:top}
+  thead th{background:var(--navy);color:#fff;font-family:var(--mono);font-size:11px;
+           letter-spacing:.14em;text-transform:uppercase;font-weight:600;border:0}
   tbody tr:last-child td{border-bottom:0}
-  td.role{font-weight:600;color:var(--navy);white-space:nowrap}
-  td.nm{color:var(--slate)} td.duty{font-size:12.5px;color:var(--slate);white-space:nowrap}
-  td.duty.none{color:#C3CEDA}
-  th.live{background:#B84A16} td.live{background:#FDF3EE}
-  tbody tr:hover td{background:#FAFCFD} tbody tr:hover td.live{background:#FBE9DF}
-  .flags{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px;margin-top:16px}
-  .flag{background:#FFFBF2;border:1px solid #E8D6A8;border-radius:var(--r-card,10px);padding:14px 16px;
-        order:var(--o,9);transition:box-shadow .2s,border-color .2s}
-  .flag.rel{border-color:#C9A227;box-shadow:0 0 0 2px rgba(201,162,39,.24)}
-  .flag.hot{border-color:#C9A227;box-shadow:0 0 0 4px rgba(201,162,39,.5)}
+  td.role{font-weight:700;color:var(--navy);white-space:nowrap}
+  td.nm{color:var(--copy)} td.duty{font-size:13px;color:var(--copy);white-space:nowrap}
+  td.duty.none{color:var(--mute)}
+  th.live{background:var(--orange-ink)} td.live{background:var(--orange-3)}
+  tbody tr:hover td{background:var(--sky-2)} tbody tr:hover td.live{background:color-mix(in srgb,var(--orange-3) 72%,var(--orange-2))}
+  .flags{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px;margin-top:16px}
+  .flag{--ring:0 0 0 0 color-mix(in srgb,var(--amber) 0%,transparent);
+        background:var(--amber-2);border:1px solid color-mix(in srgb,var(--amber) 38%,#fff);border-radius:var(--r-card);
+        padding:16px 20px;order:var(--o,9);box-shadow:var(--ring),var(--sh-1);
+        transition:box-shadow .18s,border-color .18s}
+  .flag:hover{border-color:var(--amber);box-shadow:var(--ring),var(--sh-1)}
+  .flag.rel{--ring:0 0 0 2px color-mix(in srgb,var(--amber) 28%,transparent);border-color:var(--amber)}
+  .flag.hot{--ring:0 0 0 4px color-mix(in srgb,var(--amber) 55%,transparent);border-color:var(--amber)}
   .flag .top{display:flex;align-items:center;gap:8px;margin:0 0 8px}
-  .flag .sev{font-family:var(--mono);font-size:9.5px;letter-spacing:.09em;text-transform:uppercase;
-        border:1px solid #D9BE72;border-radius:2px;padding:1px 6px;color:#8A6410}
-  .flag .rank{font-family:var(--mono);font-size:10px;color:#8A6410;opacity:.55;margin-left:auto}
-  .flag .where{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.08em;
-               text-transform:uppercase;color:#8A6410;margin:0 0 6px;opacity:.75}
-  .flag b{display:block;font-family:var(--disp);font-size:14px;color:#8A6410;margin-bottom:4px}
-  .flag p{margin:0;font-size:13px;color:#6E5A2E;line-height:1.5}
-  footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);
-         font-family:var(--mono);font-size:11px;color:var(--mute);letter-spacing:.03em;
-         display:flex;justify-content:flex-start;gap:18px;flex-wrap:wrap}
-  footer a{color:var(--orange);text-decoration:none}
-  footer a:hover{text-decoration:underline}
+  .flag .sev{font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;
+        border:1px solid var(--amber);border-radius:var(--r-ctl);padding:2px 8px;color:var(--amber-ink)}
+  .flag .rank{font-family:var(--mono);font-size:10px;color:var(--amber-ink);margin-left:auto}
+  .flag .where{display:block;font-family:var(--mono);font-size:11px;letter-spacing:.14em;
+               text-transform:uppercase;color:var(--amber-ink);margin:0 0 8px;opacity:.85}
+  .flag b{display:block;font-family:var(--disp);font-weight:700;font-size:16px;line-height:1.3;
+          letter-spacing:-.015em;color:var(--amber-ink);margin-bottom:6px;text-wrap:pretty}
+  .flag p{margin:0;font-size:13.5px;color:color-mix(in srgb,var(--amber-ink) 82%,var(--navy));line-height:1.55;text-wrap:pretty}
 
   [data-lang="zh"] .sb,[data-lang="zh"] .ctag,[data-lang="zh"] .cstamp,
   [data-lang="zh"] .sidetag,[data-lang="zh"] .lanehdr,[data-lang="zh"] .elb,
@@ -294,6 +293,10 @@
 
   html[data-lang="en"] .zh,html[data-lang="zh"] .en{display:none}
   [data-view="g"] .rail{display:none}
+  /* the panel goes, its inset stays: the toggle must not move a pixel between views */
+  [data-view="g"] .railrow{position:static;background:none;box-shadow:none;
+        -webkit-backdrop-filter:none;backdrop-filter:none;border-color:transparent;
+        margin:0 0 18px}
   [data-view="g"] .zoomer,[data-view="g"] #tweakBtn,[data-view="g"] #exportChart,
   [data-view="g"] .tweaks,[data-view="g"] .keyrow.chartkey,[data-view="g"] .deep,
   [data-view="g"] .boardwrap::after{display:none}
@@ -304,10 +307,8 @@
   [data-view="o"] #boardG,[data-view="d"] #boardG{display:none}
   #boardG[hidden]{display:none}
 
-  .hero-g h1{margin-bottom:8px}
-  .hero-g .lede{margin:0 0 18px}
   #boardG{display:flex;flex-direction:column;gap:0;max-width:1200px}
-  #boardG h2{margin:22px 0 10px}
+  #boardG h2{margin:40px 0 12px}
   #boardG h2:first-child{margin-top:4px}
   #boardG .board{margin:0}
   #boardG svg.map{min-width:900px}
@@ -321,13 +322,14 @@
   #boardG .jump{cursor:pointer}
   #boardG .jump:focus{outline:none}
   #boardG .jump:focus-visible .hit,
-  #boardG .jump:hover .hit{stroke:var(--orange);stroke-width:1.6;fill:rgba(224,99,42,.06)}
-  .factline{text-align:center;color:var(--slate);font-size:13.5px;margin:10px 0 0}
-  .factline b{color:var(--navy)}
-  .banner{margin-top:28px;background:#FDEFE6;border:1px solid #F0BDA0;border-radius:var(--r-card,10px);
-          padding:14px 20px;text-align:center;font-family:var(--disp);font-weight:700;
-          font-size:15.5px;color:var(--navy)}
-  .jump-hint{text-align:center;color:var(--mute);font-size:12.5px;margin:8px 0 0}
+  #boardG .jump:hover .hit{stroke:var(--orange);stroke-width:1.6;fill:color-mix(in srgb,var(--orange) 6%,transparent)}
+  .factline{text-align:center;color:var(--copy);font-size:var(--t-body);line-height:1.5;margin:12px 0 0}
+  .factline b{color:var(--navy);font-weight:700}
+  .banner{margin-top:28px;background:var(--orange-3);border:1px solid var(--orange-2);
+          border-radius:var(--r-card);box-shadow:var(--sh-1);
+          padding:16px 20px;text-align:center;font-family:var(--disp);font-weight:700;
+          font-size:16px;letter-spacing:-.015em;color:var(--navy)}
+  .jump-hint{text-align:center;color:var(--slate);font-size:12.5px;margin:12px 0 0}
   [data-lang="zh"] #boardG .tt{font-family:var(--disp);letter-spacing:0}
   [data-lang="zh"] #boardG .tm{font-family:var(--body);letter-spacing:.03em}
   [data-lang="zh"] #boardG text.tm[font-size="8"],
@@ -335,27 +337,34 @@
   [data-lang="zh"] .jump-hint,[data-lang="zh"] .factline,[data-lang="zh"] .banner,
   [data-lang="zh"] #boardG h2{letter-spacing:0}
   [data-lang="zh"] #boardG h2{line-height:1.4;text-wrap:pretty}
+  html[lang^="zh"] .sub,html[lang^="zh"] .detail p,
+  html[lang^="zh"] .flag p,html[lang^="zh"] td
+    {line-height:1.75;letter-spacing:.01em}
+  html[lang^="zh"] .factline,html[lang^="zh"] .jump-hint{line-height:1.7}
+  html[lang^="zh"] h2,html[lang^="zh"] .detail h3,html[lang^="zh"] .flag b
+    {line-height:1.25;letter-spacing:0}
 
-  @media (max-width:980px){.wrap{padding-left:22px;padding-right:22px}}
+  @media (max-width:980px){.wrap{--pad-x:22px}}
   @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
   @media print{
     html,body,*,svg,svg *,.board,.banner,.wrap{
       -webkit-print-color-adjust:exact!important;
       print-color-adjust:exact!important;
       color-adjust:exact!important}
-    html::before{content:"";position:fixed;inset:0;z-index:-1;background:#F2F5F8!important}
-    html,body{background:#F2F5F8!important;margin:0!important;padding:0!important}
+    html::before{content:"";position:fixed;inset:0;z-index:-1;background:#FFFFFF!important}
+    html,body{background:#FFFFFF!important;margin:0!important;padding:0!important}
     .wrap{padding:14mm 16mm 18mm!important}
+    .wkhead{padding-top:0!important;margin-bottom:12px}
     .railrow,.utils,.ctl,.exportbtn,.tweaks,.detail,.deep{display:none!important}
     .boardwrap::after{display:none}
-    .board{overflow:visible;border-color:#C9D2DC;background:#fff!important}
+    .board{overflow:visible;border-color:var(--line-2);background:#fff!important}
     svg.map{min-width:0!important}
     svg.map[style*="display: none"] + .print-raster{display:block}
     .print-raster{width:100%;height:auto;display:block}
     #boardG h2{break-after:avoid}
     #boardG .board{break-inside:avoid}
-    .banner{background:#FDEFE6!important}
-    @page{margin:0;background:#F2F5F8}
+    .banner{background:var(--orange-3)!important}
+    @page{margin:0;background:#FFFFFF}
   }
 </style>
 </head>
@@ -480,13 +489,128 @@
 })();
 </script>
 <!-- /wiki chrome -->
+<!-- wiki page kit · identical in every page that carries it: edit one, edit all -->
+<style id="wk-kit">
+  /* ---- AI Data+ page kit: the Overview's look, shared by the pages behind it ---- */
+  :root{
+    /* palette · the Overview's, to the byte */
+    --navy:#13294B; --copy:#3A4A63; --mute:#8A97AA; --line:#D3DEEA; --sky:#EAF2F8;
+    /* line-2 is the border a card takes when it lifts; sky-2 a row under the pointer */
+    --line-2:#C3D0DD; --mute-2:#C8D3E0; --sky-2:#F6F9FC;
+    /* every -ink is the readable version of its colour: 4.5:1 on white AND on its own
+       wash, so a label may sit on either without a second decision */
+    --orange:#E8752A; --orange-2:#F1A26C; --orange-3:#FCE9DC; --orange-ink:#A34A14;
+    --purple:#6B2C91; --purple-2:#EFE6F5; --purple-ink:#6B2C91;
+    --green:#2E9E6B;  --green-2:#E3F4EB;  --green-ink:#1F7A45;
+    --blue-ink:#355F91;
+    --amber:#C9922B;  --amber-2:#FBF0DA; --amber-ink:#8A6410;
+    --halt:#C8443A;   --halt-2:#F8E3E1;  --halt-ink:#A8382F;
+    --paper:#FFFFFF;  --card:#FFFFFF;
+    /* surfaces · one card, one lift, everywhere */
+    --sh-1:0 1px 2px rgba(19,41,75,.05);
+    --sh-2:0 12px 30px rgba(19,41,75,.08);
+    --sh-3:0 18px 44px rgba(19,41,75,.14);
+    --r-ctl:6px; --r-card:14px; --r-lg:18px;
+    /* type scale · one ladder, every page */
+    --t-h1:clamp(32px,4.2vw,54px);
+    --t-h2:clamp(21px,2.1vw,27px);
+    --t-h3:19px;
+    --t-body:15.5px;
+    --t-lede:17px;
+    --wkw:860px;              /* the reading column; a chart page overrides it */
+    --pad-x:40px;
+  }
+  :focus-visible{outline:2px solid var(--orange);outline-offset:2px}
+
+  /* the ground: two soft washes and a dot grid, exactly as the Overview draws them */
+  .wkbg{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
+  .wkbg i{position:absolute;width:64vmax;height:64vmax;border-radius:50%;
+          filter:blur(100px);opacity:.34;animation:wkdrift 22s ease-in-out infinite}
+  .wkbg i:nth-child(1){left:-24vmax;top:-18vmax;background:var(--orange-3)}
+  .wkbg i:nth-child(2){right:-28vmax;bottom:-26vmax;background:var(--sky);animation-delay:-11s}
+  .wkbg:after{content:"";position:absolute;inset:0;opacity:.05;
+          background-image:radial-gradient(#13294B .9px,transparent 1px);background-size:30px 30px}
+  @keyframes wkdrift{0%,100%{margin-left:0;margin-top:0}50%{margin-left:3vw;margin-top:2vh}}
+  @media (prefers-reduced-motion:reduce){.wkbg i{animation:none}}
+  @media print{.wkbg{display:none}}
+
+  /* the page head: eyebrow, title, lede, and whatever controls the page owns */
+  .wkhead{display:flex;align-items:flex-end;justify-content:space-between;gap:16px 32px;
+          flex-wrap:wrap;padding:34px 0 20px;margin:0 0 24px;border-bottom:1px solid var(--line)}
+  .wkhead-t{flex:1 1 420px;min-width:0}
+  .wkhead-a{flex:0 0 auto;display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding-bottom:4px}
+  .wkey{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.14em;
+        color:var(--purple);margin:0 0 11px}
+  .wkhead h1{font-family:var(--disp);font-weight:800;color:var(--navy);font-size:var(--t-h1);
+             line-height:1.02;letter-spacing:-.032em;margin:0;text-wrap:balance}
+  .wklede{font-size:var(--t-lede);line-height:1.55;color:var(--copy);margin:14px 0 0;
+          max-width:58ch;text-wrap:pretty}
+  /* a page whose own toolbar sits right below the title draws no rule under it */
+  .wkhead.wk-bare{border-bottom:0;padding-bottom:10px;margin-bottom:12px}
+
+  /* section heads, one size on every page */
+  .wkh2{font-family:var(--disp);font-weight:800;font-size:var(--t-h2);letter-spacing:-.022em;
+        color:var(--navy);margin:44px 0 6px;text-wrap:balance}
+  .wkh3{font-family:var(--disp);font-weight:700;font-size:var(--t-h3);letter-spacing:-.02em;
+        color:var(--navy);margin:0}
+  .wksub{font-size:15px;line-height:1.5;color:var(--copy);margin:0 0 16px;max-width:58ch;
+         text-wrap:pretty}
+
+  /* one card, one lift. A page adds its own edge or band on top of these. */
+  .wkcard{background:var(--card);border:1px solid var(--line);border-radius:var(--r-card);
+          box-shadow:var(--sh-1)}
+  .wkcard-lift{transition:transform .18s cubic-bezier(.2,.7,.2,1),box-shadow .18s,border-color .18s}
+  .wkcard-lift:hover{transform:translateY(-2px);border-color:var(--line-2);box-shadow:var(--sh-2)}
+  @media (prefers-reduced-motion:reduce){.wkcard-lift{transition:none}
+    .wkcard-lift:hover{transform:none}}
+
+  /* keep reading: the Overview's contents cards, minus the page you are on */
+  .wknext{margin:60px 0 0;padding:28px 0 0;border-top:1px solid var(--line)}
+  .wknext-h{font-family:var(--disp);font-weight:800;font-size:var(--t-h2);letter-spacing:-.022em;
+            color:var(--navy);margin:0 0 6px}
+  .wknext-s{font-size:15px;line-height:1.5;color:var(--copy);margin:0 0 20px;max-width:52ch}
+  .wknext-g{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;
+            max-width:var(--wkw);margin:0}
+  .wknext-c{position:relative;display:block;padding:18px 20px 20px;background:var(--card);
+            border:1px solid var(--line);border-radius:var(--r-card);box-shadow:var(--sh-1);
+            text-decoration:none;color:inherit;
+            transition:transform .18s cubic-bezier(.2,.7,.2,1),box-shadow .18s,border-color .18s}
+  .wknext-c:hover{transform:translateY(-2px);border-color:var(--line-2);box-shadow:var(--sh-2)}
+  .wknext-c b{display:block;font-family:var(--disp);font-weight:700;font-size:18px;line-height:1.2;
+              letter-spacing:-.02em;color:var(--navy);margin:0 0 6px;padding-right:20px}
+  .wknext-d{display:block;font-size:13.5px;line-height:1.5;color:var(--copy);text-wrap:pretty}
+  .wknext-go{position:absolute;right:18px;top:16px;font-size:15px;color:var(--mute-2);
+             transition:color .18s,transform .18s}
+  .wknext-c:hover .wknext-go{color:var(--orange);transform:translateX(2px)}
+  @media (prefers-reduced-motion:reduce){.wknext-c,.wknext-go{transition:none}}
+  @media print{.wknext{display:none}}
+
+  /* the last line on every page, said the same way */
+  .wkfoot{margin:36px 0 0;padding:14px 0 0;border-top:1px solid var(--line);
+          font-family:var(--mono);font-size:11px;letter-spacing:.03em;color:var(--mute);
+          display:flex;gap:18px;flex-wrap:wrap}
+  .wkfoot a{color:var(--orange-ink);text-decoration:none}
+  .wkfoot a:hover{text-decoration:underline}
+
+  html[lang^="zh"] .wkhead h1{font-size:clamp(28px,3.6vw,46px);line-height:1.2;letter-spacing:.01em}
+  html[lang^="zh"] .wkey{letter-spacing:.08em}
+  html[lang^="zh"] .wklede,html[lang^="zh"] .wknext-s,html[lang^="zh"] .wknext-d{line-height:1.75}
+  html[lang^="zh"] .wknext-h{letter-spacing:0;line-height:1.35}
+
+  @media (max-width:980px){
+    .wkhead{padding-top:26px}
+    .wknext-g{grid-template-columns:1fr}
+  }
+</style>
+<div class="wkbg" aria-hidden="true"><i></i><i></i></div>
+<!-- /wiki page kit -->
 <!-- glance pictograms + arrow markers (ids distinct from the chart maps) -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <defs>
     <marker id="gm" viewBox="0 0 10 10" refX="8.4" refY="5" markerWidth="5.4" markerHeight="5.4" orient="auto-start-reverse">
       <path d="M2 1.5L8 5L2 8.5" fill="none" stroke="#93A5B7" stroke-width="1.7" stroke-linecap="round"/></marker>
     <marker id="gmo" viewBox="0 0 10 10" refX="8.4" refY="5" markerWidth="5.4" markerHeight="5.4" orient="auto-start-reverse">
-      <path d="M2 1.5L8 5L2 8.5" fill="none" stroke="#E0632A" stroke-width="1.9" stroke-linecap="round"/></marker>
+      <path d="M2 1.5L8 5L2 8.5" fill="none" stroke="#E8752A" stroke-width="1.9" stroke-linecap="round"/></marker>
     <symbol id="i-doc" viewBox="0 0 24 24"><g class="actor" stroke="currentColor">
       <path d="M6 2h9l5 5v15H6z"/><path d="M15 2v5h5"/><path d="M9.5 12h7M9.5 15.5h7"/></g></symbol>
     <symbol id="i-mail" viewBox="0 0 24 24"><g class="actor" stroke="currentColor">
@@ -518,16 +642,21 @@
       <circle cx="13" cy="7.5" r="6"/><path d="M13 13.5V28M4.5 19.5h17M13 28L6.5 41M13 28l6.5 13"/></g></symbol>
   </defs>
 </svg>
-<div class="wrap" id="main">
+<div class="wrap">
 
-  <p class="eyebrow">Ageas + TPRe · AI Data+</p>
-  <div class="hero-g">
-    <h1><span>AI Data+, </span><em>at a glance</em></h1>
-    <p class="lede">The whole programme in four pictures.</p>
-  </div>
-  <div class="hero-od" hidden>
-    <h1><span>The process flow, </span><em>stage by stage</em></h1>
-  </div>
+  <header class="wkhead wk-bare" id="main">
+    <div class="wkhead-t">
+      <p class="wkey">Ageas + TPRe · AI Data+</p>
+      <div class="hero-g">
+        <h1><span>AI Data+, </span><em>at a glance</em></h1>
+        <p class="wklede">The whole programme in four pictures.</p>
+      </div>
+      <div class="hero-od" hidden>
+        <h1><span>The process flow, </span><em>stage by stage</em></h1>
+        <p class="wklede">Every module, what it hands to the next, and where a person steps in.</p>
+      </div>
+    </div>
+  </header>
   <div class="railrow">
     <div class="rail" role="tablist" aria-label="Project stage" aria-hidden="true"></div>
     <div class="ctl vtoggle" role="tablist" aria-label="Chart view">
@@ -578,11 +707,11 @@
   <div class="keyrow chartkey" aria-label="Chart key" hidden>
     <span class="k"><span class="ln lo"></span><span>feedback loop</span></span>
     <span class="k"><span class="ln tb"></span><span>to be decided</span></span>
-    <span class="k"><span class="sw" style="background:#FBE7DA;border-color:#E8A377"></span><span>human input</span></span>
+    <span class="k"><span class="sw" style="background:var(--orange-3);border-color:var(--orange-2)"></span><span>human input</span></span>
     <span class="k fade"><span class="sw" style="background:#F2F4F6;border-color:#B0BAC4"></span><span>faded = not running this stage</span></span>
   </div>
   <div class="keyrow glancekey" aria-label="Key">
-    <span class="k"><span class="sw" style="background:#FBE7DA;border-color:#E8A377"></span><span class="en">people</span><span class="zh">人工</span></span>
+    <span class="k"><span class="sw" style="background:var(--orange-3);border-color:var(--orange-2)"></span><span class="en">people</span><span class="zh">人工</span></span>
     <span class="k"><span class="sw" style="background:#E2ECF7;border-color:#6C8EBF"></span><span class="en">machine</span><span class="zh">机器</span></span>
     <span class="k"><span class="ln lo"></span><span class="en">feedback loop</span><span class="zh">反馈回路</span></span>
   </div>
@@ -592,13 +721,13 @@
       <h2><span class="en">Data before the decision — not two months after</span><span class="zh">决策前就有数据，不必事后再录两个月</span></h2>
       <div class="board">
       <svg class="map" viewBox="0 0 1240 300" role="img" aria-label="Today the two months of typing come after the decision; with AI Data+ the facts are prepared before it">
-        <text class="en tm" x="690" y="26" text-anchor="middle" font-size="10" style="fill:#1C3557" font-weight="600">THE DECISION · 1 JAN</text>
-        <text class="zh tm" x="690" y="26" text-anchor="middle" font-size="10" style="fill:#1C3557" font-weight="600">决策日 · 1 月 1 日</text>
-        <line x1="690" y1="40" x2="690" y2="264" stroke="#8D9BAB" stroke-width="1.4" stroke-dasharray="3 5"/>
+        <text class="en tm" x="690" y="26" text-anchor="middle" font-size="10" style="fill:#13294B" font-weight="600">THE DECISION · 1 JAN</text>
+        <text class="zh tm" x="690" y="26" text-anchor="middle" font-size="10" style="fill:#13294B" font-weight="600">决策日 · 1 月 1 日</text>
+        <line x1="690" y1="40" x2="690" y2="264" stroke="#8A97AA" stroke-width="1.4" stroke-dasharray="3 5"/>
 
         <text class="en tt" x="36" y="101" font-size="13" style="fill:#5B6B7F">TODAY</text>
         <text class="zh tt" x="36" y="101" font-size="13" style="fill:#5B6B7F">现状</text>
-        <rect x="120" y="72" width="180" height="48" rx="4" fill="#F4F6F8" stroke="#8D9BAB" stroke-width="1.1"/>
+        <rect x="120" y="72" width="180" height="48" rx="4" fill="#F4F6F8" stroke="#8A97AA" stroke-width="1.1"/>
         <use href="#i-doc" x="132" y="84" width="22" height="22" color="#5B6B7F"/>
         <use href="#i-mail" x="150" y="88" width="22" height="22" color="#5B6B7F"/>
         <text class="en tt" x="182" y="101" font-size="13">Submissions</text>
@@ -606,18 +735,18 @@
         <path class="ed" d="M300 96 H672"/>
         <text class="en tm" x="486" y="88" text-anchor="middle" font-size="9">PEAK SEASON</text>
         <text class="zh tm" x="486" y="88" text-anchor="middle" font-size="9">旺季</text>
-        <circle cx="690" cy="96" r="15" fill="#fff" stroke="#1C3557" stroke-width="1.6"/>
-        <use href="#i-pen" x="681" y="87" width="18" height="18" color="#1C3557"/>
+        <circle cx="690" cy="96" r="15" fill="#fff" stroke="#13294B" stroke-width="1.6"/>
+        <use href="#i-pen" x="681" y="87" width="18" height="18" color="#13294B"/>
         <path class="ed" d="M705 96 H738"/>
-        <rect x="742" y="68" width="350" height="56" rx="4" fill="#E0632A"/>
+        <rect x="742" y="68" width="350" height="56" rx="4" fill="#E8752A"/>
         <use href="#i-keys" x="758" y="82" width="28" height="28" color="#fff"/>
         <text class="en tt" x="796" y="93" font-size="15" style="fill:#fff">≈ 2 months of typing</text>
         <text class="zh tt" x="796" y="94" font-size="14" style="fill:#fff">约两个月手工录入</text>
         <text class="en tm" x="796" y="111" font-size="8.5" style="fill:rgba(255,255,255,.85)">EVERY YEAR · AFTER THE DECISION</text>
         <text class="zh tm" x="796" y="111" font-size="8.5" style="fill:rgba(255,255,255,.85)">每年 · 都在决策之后</text>
 
-        <text class="tt" x="36" y="221" font-size="13" style="fill:#E0632A">AI DATA+</text>
-        <rect x="120" y="192" width="180" height="48" rx="4" fill="#F4F6F8" stroke="#8D9BAB" stroke-width="1.1"/>
+        <text class="tt" x="36" y="221" font-size="13" style="fill:#E8752A">AI DATA+</text>
+        <rect x="120" y="192" width="180" height="48" rx="4" fill="#F4F6F8" stroke="#8A97AA" stroke-width="1.1"/>
         <use href="#i-doc" x="132" y="204" width="22" height="22" color="#5B6B7F"/>
         <use href="#i-mail" x="150" y="208" width="22" height="22" color="#5B6B7F"/>
         <text class="en tt" x="182" y="221" font-size="13">Submissions</text>
@@ -630,11 +759,11 @@
         <text class="en tm" x="410" y="231" font-size="8.5" style="fill:rgba(255,255,255,.85)">ON ARRIVAL · CHECKED BY PEOPLE</text>
         <text class="zh tm" x="410" y="231" font-size="8.5" style="fill:rgba(255,255,255,.85)">随到随处理 · 由人核对</text>
         <path class="ed" d="M660 216 H672"/>
-        <circle cx="690" cy="216" r="15" fill="#fff" stroke="#1C3557" stroke-width="1.6"/>
-        <use href="#i-pen" x="681" y="207" width="18" height="18" color="#1C3557"/>
+        <circle cx="690" cy="216" r="15" fill="#fff" stroke="#13294B" stroke-width="1.6"/>
+        <use href="#i-pen" x="681" y="207" width="18" height="18" color="#13294B"/>
         <path class="ed" d="M705 216 H738"/>
         <rect x="742" y="192" width="240" height="48" rx="4" fill="#E3F1E8" stroke="#82B366" stroke-width="1.2"/>
-        <use href="#i-check" x="756" y="205" width="22" height="22" color="#3F8F5F"/>
+        <use href="#i-check" x="756" y="205" width="22" height="22" color="#2E9E6B"/>
         <text class="en tt" x="788" y="221" font-size="13">Nothing left to type</text>
         <text class="zh tt" x="788" y="221" font-size="13">不用再录入</text>
       </svg>
@@ -643,7 +772,7 @@
       <h2><span class="en">Three agents, three jobs</span><span class="zh">三个 Agent，三件事</span></h2>
       <div class="board">
       <svg class="map" viewBox="0 0 1280 440" role="img" aria-label="The Submission Agent sorts the stack; the Facts Agent reads core files into one TreatyRecord; the Template Agent prepares the reports — analysis for the underwriter, entry written to TPR. People check at both flywheels.">
-        <rect x="18" y="104" width="112" height="126" rx="4" fill="#F4F6F8" stroke="#8D9BAB" stroke-width="1.1"/>
+        <rect x="18" y="104" width="112" height="126" rx="4" fill="#F4F6F8" stroke="#8A97AA" stroke-width="1.1"/>
         <use href="#i-mail" x="30" y="122" width="22" height="22" color="#5B6B7F"/>
         <use href="#i-doc" x="60" y="116" width="24" height="24" color="#5B6B7F" transform="rotate(-8 72 128)"/>
         <use href="#i-doc" x="80" y="122" width="24" height="24" color="#5B6B7F" transform="rotate(7 92 134)"/>
@@ -654,16 +783,16 @@
         <path class="ed" d="M130 167 H146"/>
 
         <rect x="150" y="60" width="220" height="250" rx="4" fill="#fff" stroke="#82B366" stroke-width="1.6"/>
-        <circle cx="174" cy="84" r="11" fill="#3F8F5F"/>
+        <circle cx="174" cy="84" r="11" fill="#2E9E6B"/>
         <text class="tt" x="174" y="88.5" font-size="13" style="fill:#fff" text-anchor="middle">1</text>
-        <text class="tt" x="194" y="89" font-size="15" style="fill:#3F8F5F">Submission Agent</text>
+        <text class="tt" x="194" y="89" font-size="15" style="fill:#2E9E6B">Submission Agent</text>
         <text class="en tm" x="194" y="105" font-size="8.5">SORTS THE STACK</text>
         <text class="zh tm" x="194" y="105" font-size="8.5">挑出关键文件</text>
-        <use href="#i-funnel" x="240" y="118" width="40" height="40" color="#3F8F5F"/>
+        <use href="#i-funnel" x="240" y="118" width="40" height="40" color="#2E9E6B"/>
         <path class="ed" d="M260 164 v12 h-60 v10"/>
         <path class="ed" d="M260 164 v12 h60 v10"/>
-        <use href="#i-doc" x="183" y="190" width="34" height="34" color="#3F8F5F"/>
-        <use href="#i-tray" x="303" y="190" width="34" height="34" color="#8D9BAB"/>
+        <use href="#i-doc" x="183" y="190" width="34" height="34" color="#2E9E6B"/>
+        <use href="#i-tray" x="303" y="190" width="34" height="34" color="#8A97AA"/>
         <text class="en tm" x="200" y="242" font-size="8" text-anchor="middle">CORE FILES</text>
         <text class="zh tm" x="200" y="242" font-size="8" text-anchor="middle">核心文件</text>
         <text class="en tm" x="320" y="242" font-size="8" text-anchor="middle">OTHERS · KEPT</text>
@@ -671,11 +800,11 @@
         <path class="ed" d="M370 167 H386"/>
 
         <rect x="390" y="104" width="150" height="126" rx="4" fill="#fff" stroke="#82B366" stroke-width="1.6" stroke-dasharray="7 4"/>
-        <text class="en tt" x="465" y="130" font-size="12.5" style="fill:#3F8F5F" text-anchor="middle">Validation Flywheel</text>
-        <text class="zh tt" x="465" y="130" font-size="12.5" style="fill:#3F8F5F" text-anchor="middle">验证飞轮</text>
+        <text class="en tt" x="465" y="130" font-size="12.5" style="fill:#2E9E6B" text-anchor="middle">Validation Flywheel</text>
+        <text class="zh tt" x="465" y="130" font-size="12.5" style="fill:#2E9E6B" text-anchor="middle">验证飞轮</text>
         <text class="tm" x="465" y="145" font-size="7.5" text-anchor="middle">MODULE A</text>
-        <use href="#i-loop" x="448" y="158" width="34" height="34" color="#3F8F5F"/>
-        <use href="#i-check" x="459" y="169" width="13" height="13" color="#3F8F5F"/>
+        <use href="#i-loop" x="448" y="158" width="34" height="34" color="#2E9E6B"/>
+        <use href="#i-check" x="459" y="169" width="13" height="13" color="#2E9E6B"/>
         <path class="ed" d="M540 167 H556"/>
 
         <rect x="560" y="60" width="220" height="250" rx="4" fill="#fff" stroke="#6C8EBF" stroke-width="1.6"/>
@@ -702,13 +831,13 @@
         <path class="ed" d="M950 167 H966"/>
 
         <rect x="970" y="60" width="220" height="250" rx="4" fill="#fff" stroke="#9673A6" stroke-width="1.6"/>
-        <circle cx="994" cy="84" r="11" fill="#7B2D8E"/>
+        <circle cx="994" cy="84" r="11" fill="#6B2C91"/>
         <text class="tt" x="994" y="88.5" font-size="13" style="fill:#fff" text-anchor="middle">3</text>
-        <text class="tt" x="1014" y="89" font-size="15" style="fill:#7B2D8E">Template Agent</text>
+        <text class="tt" x="1014" y="89" font-size="15" style="fill:#6B2C91">Template Agent</text>
         <text class="en tm" x="1014" y="105" font-size="8.5">PREPARES THE REPORTS</text>
         <text class="zh tm" x="1014" y="105" font-size="8.5">备好两份报告</text>
-        <use href="#i-bars" x="1012" y="128" width="46" height="46" color="#7B2D8E"/>
-        <use href="#i-grid" x="1102" y="128" width="46" height="46" color="#7B2D8E"/>
+        <use href="#i-bars" x="1012" y="128" width="46" height="46" color="#6B2C91"/>
+        <use href="#i-grid" x="1102" y="128" width="46" height="46" color="#6B2C91"/>
         <text class="en tm" x="1035" y="242" font-size="8" text-anchor="middle">ANALYSIS REPORT</text>
         <text class="zh tm" x="1035" y="242" font-size="8" text-anchor="middle">分析报告</text>
         <text class="en tm" x="1125" y="242" font-size="8" text-anchor="middle">ENTRY REPORT</text>
@@ -717,13 +846,13 @@
         <path class="ed" d="M1190 236 H1202"/>
 
         <use href="#i-person" x="1208" y="88" width="34" height="60" color="#C4674A"/>
-        <use href="#i-check" x="1246" y="86" width="18" height="18" color="#3F8F5F"/>
+        <use href="#i-check" x="1246" y="86" width="18" height="18" color="#2E9E6B"/>
         <text class="en tm" x="1225" y="168" font-size="9" text-anchor="middle">UNDERWRITER</text>
         <text class="zh tm" x="1225" y="168" font-size="9" text-anchor="middle">核保人</text>
         <text class="en tm" x="1225" y="181" font-size="9" text-anchor="middle">DECIDES</text>
         <text class="zh tm" x="1225" y="181" font-size="9" text-anchor="middle">做决策</text>
 
-        <rect x="1212" y="214" width="48" height="40" rx="4" fill="#F4F6F8" stroke="#8D9BAB" stroke-width="1.1"/>
+        <rect x="1212" y="214" width="48" height="40" rx="4" fill="#F4F6F8" stroke="#8A97AA" stroke-width="1.1"/>
         <use href="#i-card" x="1224" y="222" width="24" height="24" color="#5B6B7F"/>
         <text class="en tm" x="1236" y="270" font-size="9" text-anchor="middle">TPR SYSTEM</text>
         <text class="zh tm" x="1236" y="270" font-size="9" text-anchor="middle">TPR 系统</text>
@@ -735,8 +864,8 @@
         <use href="#i-person" x="654" y="322" width="32" height="56" color="#C4674A"/>
         <path class="ed" d="M650 348 H465 V236"/>
         <path class="ed" d="M690 348 H875 V236"/>
-        <text class="en tt" x="670" y="404" font-size="13" style="fill:#1C3557" text-anchor="middle">People check &amp; correct — at both flywheels</text>
-        <text class="zh tt" x="670" y="404" font-size="13" style="fill:#1C3557" text-anchor="middle">两边飞轮都由人核对、纠正</text>
+        <text class="en tt" x="670" y="404" font-size="13" style="fill:#13294B" text-anchor="middle">People check &amp; correct — at both flywheels</text>
+        <text class="zh tt" x="670" y="404" font-size="13" style="fill:#13294B" text-anchor="middle">两边飞轮都由人核对、纠正</text>
         <text class="en tm" x="670" y="421" font-size="8.5" text-anchor="middle">EVERY CORRECTION TEACHES THE AGENT</text>
         <text class="zh tm" x="670" y="421" font-size="8.5" text-anchor="middle">每改一处，Agent 就前进一步</text>
       </svg>
@@ -746,10 +875,10 @@
       <h2><span class="en">Trust is earned in stages</span><span class="zh">信任要一步步挣来</span></h2>
       <div class="board">
       <svg class="map" viewBox="0 0 1240 300" role="img" aria-label="At first people check every answer; then the machine flags its own doubts; always it is scored against what was booked">
-        <text class="en tm" x="220" y="40" font-size="9.5" style="fill:#7B2D8E" text-anchor="middle">AT FIRST</text>
-        <text class="zh tm" x="220" y="40" font-size="9.5" style="fill:#7B2D8E" text-anchor="middle">起初</text>
+        <text class="en tm" x="220" y="40" font-size="9.5" style="fill:#6B2C91" text-anchor="middle">AT FIRST</text>
+        <text class="zh tm" x="220" y="40" font-size="9.5" style="fill:#6B2C91" text-anchor="middle">起初</text>
         <use href="#i-person" x="108" y="86" width="30" height="54" color="#C4674A"/>
-        <g color="#3F8F5F">
+        <g color="#2E9E6B">
           <rect x="160" y="72" width="24" height="24" rx="3" fill="#E3F1E8" stroke="#82B366"/><use href="#i-check" x="164" y="76" width="16" height="16"/>
           <rect x="190" y="72" width="24" height="24" rx="3" fill="#E3F1E8" stroke="#82B366"/><use href="#i-check" x="194" y="76" width="16" height="16"/>
           <rect x="220" y="72" width="24" height="24" rx="3" fill="#E3F1E8" stroke="#82B366"/><use href="#i-check" x="224" y="76" width="16" height="16"/>
@@ -766,13 +895,13 @@
           <rect x="250" y="140" width="24" height="24" rx="3" fill="#E3F1E8" stroke="#82B366"/><use href="#i-check" x="254" y="144" width="16" height="16"/>
           <rect x="280" y="140" width="24" height="24" rx="3" fill="#E3F1E8" stroke="#82B366"/><use href="#i-check" x="284" y="144" width="16" height="16"/>
         </g>
-        <text class="en tt" x="220" y="246" font-size="14" style="fill:#1C3557" text-anchor="middle">People check every answer</text>
-        <text class="zh tt" x="220" y="246" font-size="14" style="fill:#1C3557" text-anchor="middle">每个答案都由人核对</text>
+        <text class="en tt" x="220" y="246" font-size="14" style="fill:#13294B" text-anchor="middle">People check every answer</text>
+        <text class="zh tt" x="220" y="246" font-size="14" style="fill:#13294B" text-anchor="middle">每个答案都由人核对</text>
 
         <path d="M410 118 l20 24 -20 24" fill="none" stroke="#C3CEDA" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
 
-        <text class="en tm" x="620" y="40" font-size="9.5" style="fill:#7B2D8E" text-anchor="middle">THEN</text>
-        <text class="zh tm" x="620" y="40" font-size="9.5" style="fill:#7B2D8E" text-anchor="middle">随后</text>
+        <text class="en tm" x="620" y="40" font-size="9.5" style="fill:#6B2C91" text-anchor="middle">THEN</text>
+        <text class="zh tm" x="620" y="40" font-size="9.5" style="fill:#6B2C91" text-anchor="middle">随后</text>
         <rect x="492" y="70" width="66" height="46" rx="4" fill="#E3F1E8" stroke="#82B366" stroke-width="1.2"/>
         <path d="M506 88h38M506 98h30" stroke="#82B366" stroke-width="1.6" stroke-linecap="round"/>
         <rect x="587" y="70" width="66" height="46" rx="4" fill="#FBF0D5" stroke="#D6B656" stroke-width="1.2"/>
@@ -780,7 +909,7 @@
         <rect x="682" y="70" width="66" height="46" rx="4" fill="#F8DEDC" stroke="#B85450" stroke-width="1.2"/>
         <path d="M696 88h38M696 98h30" stroke="#B85450" stroke-width="1.6" stroke-linecap="round"/>
         <path class="ed" d="M525 116 V140"/>
-        <use href="#i-check" x="515" y="146" width="20" height="20" color="#3F8F5F"/>
+        <use href="#i-check" x="515" y="146" width="20" height="20" color="#2E9E6B"/>
         <text class="en tm" x="525" y="190" font-size="8" text-anchor="middle">AUTO</text>
         <text class="zh tm" x="525" y="190" font-size="8" text-anchor="middle">自动通过</text>
         <path class="ed" d="M620 116 v12 h20 v6"/>
@@ -788,23 +917,23 @@
         <use href="#i-person" x="648" y="140" width="28" height="50" color="#C4674A"/>
         <text class="en tm" x="662" y="212" font-size="8" text-anchor="middle">TO A PERSON</text>
         <text class="zh tm" x="662" y="212" font-size="8" text-anchor="middle">交给人处理</text>
-        <text class="en tt" x="620" y="246" font-size="14" style="fill:#1C3557" text-anchor="middle">It flags its own doubts</text>
-        <text class="zh tt" x="620" y="246" font-size="13" style="fill:#1C3557" text-anchor="middle">没把握的，自己标出来</text>
+        <text class="en tt" x="620" y="246" font-size="14" style="fill:#13294B" text-anchor="middle">It flags its own doubts</text>
+        <text class="zh tt" x="620" y="246" font-size="13" style="fill:#13294B" text-anchor="middle">没把握的，自己标出来</text>
 
         <path d="M810 118 l20 24 -20 24" fill="none" stroke="#C3CEDA" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
 
-        <text class="en tm" x="1020" y="40" font-size="9.5" style="fill:#7B2D8E" text-anchor="middle">ALWAYS</text>
-        <text class="zh tm" x="1020" y="40" font-size="9.5" style="fill:#7B2D8E" text-anchor="middle">始终</text>
+        <text class="en tm" x="1020" y="40" font-size="9.5" style="fill:#6B2C91" text-anchor="middle">ALWAYS</text>
+        <text class="zh tm" x="1020" y="40" font-size="9.5" style="fill:#6B2C91" text-anchor="middle">始终</text>
         <use href="#i-card" x="898" y="78" width="54" height="54" color="#4A7DBD"/>
         <text class="en tm" x="925" y="166" font-size="8" text-anchor="middle">ITS ANSWERS</text>
         <text class="zh tm" x="925" y="166" font-size="8" text-anchor="middle">它的答案</text>
         <circle cx="1002" cy="104" r="17" fill="#E3F1E8" stroke="#82B366" stroke-width="1.6"/>
-        <use href="#i-check" x="992" y="94" width="20" height="20" color="#3F8F5F"/>
+        <use href="#i-check" x="992" y="94" width="20" height="20" color="#2E9E6B"/>
         <use href="#i-card" x="1076" y="78" width="54" height="54" color="#C98A1E"/>
         <text class="en tm" x="1103" y="166" font-size="8" text-anchor="middle">WHAT WAS BOOKED</text>
         <text class="zh tm" x="1103" y="166" font-size="8" text-anchor="middle">实际入账</text>
-        <text class="en tt" x="1020" y="246" font-size="14" style="fill:#1C3557" text-anchor="middle">Scored against reality</text>
-        <text class="zh tt" x="1020" y="246" font-size="14" style="fill:#1C3557" text-anchor="middle">对照入账打分</text>
+        <text class="en tt" x="1020" y="246" font-size="14" style="fill:#13294B" text-anchor="middle">Scored against reality</text>
+        <text class="zh tt" x="1020" y="246" font-size="14" style="fill:#13294B" text-anchor="middle">对照入账打分</text>
       </svg>
       </div>
 
@@ -819,10 +948,10 @@
         <text class="zh tm" x="1086" y="34" font-size="8.5">机器</text>
 
         <line x1="120" y1="100" x2="1140" y2="100" stroke="#D9E0E8" stroke-width="2"/>
-        <circle cx="180" cy="100" r="8" fill="#fff" stroke="#8D9BAB" stroke-width="3"/>
-        <circle cx="480" cy="100" r="8" fill="#fff" stroke="#8D9BAB" stroke-width="3"/>
-        <circle cx="780" cy="100" r="8" fill="#fff" stroke="#8D9BAB" stroke-width="3"/>
-        <circle cx="1080" cy="100" r="8" fill="#fff" stroke="#8D9BAB" stroke-width="3"/>
+        <circle cx="180" cy="100" r="8" fill="#fff" stroke="#8A97AA" stroke-width="3"/>
+        <circle cx="480" cy="100" r="8" fill="#fff" stroke="#8A97AA" stroke-width="3"/>
+        <circle cx="780" cy="100" r="8" fill="#fff" stroke="#8A97AA" stroke-width="3"/>
+        <circle cx="1080" cy="100" r="8" fill="#fff" stroke="#8A97AA" stroke-width="3"/>
 
         <rect x="122" y="24" width="116" height="40" rx="8" fill="#E2ECF7" stroke="#6C8EBF"/>
         <text class="tt" x="180" y="40" font-size="10.5" style="fill:#4A7DBD" text-anchor="middle">FACTS AGENT</text>
@@ -831,17 +960,17 @@
         <line x1="180" y1="64" x2="180" y2="88" stroke="#6C8EBF" stroke-width="1.4" stroke-dasharray="2 3"/>
         <circle cx="180" cy="100" r="4.5" fill="#4A7DBD"/>
         <rect x="248" y="24" width="170" height="40" rx="8" fill="#E3F1E8" stroke="#82B366"/>
-        <text class="tt" x="333" y="40" font-size="10.5" style="fill:#3F8F5F" text-anchor="middle">SUBMISSION AGENT</text>
+        <text class="tt" x="333" y="40" font-size="10.5" style="fill:#2E9E6B" text-anchor="middle">SUBMISSION AGENT</text>
         <text class="en tm" x="333" y="55" font-size="8" text-anchor="middle">PENDING EVALUATION</text>
         <text class="zh tm" x="333" y="55" font-size="8" text-anchor="middle">待评估</text>
         <line x1="333" y1="64" x2="333" y2="94" stroke="#82B366" stroke-width="1.4" stroke-dasharray="2 3"/>
-        <circle cx="333" cy="100" r="4.5" fill="#3F8F5F"/>
+        <circle cx="333" cy="100" r="4.5" fill="#2E9E6B"/>
 
         <g class="jump" data-st="1" tabindex="0" role="link">
           <title class="en">Open Setup on the chart</title><title class="zh">打开「搭建」流程图</title>
           <rect class="hit" x="80" y="118" width="200" height="186" rx="6" fill="transparent" stroke="transparent"/>
-          <text class="en tt" x="180" y="134" font-size="15" style="fill:#1C3557" text-anchor="middle">1 · Setup</text>
-          <text class="zh tt" x="180" y="134" font-size="15" style="fill:#1C3557" text-anchor="middle">1 · 搭建</text>
+          <text class="en tt" x="180" y="134" font-size="15" style="fill:#13294B" text-anchor="middle">1 · Setup</text>
+          <text class="zh tt" x="180" y="134" font-size="15" style="fill:#13294B" text-anchor="middle">1 · 搭建</text>
           <text class="tm" x="180" y="150" font-size="8.5" text-anchor="middle">MVP 20</text>
           <use href="#i-doc" x="140" y="170" width="26" height="26" color="#5B6B7F"/>
           <use href="#i-doc" x="156" y="176" width="26" height="26" color="#5B6B7F"/>
@@ -858,8 +987,8 @@
         <g class="jump" data-st="2" tabindex="0" role="link">
           <title class="en">Open Generalise on the chart</title><title class="zh">打开「泛化」流程图</title>
           <rect class="hit" x="380" y="118" width="200" height="186" rx="6" fill="transparent" stroke="transparent"/>
-          <text class="en tt" x="480" y="134" font-size="15" style="fill:#1C3557" text-anchor="middle">2 · Generalise</text>
-          <text class="zh tt" x="480" y="134" font-size="15" style="fill:#1C3557" text-anchor="middle">2 · 泛化</text>
+          <text class="en tt" x="480" y="134" font-size="15" style="fill:#13294B" text-anchor="middle">2 · Generalise</text>
+          <text class="zh tt" x="480" y="134" font-size="15" style="fill:#13294B" text-anchor="middle">2 · 泛化</text>
           <text class="tm" x="480" y="150" font-size="8.5" text-anchor="middle">MVP 500</text>
           <use href="#i-doc" x="398" y="170" width="26" height="26" color="#5B6B7F"/>
           <use href="#i-doc" x="412" y="176" width="26" height="26" color="#5B6B7F"/>
@@ -867,7 +996,7 @@
           <use href="#i-doc" x="440" y="176" width="26" height="26" color="#5B6B7F"/>
           <use href="#i-card" x="492" y="168" width="28" height="28" color="#C98A1E"/>
           <circle cx="540" cy="182" r="13" fill="#E3F1E8" stroke="#82B366" stroke-width="1.4"/>
-          <use href="#i-check" x="532" y="174" width="16" height="16" color="#3F8F5F"/>
+          <use href="#i-check" x="532" y="174" width="16" height="16" color="#2E9E6B"/>
           <text class="en tm" x="480" y="242" font-size="8" text-anchor="middle">HUNDREDS OF PAST CASES</text>
           <text class="zh tm" x="480" y="241" font-size="8" text-anchor="middle">数百个历史案例</text>
           <text class="en tm" x="480" y="257" font-size="8" text-anchor="middle">SCORED VS WHAT WAS BOOKED</text>
@@ -879,8 +1008,8 @@
         <g class="jump" data-st="3" tabindex="0" role="link">
           <title class="en">Open Parallel run on the chart</title><title class="zh">打开「并行运行」流程图</title>
           <rect class="hit" x="680" y="118" width="200" height="186" rx="6" fill="transparent" stroke="transparent"/>
-          <text class="en tt" x="780" y="134" font-size="15" style="fill:#1C3557" text-anchor="middle">3 · Parallel run</text>
-          <text class="zh tt" x="780" y="134" font-size="15" style="fill:#1C3557" text-anchor="middle">3 · 并行运行</text>
+          <text class="en tt" x="780" y="134" font-size="15" style="fill:#13294B" text-anchor="middle">3 · Parallel run</text>
+          <text class="zh tt" x="780" y="134" font-size="15" style="fill:#13294B" text-anchor="middle">3 · 并行运行</text>
           <text class="en tm" x="780" y="150" font-size="8.5" text-anchor="middle">(live)</text>
           <text class="zh tm" x="780" y="150" font-size="8.5" text-anchor="middle">（上线）</text>
           <use href="#i-person" x="712" y="164" width="30" height="54" color="#C4674A"/>
@@ -897,14 +1026,14 @@
         <g class="jump" data-st="4" tabindex="0" role="link">
           <title class="en">Open Full production on the chart</title><title class="zh">打开「全量生产」流程图</title>
           <rect class="hit" x="980" y="118" width="200" height="186" rx="6" fill="transparent" stroke="transparent"/>
-          <text class="en tt" x="1080" y="134" font-size="14" style="fill:#1C3557" text-anchor="middle">4 · Full production</text>
-          <text class="zh tt" x="1080" y="134" font-size="14" style="fill:#1C3557" text-anchor="middle">4 · 全量生产</text>
+          <text class="en tt" x="1080" y="134" font-size="14" style="fill:#13294B" text-anchor="middle">4 · Full production</text>
+          <text class="zh tt" x="1080" y="134" font-size="14" style="fill:#13294B" text-anchor="middle">4 · 全量生产</text>
           <text class="en tm" x="1080" y="150" font-size="8.5" text-anchor="middle">(prod)</text>
           <text class="zh tm" x="1080" y="150" font-size="8.5" text-anchor="middle">（生产）</text>
           <rect x="1022" y="164" width="54" height="48" rx="6" fill="#E2ECF7" stroke="#6C8EBF" stroke-width="1.4"/>
           <use href="#i-gear" x="1035" y="172" width="30" height="30" color="#4A7DBD"/>
           <circle cx="1078" cy="164" r="10" fill="#E3F1E8" stroke="#82B366" stroke-width="1.4"/>
-          <use href="#i-check" x="1071" y="157" width="14" height="14" color="#3F8F5F"/>
+          <use href="#i-check" x="1071" y="157" width="14" height="14" color="#2E9E6B"/>
           <use href="#i-person" x="1096" y="178" width="22" height="40" color="#C4674A"/>
           <use href="#i-mag" x="1112" y="208" width="14" height="14" color="#5B6B7F"/>
           <text class="en tm" x="1080" y="242" font-size="8" text-anchor="middle">ROUTINE RUNS END TO END</text>
@@ -915,8 +1044,8 @@
           <rect x="1014" y="284" width="156" height="13" fill="#E2ECF7" stroke="#6C8EBF"/>
         </g>
 
-        <text class="en tt" x="620" y="336" font-size="13.5" style="fill:#1C3557" text-anchor="middle">We advance a step only when the scores allow.</text>
-        <text class="zh tt" x="620" y="336" font-size="13.5" style="fill:#1C3557" text-anchor="middle">分数达标，才进入下一步。</text>
+        <text class="en tt" x="620" y="336" font-size="13.5" style="fill:#13294B" text-anchor="middle">We advance a step only when the scores allow.</text>
+        <text class="zh tt" x="620" y="336" font-size="13.5" style="fill:#13294B" text-anchor="middle">分数达标，才进入下一步。</text>
       </svg>
       </div>
       <p class="jump-hint"><span class="en">Click a step to open it on the chart.</span><span class="zh">点一步，打开对应流程图。</span></p>
@@ -968,7 +1097,30 @@
 
   </div><!-- /.deep -->
 
-  <footer>
+  <!-- wiki next -->
+<nav class="wknext" aria-labelledby="wknext-h">
+  <h2 class="wknext-h" id="wknext-h"><span class="wk-en">Keep reading</span><span class="wk-zh">继续阅读</span></h2>
+  <p class="wknext-s"><span class="wk-en">The rest of the wiki, one page at a time.</span><span class="wk-zh">手册的其余部分，一页一页看。</span></p>
+  <div class="wknext-g">
+    <a class="wknext-c" href="index.html">
+      <b><span class="wk-en">Overview</span><span class="wk-zh">总览</span></b>
+      <span class="wknext-d"><span class="wk-en">One submission, from the pack that arrives to the data the underwriter reads.</span><span class="wk-zh">一份申请：从收到的材料包，到核保人读到的数据。</span></span>
+      <span class="wknext-go" aria-hidden="true">→</span>
+    </a>
+    <a class="wknext-c" href="lifecycle.html">
+      <b><span class="wk-en">Step by step</span><span class="wk-zh">逐步流程</span></b>
+      <span class="wknext-d"><span class="wk-en">Seven steps: who runs each one, who signs it off, and every outcome it can have.</span><span class="wk-zh">七个步骤：每步由谁执行、由谁签核，可能出现哪些结果。</span></span>
+      <span class="wknext-go" aria-hidden="true">→</span>
+    </a>
+    <a class="wknext-c" href="gate.html">
+      <b><span class="wk-en">RAG Gate</span><span class="wk-zh">RAG 闸门</span></b>
+      <span class="wknext-d"><span class="wk-en">Red, amber, green — every rule that decides how much attention a treaty needs.</span><span class="wk-zh">红、黄、绿——决定一份合约需要多少人工的每一条规则。</span></span>
+      <span class="wknext-go" aria-hidden="true">→</span>
+    </a>
+  </div>
+</nav>
+<!-- /wiki next -->
+  <footer class="wkfoot">
     <span class="en">Updated 2026-08-31 · <a href="index.html">Overview</a> · <a href="lifecycle.html">Step by step</a></span>
     <span class="zh">更新于 2026-08-31 · <a href="index.html">总览</a> · <a href="lifecycle.html">逐步流程</a></span>
   </footer>
@@ -987,6 +1139,7 @@ const ZH = {
 "The process flow,":"流程全貌，","stage by stage":"逐阶段拆解",
 "AI Data+,":"AI Data+，","at a glance":"一图读懂",
 "The whole programme in four pictures.":"四张图，把整件事看明白。",
+"Every module, what it hands to the next, and where a person steps in.":"每一个模块、它交给下一步的东西，以及人在哪里介入。",
 "At a glance":"一图读懂",
 "Module overview":"模块总览","Full detail":"完整细节",
 "Display":"显示","Export chart":"导出图表",
@@ -1275,13 +1428,13 @@ const STAGES = [
 
 /* ============ CONTAINERS ============ */
 const CONT = [
- {id:"modA", x:470,y:146,w:270,h:202, col:"#3F8F5F", t:"MODULE A: Submission Agent", sub:"File filtering (triage)", st:[1,2,3,4]},
- {id:"flyA", x:830,y:306,w:405,h:300, col:"#3F8F5F", t:"MODULE A: Validation Flywheel", fly:1, st:[1,2,3],
+ {id:"modA", x:470,y:146,w:270,h:202, col:"#2E9E6B", t:"MODULE A: Submission Agent", sub:"File filtering (triage)", st:[1,2,3,4]},
+ {id:"flyA", x:830,y:306,w:405,h:300, col:"#2E9E6B", t:"MODULE A: Validation Flywheel", fly:1, st:[1,2,3],
   offNote:"off in production"},
  {id:"modB", x:430,y:795,w:350,h:120, col:"#4A7DBD", t:"MODULE B: Facts Agent", sub:"Information extraction", st:[1,2,3,4]},
  {id:"flyB", x:830,y:780,w:405,h:290, col:"#4A7DBD", t:"MODULE B: Validation Flywheel", fly:1, st:[1,2,3],
   offNote:"off in production"},
- {id:"modT", x:430,y:1050,w:350,h:100,col:"#7B2D8E", t:"MODULE C: Template Agent", sub:"Report generation", st:[3,4]},
+ {id:"modT", x:430,y:1050,w:350,h:100,col:"#6B2C91", t:"MODULE C: Template Agent", sub:"Report generation", st:[3,4]},
  {id:"modR", x:830,y:1185,w:320,h:110,col:"#4A7DBD", t:"MODULE B: Recipe Creation", st:[2,3,4],
   offNote:"not started — nothing reviewed to learn from yet"}
 ];
@@ -1526,11 +1679,11 @@ const SVGNS="http://www.w3.org/2000/svg";
 const el=(n,a={},txt)=>{const e=document.createElementNS(SVGNS,n);
   for(const k in a)e.setAttribute(k,a[k]); if(txt!=null)e.textContent=txt; return e;};
 const map=document.getElementById("map");
-const FILL={sys:["#F4F6F8","#8D9BAB"],proc:["#FFFFFF","#B9C4D0"],dec:["#FFFFFF","#5B6B7F"],
+const FILL={sys:["#F4F6F8","#8A97AA"],proc:["#FFFFFF","#B9C4D0"],dec:["#FFFFFF","#5B6B7F"],
   decP:["#F3EAF6","#9673A6"],green:["#E3F1E8","#82B366"],gold:["#FBE7DA","#E8A377"],
   amber:["#FBF0D5","#D6B656"],redf:["#F8DEDC","#B85450"],gray:["#F2F4F6","#B0BAC4"],
   blue:["#E2ECF7","#6C8EBF"],human:["#FBE7DA","#E8A377"],
-  purp:["#EDE2F2","#9673A6"],tbd:["#F7F9FA","#8D9BAB"]};
+  purp:["#EDE2F2","#9673A6"],tbd:["#F7F9FA","#8A97AA"]};
 
 let stage=1, picked=null, oPicked=null;
 let hoverT=null, exporting=false, zoom=1;
@@ -1568,9 +1721,9 @@ defs.innerHTML=`
 <marker id="m" viewBox="0 0 10 10" refX="8.4" refY="5" markerWidth="5.4" markerHeight="5.4" orient="auto-start-reverse">
   <path d="M2 1.5L8 5L2 8.5" fill="none" stroke="#93A5B7" stroke-width="1.7" stroke-linecap="round"/></marker>
 <marker id="mo" viewBox="0 0 10 10" refX="8.4" refY="5" markerWidth="5.4" markerHeight="5.4" orient="auto-start-reverse">
-  <path d="M2 1.5L8 5L2 8.5" fill="none" stroke="#E0632A" stroke-width="1.9" stroke-linecap="round"/></marker>
+  <path d="M2 1.5L8 5L2 8.5" fill="none" stroke="#E8752A" stroke-width="1.9" stroke-linecap="round"/></marker>
 <marker id="mT" viewBox="0 0 10 10" refX="8.4" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-  <path d="M2 1.5L8 5L2 8.5" fill="none" stroke="#1C3557" stroke-width="2" stroke-linecap="round"/></marker>
+  <path d="M2 1.5L8 5L2 8.5" fill="none" stroke="#13294B" stroke-width="2" stroke-linecap="round"/></marker>
 <marker id="moT" viewBox="0 0 10 10" refX="8.4" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
   <path d="M2 1.5L8 5L2 8.5" fill="none" stroke="#C24E1C" stroke-width="2" stroke-linecap="round"/></marker>`;
 map.appendChild(defs);
@@ -1976,8 +2129,9 @@ function exportHtml(view){
   }
   setStage(saved);
   exporting=false;
-  const pageStyle=document.querySelector("head > style");
-  const css=pageStyle?pageStyle.textContent:"";
+  /* every stylesheet on this page, in document order: the page's own first,
+     then the shared chrome and page kit, which own the palette and the type */
+  const css=[...document.querySelectorAll("style")].map(n=>n.textContent).join("\n");
   const rr=document.documentElement;
   const dsAttrs=' data-detail="'+rr.getAttribute("data-detail")+'" data-inactive="'+
     rr.getAttribute("data-inactive")+'" data-ink="'+rr.getAttribute("data-ink")+
@@ -1990,10 +2144,10 @@ html::before{display:none!important}
 .page{box-sizing:border-box;padding:5mm 6mm 0}
 .page + .page{break-before:page;page-break-before:always}
 .page header{margin:0 0 3mm}
-.page h1{font-size:14pt;margin:0;line-height:1.2}
-.page .eyebrow{margin:0 0 2px;font-size:8.5pt;letter-spacing:.12em}
+.page h1{font-family:var(--disp);font-weight:800;font-size:14pt;margin:0;line-height:1.2;letter-spacing:-.02em;color:var(--navy)}
+.page .eyebrow{margin:0 0 2px;font-family:var(--mono);font-size:8.5pt;letter-spacing:.12em;color:var(--purple)}
 svg.map{display:block;min-width:0!important;width:100%!important;height:auto!important;max-height:none;margin:0 auto}
-.detail,.boardwrap::after,.tweaks,.utils{display:none}
+.detail,.boardwrap::after,.tweaks,.utils,.wkbg,.wknav,.wkskip,.wknext,.wkfoot{display:none}
 .lanehdr,.sidetag{letter-spacing:0}
 .ed.loop{animation:none!important}
 .off,.off.under,.semi,.cstamp{opacity:0!important}
@@ -2008,15 +2162,15 @@ svg.map{display:block;min-width:0!important;width:100%!important;height:auto!imp
 </style></head><body>${pages.join("")}<template id="__bundler_thumbnail" data-bg-color="#F2F5F8">
   <svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
     <rect width="1200" height="800" fill="#F2F5F8"/>
-    <rect x="150" y="150" width="240" height="120" rx="10" fill="#E9F4ED" stroke="#3F8F5F" stroke-width="6"/>
-    <rect x="480" y="150" width="240" height="120" rx="10" fill="#FFF" stroke="#3F8F5F" stroke-width="6" stroke-dasharray="26 16"/>
+    <rect x="150" y="150" width="240" height="120" rx="10" fill="#E9F4ED" stroke="#2E9E6B" stroke-width="6"/>
+    <rect x="480" y="150" width="240" height="120" rx="10" fill="#FFF" stroke="#2E9E6B" stroke-width="6" stroke-dasharray="26 16"/>
     <rect x="150" y="530" width="240" height="120" rx="10" fill="#E7EFF8" stroke="#4A7DBD" stroke-width="6"/>
     <rect x="480" y="530" width="240" height="120" rx="10" fill="#FFF" stroke="#4A7DBD" stroke-width="6" stroke-dasharray="26 16"/>
-    <rect x="810" y="340" width="240" height="120" rx="10" fill="#F5EDF8" stroke="#7B2D8E" stroke-width="6"/>
-    <path d="M270 270 V530" stroke="#1C3557" stroke-width="7" fill="none"/>
-    <path d="M390 210 H480" stroke="#E0632A" stroke-width="7" stroke-dasharray="20 14" fill="none"/>
-    <path d="M390 590 H480" stroke="#E0632A" stroke-width="7" stroke-dasharray="20 14" fill="none"/>
-    <path d="M720 590 H810 V460" stroke="#1C3557" stroke-width="7" fill="none"/>
+    <rect x="810" y="340" width="240" height="120" rx="10" fill="#F5EDF8" stroke="#6B2C91" stroke-width="6"/>
+    <path d="M270 270 V530" stroke="#13294B" stroke-width="7" fill="none"/>
+    <path d="M390 210 H480" stroke="#E8752A" stroke-width="7" stroke-dasharray="20 14" fill="none"/>
+    <path d="M390 590 H480" stroke="#E8752A" stroke-width="7" stroke-dasharray="20 14" fill="none"/>
+    <path d="M720 590 H810 V460" stroke="#13294B" stroke-width="7" fill="none"/>
   </svg>
 </template>
 </body></html>`;
@@ -2131,18 +2285,18 @@ function paint(){
   }
 }
 /* ============ MODULE OVERVIEW · collapsed version of the same chart ============ */
-const OFILL={sys:["#F4F6F8","#8D9BAB"],human:["#FBE7DA","#E8A377"],blue:["#E2ECF7","#6C8EBF"],
-  tbd:["#F7F9FA","#8D9BAB"],gold:["#FBE7DA","#E8A377"],
+const OFILL={sys:["#F4F6F8","#8A97AA"],human:["#FBE7DA","#E8A377"],blue:["#E2ECF7","#6C8EBF"],
+  tbd:["#F7F9FA","#8A97AA"],gold:["#FBE7DA","#E8A377"],
   purp:["#EDE2F2","#9673A6"],green:["#E3F1E8","#82B366"],gray:["#F2F4F6","#B0BAC4"],
   redf:["#F8DEDC","#B85450"],amber:["#FBF0D5","#D6B656"],
   proc:["#FFFFFF","#B9C4D0"]};
 const OBLOCKS=[
- {id:"v_ma",x:470,y:146,w:270,h:202,col:"#3F8F5F",fill:"#E9F4ED",
+ {id:"v_ma",x:470,y:146,w:270,h:202,col:"#2E9E6B",fill:"#E9F4ED",
   t:"MODULE A: Submission Agent",
   sub:{1:"FILE FILTERING (TRIAGE)",2:"FILE FILTERING (TRIAGE)",3:"FILE FILTERING (TRIAGE)",4:"FILE FILTERING (TRIAGE)"},
   io:"IN  all files per treaty→OUT  core files · others (kept)",st:[1,2,3,4],
   d:"Which files carry data. Rules first — the LLM classifier joins from stage 2. The program's boundary: inputs and outputs sit outside it."},
- {id:"v_fa",x:830,y:306,w:405,h:300,col:"#3F8F5F",fill:"#E9F4ED",dash:1,
+ {id:"v_fa",x:830,y:306,w:405,h:300,col:"#2E9E6B",fill:"#E9F4ED",dash:1,
   t:"MODULE A: Validation Flywheel",
   sub:{1:"BUILD · VS GOLD",2:"BUILD · MACHINE → HUMAN → PACK",3:"EVALUATE TRIAGE PERFORMANCE"},
   io:"IN  machine result · gold core→OUT  confirmed errors · rule updates",
@@ -2167,7 +2321,7 @@ const OBLOCKS=[
   ioSt:{3:"IN  TreatyRecord→OUT  human-checked performance score"},
   st:[1,2,3],offNote:"off in production",
   d:"Set-up and generalisation: build — compare to a reference, then feed back into the Facts Agent. Parallel run: no TPR record to compare to, so a person checks the extraction output to evaluate performance. Off in production."},
- {id:"v_mt",x:430,y:1050,w:350,h:100,col:"#7B2D8E",fill:"#F5EDF8",
+ {id:"v_mt",x:430,y:1050,w:350,h:100,col:"#6B2C91",fill:"#F5EDF8",
   t:"MODULE C: Template Agent",
   sub:{3:"REPORT GENERATION · SCRIPT",4:"REPORT GENERATION · SCRIPT"},
   io:"IN  TreatyRecord→OUT  analysis report · entry report",st:[3,4],
@@ -2342,9 +2496,9 @@ oDefs.innerHTML=`
 <marker id="om" viewBox="0 0 10 10" refX="8.4" refY="5" markerWidth="5.4" markerHeight="5.4" orient="auto-start-reverse">
   <path d="M2 1.5L8 5L2 8.5" fill="none" stroke="#7C90A4" stroke-width="1.8" stroke-linecap="round"/></marker>
 <marker id="omo" viewBox="0 0 10 10" refX="8.4" refY="5" markerWidth="5.4" markerHeight="5.4" orient="auto-start-reverse">
-  <path d="M2 1.5L8 5L2 8.5" fill="none" stroke="#E0632A" stroke-width="1.9" stroke-linecap="round"/></marker>
+  <path d="M2 1.5L8 5L2 8.5" fill="none" stroke="#E8752A" stroke-width="1.9" stroke-linecap="round"/></marker>
 <marker id="omT" viewBox="0 0 10 10" refX="8.4" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-  <path d="M2 1.5L8 5L2 8.5" fill="none" stroke="#1C3557" stroke-width="2" stroke-linecap="round"/></marker>
+  <path d="M2 1.5L8 5L2 8.5" fill="none" stroke="#13294B" stroke-width="2" stroke-linecap="round"/></marker>
 <marker id="omoT" viewBox="0 0 10 10" refX="8.4" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
   <path d="M2 1.5L8 5L2 8.5" fill="none" stroke="#C24E1C" stroke-width="2" stroke-linecap="round"/></marker>`;
 mapO.appendChild(oDefs);

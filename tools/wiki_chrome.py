@@ -119,6 +119,151 @@ CHROME_JS = """
 </script>
 """
 
+KIT_OPEN = "<!-- wiki page kit · identical in every page that carries it: edit one, edit all -->"
+KIT_CLOSE = "<!-- /wiki page kit -->"
+NEXT_OPEN = "<!-- wiki next -->"
+NEXT_CLOSE = "<!-- /wiki next -->"
+
+# The Overview (index.html) sets the look of this wiki. The kit is that look,
+# written down once, so the pages behind it read as the same site and not as
+# three sites sharing a nav bar. index.html carries none of it: it IS the
+# reference, and it declares the same palette for itself.
+KIT_CSS = """
+<style id="wk-kit">
+  /* ---- AI Data+ page kit: the Overview's look, shared by the pages behind it ---- */
+  :root{
+    /* palette · the Overview's, to the byte */
+    --navy:#13294B; --copy:#3A4A63; --mute:#8A97AA; --line:#D3DEEA; --sky:#EAF2F8;
+    /* line-2 is the border a card takes when it lifts; sky-2 a row under the pointer */
+    --line-2:#C3D0DD; --mute-2:#C8D3E0; --sky-2:#F6F9FC;
+    /* every -ink is the readable version of its colour: 4.5:1 on white AND on its own
+       wash, so a label may sit on either without a second decision */
+    --orange:#E8752A; --orange-2:#F1A26C; --orange-3:#FCE9DC; --orange-ink:#A34A14;
+    --purple:#6B2C91; --purple-2:#EFE6F5; --purple-ink:#6B2C91;
+    --green:#2E9E6B;  --green-2:#E3F4EB;  --green-ink:#1F7A45;
+    --blue-ink:#355F91;
+    --amber:#C9922B;  --amber-2:#FBF0DA; --amber-ink:#8A6410;
+    --halt:#C8443A;   --halt-2:#F8E3E1;  --halt-ink:#A8382F;
+    --paper:#FFFFFF;  --card:#FFFFFF;
+    /* surfaces · one card, one lift, everywhere */
+    --sh-1:0 1px 2px rgba(19,41,75,.05);
+    --sh-2:0 12px 30px rgba(19,41,75,.08);
+    --sh-3:0 18px 44px rgba(19,41,75,.14);
+    --r-ctl:6px; --r-card:14px; --r-lg:18px;
+    /* type scale · one ladder, every page */
+    --t-h1:clamp(32px,4.2vw,54px);
+    --t-h2:clamp(21px,2.1vw,27px);
+    --t-h3:19px;
+    --t-body:15.5px;
+    --t-lede:17px;
+    --wkw:860px;              /* the reading column; a chart page overrides it */
+    --pad-x:40px;
+  }
+  :focus-visible{outline:2px solid var(--orange);outline-offset:2px}
+
+  /* the ground: two soft washes and a dot grid, exactly as the Overview draws them */
+  .wkbg{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
+  .wkbg i{position:absolute;width:64vmax;height:64vmax;border-radius:50%;
+          filter:blur(100px);opacity:.34;animation:wkdrift 22s ease-in-out infinite}
+  .wkbg i:nth-child(1){left:-24vmax;top:-18vmax;background:var(--orange-3)}
+  .wkbg i:nth-child(2){right:-28vmax;bottom:-26vmax;background:var(--sky);animation-delay:-11s}
+  .wkbg:after{content:"";position:absolute;inset:0;opacity:.05;
+          background-image:radial-gradient(#13294B .9px,transparent 1px);background-size:30px 30px}
+  @keyframes wkdrift{0%,100%{margin-left:0;margin-top:0}50%{margin-left:3vw;margin-top:2vh}}
+  @media (prefers-reduced-motion:reduce){.wkbg i{animation:none}}
+  @media print{.wkbg{display:none}}
+
+  /* the page head: eyebrow, title, lede, and whatever controls the page owns */
+  .wkhead{display:flex;align-items:flex-end;justify-content:space-between;gap:16px 32px;
+          flex-wrap:wrap;padding:34px 0 20px;margin:0 0 24px;border-bottom:1px solid var(--line)}
+  .wkhead-t{flex:1 1 420px;min-width:0}
+  .wkhead-a{flex:0 0 auto;display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding-bottom:4px}
+  .wkey{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.14em;
+        color:var(--purple);margin:0 0 11px}
+  .wkhead h1{font-family:var(--disp);font-weight:800;color:var(--navy);font-size:var(--t-h1);
+             line-height:1.02;letter-spacing:-.032em;margin:0;text-wrap:balance}
+  .wklede{font-size:var(--t-lede);line-height:1.55;color:var(--copy);margin:14px 0 0;
+          max-width:58ch;text-wrap:pretty}
+  /* a page whose own toolbar sits right below the title draws no rule under it */
+  .wkhead.wk-bare{border-bottom:0;padding-bottom:10px;margin-bottom:12px}
+
+  /* section heads, one size on every page */
+  .wkh2{font-family:var(--disp);font-weight:800;font-size:var(--t-h2);letter-spacing:-.022em;
+        color:var(--navy);margin:44px 0 6px;text-wrap:balance}
+  .wkh3{font-family:var(--disp);font-weight:700;font-size:var(--t-h3);letter-spacing:-.02em;
+        color:var(--navy);margin:0}
+  .wksub{font-size:15px;line-height:1.5;color:var(--copy);margin:0 0 16px;max-width:58ch;
+         text-wrap:pretty}
+
+  /* one card, one lift. A page adds its own edge or band on top of these. */
+  .wkcard{background:var(--card);border:1px solid var(--line);border-radius:var(--r-card);
+          box-shadow:var(--sh-1)}
+  .wkcard-lift{transition:transform .18s cubic-bezier(.2,.7,.2,1),box-shadow .18s,border-color .18s}
+  .wkcard-lift:hover{transform:translateY(-2px);border-color:var(--line-2);box-shadow:var(--sh-2)}
+  @media (prefers-reduced-motion:reduce){.wkcard-lift{transition:none}
+    .wkcard-lift:hover{transform:none}}
+
+  /* keep reading: the Overview's contents cards, minus the page you are on */
+  .wknext{margin:60px 0 0;padding:28px 0 0;border-top:1px solid var(--line)}
+  .wknext-h{font-family:var(--disp);font-weight:800;font-size:var(--t-h2);letter-spacing:-.022em;
+            color:var(--navy);margin:0 0 6px}
+  .wknext-s{font-size:15px;line-height:1.5;color:var(--copy);margin:0 0 20px;max-width:52ch}
+  .wknext-g{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;
+            max-width:var(--wkw);margin:0}
+  .wknext-c{position:relative;display:block;padding:18px 20px 20px;background:var(--card);
+            border:1px solid var(--line);border-radius:var(--r-card);box-shadow:var(--sh-1);
+            text-decoration:none;color:inherit;
+            transition:transform .18s cubic-bezier(.2,.7,.2,1),box-shadow .18s,border-color .18s}
+  .wknext-c:hover{transform:translateY(-2px);border-color:var(--line-2);box-shadow:var(--sh-2)}
+  .wknext-c b{display:block;font-family:var(--disp);font-weight:700;font-size:18px;line-height:1.2;
+              letter-spacing:-.02em;color:var(--navy);margin:0 0 6px;padding-right:20px}
+  .wknext-d{display:block;font-size:13.5px;line-height:1.5;color:var(--copy);text-wrap:pretty}
+  .wknext-go{position:absolute;right:18px;top:16px;font-size:15px;color:var(--mute-2);
+             transition:color .18s,transform .18s}
+  .wknext-c:hover .wknext-go{color:var(--orange);transform:translateX(2px)}
+  @media (prefers-reduced-motion:reduce){.wknext-c,.wknext-go{transition:none}}
+  @media print{.wknext{display:none}}
+
+  /* the last line on every page, said the same way */
+  .wkfoot{margin:36px 0 0;padding:14px 0 0;border-top:1px solid var(--line);
+          font-family:var(--mono);font-size:11px;letter-spacing:.03em;color:var(--mute);
+          display:flex;gap:18px;flex-wrap:wrap}
+  .wkfoot a{color:var(--orange-ink);text-decoration:none}
+  .wkfoot a:hover{text-decoration:underline}
+
+  html[lang^="zh"] .wkhead h1{font-size:clamp(28px,3.6vw,46px);line-height:1.2;letter-spacing:.01em}
+  html[lang^="zh"] .wkey{letter-spacing:.08em}
+  html[lang^="zh"] .wklede,html[lang^="zh"] .wknext-s,html[lang^="zh"] .wknext-d{line-height:1.75}
+  html[lang^="zh"] .wknext-h{letter-spacing:0;line-height:1.35}
+
+  @media (max-width:980px){
+    .wkhead{padding-top:26px}
+    .wknext-g{grid-template-columns:1fr}
+  }
+</style>
+<div class="wkbg" aria-hidden="true"><i></i><i></i></div>
+"""
+
+# href, English name, Chinese name, English line, Chinese line
+NEXT_CARDS = [
+    ("index.html", "Overview", "总览",
+     "One submission, from the pack that arrives to the data the underwriter reads.",
+     "一份申请：从收到的材料包，"
+     "到核保人读到的数据。"),
+    ("flow.html", "How it works", "整体流程",
+     "The whole programme in four pictures, then the process stage by stage.",
+     "先用四张图看懂整个项目，"
+     "再按阶段展开流程。"),
+    ("lifecycle.html", "Step by step", "逐步流程",
+     "Seven steps: who runs each one, who signs it off, and every outcome it can have.",
+     "七个步骤：每步由谁执行、由谁签核，"
+     "可能出现哪些结果。"),
+    ("gate.html", "RAG Gate", "RAG 闸门",
+     "Red, amber, green — every rule that decides how much attention a treaty needs.",
+     "红、黄、绿——决定一份合约"
+     "需要多少人工的每一条规则。"),
+]
+
 # href, English label, Chinese label
 NAV_LINKS = [
     ("index.html",     "Overview",     "\u603b\u89c8"),
@@ -180,6 +325,67 @@ def apply(path, current):
     print(f"  {path.name}: bar applied (current = {current})")
 
 
+def nxt(current):
+    """The wiki pages this one is not, as cards."""
+    cards = []
+    for href, en, zh, den, dzh in NEXT_CARDS:
+        if href == current:
+            continue
+        cards.append(
+            f'    <a class="wknext-c" href="{href}">\n'
+            f'      <b><span class="wk-en">{en}</span><span class="wk-zh">{zh}</span></b>\n'
+            f'      <span class="wknext-d"><span class="wk-en">{den}</span>'
+            f'<span class="wk-zh">{dzh}</span></span>\n'
+            f'      <span class="wknext-go" aria-hidden="true">→</span>\n'
+            f'    </a>')
+    body = "\n".join(cards)
+    return f"""{NEXT_OPEN}
+<nav class="wknext" aria-labelledby="wknext-h">
+  <h2 class="wknext-h" id="wknext-h"><span class="wk-en">Keep reading</span><span class="wk-zh">继续阅读</span></h2>
+  <p class="wknext-s"><span class="wk-en">The rest of the wiki, one page at a time.</span><span class="wk-zh">手册的其余部分，一页一页看。</span></p>
+  <div class="wknext-g">
+{body}
+  </div>
+</nav>
+{NEXT_CLOSE}"""
+
+
+def apply_kit(path, current):
+    """The shared look, and the cards that point at the rest of the wiki.
+
+    The kit goes directly below the chrome, so its tokens win over whatever the
+    page declared in its own <head>. `Keep reading` goes directly above the
+    page's own <footer>.
+    """
+    html = path.read_text(encoding="utf-8")
+
+    fresh = "\n" + KIT_OPEN + KIT_CSS + KIT_CLOSE + "\n"
+    if KIT_OPEN in html:
+        start = html.index(KIT_OPEN)
+        end = html.index(KIT_CLOSE, start) + len(KIT_CLOSE)
+        html = html[:start].rstrip("\n") + fresh + html[end:].lstrip("\n")
+    else:
+        anchor = html.index(CLOSE) + len(CLOSE)
+        html = html[:anchor] + fresh.rstrip("\n") + html[anchor:]
+
+    block = nxt(current)
+    if NEXT_OPEN in html:
+        start = html.index(NEXT_OPEN)
+        end = html.index(NEXT_CLOSE, start) + len(NEXT_CLOSE)
+        html = html[:start] + block + html[end:]
+    else:
+        m = re.search(r"\n([ \t]*)<footer", html)
+        if not m:
+            raise SystemExit(f"{path.name}: no <footer> for `Keep reading` to sit above")
+        pad = m.group(1)
+        indented = "\n".join(pad + ln if ln else ln for ln in block.split("\n"))
+        html = html[:m.start()] + "\n" + indented + html[m.start():]
+
+    with open(path, "w", encoding="utf-8", newline=chr(10)) as fh:
+        fh.write(html)
+    print(f"  {path.name}: page kit applied")
+
+
 PAGES = {
     "index.html":     "index.html",
     "flow.html":      "flow.html",
@@ -190,6 +396,10 @@ PAGES = {
     "llm-api.html":   "developer.html",
 }
 
+# The Overview is the reference, so it carries no kit; the developer portal is
+# its own room and is left alone.
+KIT_PAGES = ["flow.html", "lifecycle.html", "gate.html"]
+
 if __name__ == "__main__":
     for name, current in PAGES.items():
         p = SITE / name
@@ -197,4 +407,8 @@ if __name__ == "__main__":
             apply(p, current)
         else:
             print(f"  {name}: not on disk yet, skipped")
+    for name in KIT_PAGES:
+        p = SITE / name
+        if p.exists():
+            apply_kit(p, name)
     print("done")

@@ -45,14 +45,14 @@ the protection.
 
 ```
 python tools/dev_gate.py --password <the password>      # re-apply, or change it
-python tools/wiki_chrome.py                             # re-apply the nav bar
+python tools/wiki_chrome.py                             # re-apply the nav bar + the page kit
 ```
 
 Both scripts write the block into every page they cover, which is how the copies stay
 identical. The password is an argument and is in neither script — a password in a
 committed file is a published password. Run either one and commit the pages it rewrites.
 
-## Three things to keep in step
+## Four things to keep in step
 
 - **The chrome.** Each page carries an identical copy of it, between
   `<!-- wiki chrome -->` and `<!-- /wiki chrome -->` right after `<body>`, with the
@@ -60,6 +60,18 @@ committed file is a published password. Run either one and commit the pages it r
   owns the colour tokens, the sticky nav, the language switch, and the skip link.
   Edit `tools/wiki_chrome.py` and re-run it rather than editing seven copies by hand;
   the manual and the API reference both mark *Developer portal* as their current page.
+- **The page kit.** `index.html` is the reference for how this wiki looks — white ground
+  with two soft washes and a dot grid, navy display headings, one warm orange accent,
+  14px cards that lift on hover. The kit is that look written down: palette, shadows,
+  radii, a type ladder, the page head (`.wkhead`), the *Keep reading* cards and the
+  footer. It rides in the same script, between `<!-- wiki page kit -->` and
+  `<!-- /wiki page kit -->`, with the cards between `<!-- wiki next -->` and
+  `<!-- /wiki next -->`, and it is loaded **after** the chrome so its tokens win over
+  whatever a page declared for itself. It goes on `flow.html`, `lifecycle.html` and
+  `gate.html` only: the Overview carries none of it because it *is* the reference and
+  declares the same palette for itself, and the developer portal is its own room.
+  A page then styles itself out of the kit's tokens — a hard-coded hex on those three
+  pages is a defect, not a decision.
 - **Both languages.** Every visible string exists in English and Chinese, and the two are
   edited in the same pass. An English change with no Chinese change is how the two
   versions start meaning different things. In the chrome the pair is
