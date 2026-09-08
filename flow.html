@@ -647,7 +647,7 @@
 
   <header class="wkhead wk-bare" id="main">
     <div class="wkhead-t">
-      <p class="wkey">Ageas + TPRe · AI Data+</p>
+      <p class="wkey">AI Data+</p>
       <div class="hero-g">
         <h1><span>AI Data+, </span><em>at a glance</em></h1>
         <p class="wklede">The whole programme in four pictures.</p>
@@ -1069,7 +1069,7 @@
   <div class="tw">
     <table>
       <thead><tr>
-        <th>Role</th><th>Name</th><th>Org</th>
+        <th>Role</th>
         <th data-st="1">Setup</th><th data-st="2">Generalise</th>
         <th data-st="3">Parallel run</th><th data-st="4">Production</th>
       </tr></thead>
@@ -1091,7 +1091,7 @@
       <div class="top"><span class="sev">Discuss</span><span class="rank">02</span></div>
       <span class="where">Stage 4 · Module A &amp; B · maintenance</span>
       <b>No plan for keeping the live modules running</b>
-      <p>One TPRe Data &amp; AI Engineer is on the chart to maintain Module A and Module B in
+      <p>One Data &amp; AI Engineer is on the chart to maintain Module A and Module B in
          production. What that work actually is has not been discussed.</p>
     </div>
   </div>
@@ -1154,7 +1154,7 @@ const ZH = {
 "faded = not running this stage":"淡化 = 本阶段不运行",
 "Click any box on the chart for what it does and who owns it.":"点击图上任意方块，查看它做什么、由谁负责。",
 "Who does what":"谁负责什么",
-"Role":"角色","Name":"人员","Org":"机构",
+"Role":"角色",
 "Open questions":"待决问题",
 "Two decisions still open, most consequential first. The ringed card applies to the selected stage, and a":"仍有两项决定未定，影响最大的排在前面。带环的卡片对应当前选中的阶段，图上的",
 "on the chart marks the module or line it bites. Owners not yet assigned.":"标记出它影响的模块或连线。责任人尚未指定。",
@@ -1164,14 +1164,12 @@ const ZH = {
 "The production intake route is not chosen":"生产环境的文件接入方式尚未确定",
 "Files may come through an IT-managed endpoint instead of the shared folder. Drawn as a\n         dashed box until IT confirms.":"文件可能改由 IT 管理的接入端点进入，而不是共享文件夹。IT 确认前以虚线方块表示。",
 "No plan for keeping the live modules running":"上线后模块的运维尚无方案",
-"One TPRe Data & AI Engineer is on the chart to maintain Module A and Module B in\n         production. What that work actually is has not been discussed.":"图上安排了一位 TPRe 数据与 AI 工程师在生产阶段运维 Module A 与 Module B。这项工作具体包含什么，尚未讨论。",
+"One Data & AI Engineer is on the chart to maintain Module A and Module B in\n         production. What that work actually is has not been discussed.":"图上安排了一位数据与 AI 工程师在生产阶段运维 Module A 与 Module B。这项工作具体包含什么，尚未讨论。",
 "Updated 2026-08-31":"更新于 2026-08-31",
 "Close":"关闭","Allow pop-ups to export the chart.":"请允许弹出窗口以导出图表。",
 /* -- roles, people, duties -- */
 "Business Analyst":"业务分析师","Domain Specialist":"领域专家",
 "Data & AI Engineer":"数据与 AI 工程师","IT / Platform":"IT / 平台","Underwriter":"核保人",
-"Aidon Li, Aylon Xie · vendor may take MVP-500 review":"Aidon Li, Aylon Xie · MVP-500 的复核可能由供应商承担",
-"17F underwriting team (BD2)":"17F 核保团队（BD2）",
 "manual filter · 20 templates · review":"人工筛选 · 20 份模板 · 复核",
 "recipes · review (heavy)":"Recipe · 复核（工作量大）",
 "evaluate output · new recipes":"评估输出 · 新建 Recipe","new recipes":"新建 Recipe",
@@ -1179,7 +1177,7 @@ const ZH = {
 "reviews pack & results (TBD)":"复核文件包与结果（待定）","spot checks":"抽样检查",
 "rules · facts agent":"规则 · Facts Agent","rules · agent & recipe":"规则 · Agent 与 Recipe",
 "maintains A & B · new recipes":"运维 A 与 B · 新建 Recipe",
-"TPRe maintains A & B (TBD)":"TPRe 运维 A 与 B（待定）",
+"Maintains A & B (TBD)":"运维 A 与 B（待定）",
 "environment":"环境","deployment":"部署","runs it":"负责运行",
 "owns intake + TPR write":"负责接入与写入 TPR",
 "works in parallel":"并行处理","consumes reports":"使用报告",
@@ -1283,7 +1281,7 @@ const ZH = {
 "The files the machine believes carry data. In set-up they are measured against gold; in generalisation a person rules on them and that ruling is the pack; from the parallel run they go straight through.":"机器认为含有数据的文件。搭建阶段与 Gold 比对；泛化阶段由人工裁定，裁定结果即文件包；从并行运行起直接通过。",
 "Not discarded — tagged non-core and retained, so a wrong call can always be recovered.":"不会丢弃 —— 标记为非核心并保留，判错时随时可以找回。",
 "The Business Analysts do the manual filtering. In setup they filter everything; in generalisation only a sample.":"人工筛选由业务分析师完成。搭建阶段全量筛选，泛化阶段只做抽样。",
-"Andrew and Susana validate the manually filtered files into Gold Core, and provide the shopping list. Set-up only — the shopping list is then fixed.":"Andrew 与 Susana 验证人工筛选的文件，形成 Gold Core，并提供字段清单。仅搭建阶段 —— 之后字段清单即固定。",
+"The Domain Specialist validates the manually filtered files into Gold Core, and provides the shopping list. Set-up only — the shopping list is then fixed.":"领域专家验证人工筛选的文件，形成 Gold Core，并提供字段清单。仅搭建阶段 —— 之后字段清单即固定。",
 "The Business Analysts' manual filtering result, then validated by the Domain Specialist. What is signed off becomes Gold Core.":"业务分析师的人工筛选结果，再由领域专家验证。签署通过的部分成为 Gold Core。",
 "This is where the developers sit in the loop: confirmed machine errors come to them, and they turn each one into a rule or prompt update. The machine only improves because someone rewrites its rules. Build stages only.":"这是工程师在回路中的位置：确认的机器错误交到他们手上，每一条都转化为规则或提示词的更新。机器之所以变好，是因为有人在重写它的规则。仅构建阶段。",
 "Maintains Module A and Module B in the parallel run and in production. How the live maintenance flow works is still to be discussed.":"在并行运行和生产阶段运维 Module A 与 Module B。上线后的运维流程如何运作仍待讨论。",
@@ -1299,7 +1297,7 @@ const ZH = {
 "A person rules on red and amber submissions and keeps working them until the split is sound — only then does it join the validated core. In the parallel run this scores triage performance only.":"人工裁定红色与黄色的申请，反复处理直到拆分可靠 —— 之后才并入已验证核心文件。并行运行阶段这只用于评估分流表现。",
 "Rules on red and amber submissions from the gate; green never reaches them. In generalisation the ruling becomes part of the validated core, in the parallel run it is a performance sample only.":"裁定关卡输出的红色与黄色申请；绿色永远不会到他们手上。泛化阶段该裁定成为已验证核心文件的一部分，并行运行阶段只是表现抽样。",
 "The flywheel's output, outside the module: the human ruling on the machine's triage. From generalisation on it is the core-file set Module B reads — nothing bypasses the gate. Only production drops the flywheel and runs triage straight through.":"飞轮的输出，位于模块之外：人工对机器分流的裁定。从泛化阶段起，它就是 Module B 读取的核心文件集 —— 没有任何东西绕过关卡。只有生产阶段撤掉飞轮，让分流直接通过。",
-"Reviews the humans' own output — the validated core and the validated extraction results. In set-up Andrew and Susana saw all 20; at volume the method is not agreed, so both routes are dotted.":"复核人工自己的产出 —— 已验证核心文件与已验证抽取结果。搭建阶段 Andrew 与 Susana 看了全部 20 份；放量后的方法尚未达成一致，因此两条路径都用虚线表示。",
+"Reviews the humans' own output — the validated core and the validated extraction results. In set-up the Domain Specialist saw all 20; at volume the method is not agreed, so both routes are dotted.":"复核人工自己的产出 —— 已验证核心文件与已验证抽取结果。搭建阶段领域专家看了全部 20 份；放量后的方法尚未达成一致，因此两条路径都用虚线表示。",
 "Where booked values come from for the extraction comparison. Retrospective only — generalisation. The parallel run is live new business, so there is no TPR record to check against.":"抽取比对所用已入账数据的来源。仅历史回溯 —— 即泛化阶段。并行运行处理的是实时新业务，没有可比对的 TPR 记录。",
 "The treaty's core files, handed to extraction. From the gold set in set-up; straight from triage in the parallel run and in production. In generalisation the validated core is this input, so there is no second box.":"交给抽取的合约核心文件。搭建阶段来自 Gold 集；并行运行与生产阶段直接来自分流。泛化阶段的输入就是已验证核心文件，因此没有第二个方块。",
 "The agreed field list, provided and signed by the Domain Specialist. Nothing downstream is stable until this is fixed.":"由领域专家提供并签署的约定字段清单。在它固定之前，下游没有任何环节是稳定的。",
@@ -1399,16 +1397,16 @@ document.addEventListener("aidp:lang", function(e){
   setLang(e.detail==="zh"?"zh":"en");
 });
 const ROLES = {
-  ba :{n:"Business Analyst",   who:"Aidon Li, Aylon Xie · vendor may take MVP-500 review", org:"TPRe", c:"#C4674A"},
-  ds :{n:"Domain Specialist",  who:"Andrew Yuen, Susana Pui",          org:"Ageas / TPRe", c:"#C4674A"},
-  dai:{n:"Data & AI Engineer", who:"Henri Qiu, Yibei Chen",             org:"Ageas / TPRe", c:"#C4674A"},
-  it :{n:"IT / Platform",      who:"Chen Jin, Que Jinchao",            org:"TPRe",         c:"#C4674A"},
-  uw :{n:"Underwriter",        who:"17F underwriting team (BD2)",      org:"TPRe",         c:"#C4674A"}
+  ba :{n:"Business Analyst",   c:"#C4674A"},
+  ds :{n:"Domain Specialist",  c:"#C4674A"},
+  dai:{n:"Data & AI Engineer", c:"#C4674A"},
+  it :{n:"IT / Platform",      c:"#C4674A"},
+  uw :{n:"Underwriter",        c:"#C4674A"}
 };
 const DUTY = {
   ba :["manual filter · 20 templates · review","recipes · review (heavy)","evaluate output · new recipes","new recipes"],
   ds :["gold sign-off · shopping list","reviews pack & results (TBD)","reviews pack & results (TBD)","spot checks"],
-  dai:["rules · facts agent","rules · agent & recipe","maintains A & B · new recipes","TPRe maintains A & B (TBD)"],
+  dai:["rules · facts agent","rules · agent & recipe","maintains A & B · new recipes","Maintains A & B (TBD)"],
   it :["environment","deployment","runs it","owns intake + TPR write"],
   uw :["—","—","works in parallel","consumes reports"]
 };
@@ -1424,7 +1422,7 @@ const STAGES = [
    d:"Objective: evaluate performance. Live path matches production (recipe as logic, Module B writes both reports, shared-folder intake, no TPR write) but both validation flywheels stay on to score the live output. They do not feed the build loops. Recipe creation still runs for a new cedant that has no recipe yet."},
   {n:"Full production", tag:"(prod)", mv:"machine output is used",
    t:"The machine's output is used.",
-   d:"Both flywheels stay off. Extraction runs the published recipe — no LLM. Module B writes both reports to TPR. Recipe creation still runs for a new cedant with no recipe. One TPRe Data & AI Engineer maintains Module A and Module B — that flow is still to be discussed."}
+   d:"Both flywheels stay off. Extraction runs the published recipe — no LLM. Module B writes both reports to TPR. Recipe creation still runs for a new cedant with no recipe. One Data & AI Engineer maintains Module A and Module B — that flow is still to be discussed."}
 ];
 
 /* ============ CONTAINERS ============ */
@@ -1468,7 +1466,7 @@ const ND = [
  {id:"baM",     type:"actor",x:1410,y:118,w:26,h:46, r:"ba", t:"Business Analyst", st:[1],
   d:"The Business Analysts do the manual filtering. In setup they filter everything; in generalisation only a sample."},
  {id:"dsA",     type:"actor",x:1410,y:202,w:26,h:46, r:"ds", t:"Domain Specialist", st:[1],
-  d:"Andrew and Susana validate the manually filtered files into Gold Core, and provide the shopping list. Set-up only — the shopping list is then fixed."},
+  d:"The Domain Specialist validates the manually filtered files into Gold Core, and provides the shopping list. Set-up only — the shopping list is then fixed."},
  {id:"hcat",    type:"box",x:880,y:85,  w:190,h:46,k:"human",r:"ba",t:"Human Categorized Files",
   s:"", st:[1],
   d:"The Business Analysts' manual filtering result, then validated by the Domain Specialist. What is signed off becomes Gold Core."},
@@ -1503,7 +1501,7 @@ const ND = [
  {id:"packA",   type:"box",x:845,y:636, w:180,h:44,k:"green",r:"ba",t:"Validated core",   s:"FEEDS EXTRACTION", st:[2,3],
   d:"The flywheel's output, outside the module: the human ruling on the machine's triage. From generalisation on it is the core-file set Module B reads — nothing bypasses the gate. Only production drops the flywheel and runs triage straight through."},
  {id:"dsRev",   type:"actor",x:1410,y:635,w:26,h:46, r:"ds", t:"Domain Specialist", st:[2,3],
-  d:"Reviews the humans' own output — the validated core and the validated extraction results. In set-up Andrew and Susana saw all 20; at volume the method is not agreed, so both routes are dotted."},
+  d:"Reviews the humans' own output — the validated core and the validated extraction results. In set-up the Domain Specialist saw all 20; at volume the method is not agreed, so both routes are dotted."},
 
  {id:"tprS",    type:"box",x:30, y:760, w:150,h:46,k:"sys", r:"it", t:"TPR system",      s:"BOOKED VALUES SOURCE", st:[2],
   d:"Where booked values come from for the extraction comparison. Retrospective only — generalisation. The parallel run is live new business, so there is no TPR record to check against."},
@@ -2125,7 +2123,7 @@ function exportHtml(view){
     const s=STAGES[i-1];
     const cap=`${i}. ${T(s.n)}${s.tag?" "+T(s.tag):""}`;
     pages.push(`<section class="page"><header>
-      <p class="eyebrow">Ageas + TPRe · AI Data+ · ${viewName}</p>
+      <p class="eyebrow">AI Data+ · ${viewName}</p>
       <h1>${cap}</h1></header>${snapshotSvg(src,"_s"+i)}</section>`);
   }
   setStage(saved);
@@ -2194,8 +2192,7 @@ document.getElementById("exportChart").addEventListener("click", exportChart);
 const tb=document.getElementById("tbody");
 Object.entries(ROLES).forEach(([k,r])=>{
   const tr=document.createElement("tr");
-  tr.innerHTML=`<td class="role">${r.n}</td>
-    <td class="nm">${r.who}</td><td class="nm">${r.org}</td>`+
+  tr.innerHTML=`<td class="role">${r.n}</td>`+
     DUTY[k].map((d,i)=>`<td class="duty${d==="—"?" none":""}" data-st="${i+1}">${d}</td>`).join("");
   tb.appendChild(tr);
 });
@@ -2273,14 +2270,14 @@ function paint(){
     d.innerHTML='<p class="empty">'+T("Click any box on the chart for what it does and who owns it.")+'</p>';
   }else if(inO){
     const n=oNM[sel], rr=n._role?ROLES[n._role]:null;
-    const who=rr?T(rr.n)+" — "+T(rr.who):T(n.sub?"MODULE — THE PROGRAM'S BOUNDARY":"SYSTEM / ARTEFACT");
+    const who=rr?T(rr.n):T(n.sub?"MODULE — THE PROGRAM'S BOUNDARY":"SYSTEM / ARTEFACT");
     const col=rr?rr.c:(n.col||"#5B6B7F");
     const on=n.st.includes(stage);
     d.innerHTML=close+'<div class="who" style="color:'+col+'">'+who+
       (on?"":T(" · NOT RUNNING THIS STAGE"))+'</div><h3>'+T(n.t)+'</h3><p>'+T(n.d)+'</p>';
   }else{
     const n=NM[sel], r=ROLES[n.r], on=n.st.includes(stage);
-    d.innerHTML=close+'<div class="who" style="color:'+r.c+'">'+T(r.n)+" — "+T(r.who)+
+    d.innerHTML=close+'<div class="who" style="color:'+r.c+'">'+T(r.n)+
       (on?"":T(" · NOT RUNNING THIS STAGE"))+'</div><h3>'+T(n.t).replace("\n"," ")+
       '</h3><p>'+T(n.d)+'</p>';
   }
@@ -2400,12 +2397,12 @@ const OACT=[
   d:"Takes the unmatched fields from the Module B flywheel back into the Facts Agent (build stages), and feeds a published or new-cedant recipe from the recipe module into the Recipe step."},
  {id:"v_baM",x:1410,y:118,t:"Business Analyst",st:[1],d:"Does the manual filtering in set-up."},
  {id:"v_dsA",x:1410,y:202,t:"Domain Specialist",st:[1],
-  d:"Andrew and Susana validate the manually filtered files into Gold Core, and provide the shopping list. Set-up only — the shopping list is then fixed."},
+  d:"The Domain Specialist validates the manually filtered files into Gold Core, and provides the shopping list. Set-up only — the shopping list is then fixed."},
  {id:"v_aaA",x:1410,y:359,t:"Business Analyst",st:[2,3],
   d:"Rules on the machine result itself — that ruling is the pack. Not in set-up: comparison errors go straight to the Data & AI Engineer."},
  {id:"v_baE",x:1410,y:732,t:"Business Analyst",st:[1],d:"Hand-fills the 20 templates in set-up."},
  {id:"v_dsRev",x:1410,y:635,t:"Domain Specialist",st:[2,3],
-  d:"Reviews the humans' own output — the validated core and the validated extraction results. In set-up Andrew and Susana saw all 20; at volume the method is not agreed, so both routes are dotted."},
+  d:"Reviews the humans' own output — the validated core and the validated extraction results. In set-up the Domain Specialist saw all 20; at volume the method is not agreed, so both routes are dotted."},
  {id:"v_aaB",x:1410,y:992,t:"Business Analyst",st:[1,2,3],
   d:"Checks extracted records: all of them in set-up, then only red and amber once the gate exists."},
  {id:"v_aaB3",x:1410,y:800,t:"Business Analyst",st:[],
@@ -2612,7 +2609,7 @@ OACT.forEach(n=>{
     d:`M${cx} ${cy+7} V${cy+22} M${cx-9} ${cy+13} H${cx+9} M${cx} ${cy+22} L${cx-8} ${cy+34} M${cx} ${cy+22} L${cx+8} ${cy+34}`}));
   g.appendChild(el("text",{class:"alabel",x:cx,y:n.y+(n.ly||58),"text-anchor":"middle"},n.t));
   if(n.tick)g.appendChild(el("line",{class:"htick",x1:cx,y1:n.y-2,x2:n.tick[0],y2:n.tick[1]}));
-  const pk=oPickFn(n,rr?T(rr.n)+" — "+T(rr.who):T("HUMAN — OUTSIDE THE PROGRAM"),rr?rr.c:"#93400F");
+  const pk=oPickFn(n,rr?T(rr.n):T("HUMAN — OUTSIDE THE PROGRAM"),rr?rr.c:"#93400F");
   g.addEventListener("click",pk);
   g.addEventListener("keydown",ev=>{if(ev.key==="Enter"||ev.key===" "){ev.preventDefault();pk();}});
   gON.appendChild(g); oEls[n.id]=g;

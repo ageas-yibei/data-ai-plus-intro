@@ -101,8 +101,8 @@ def gate_block(password):
     <div class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10.5" width="16" height="10.5" rx="2.4"/><path d="M8 10.5V7.2a4 4 0 0 1 8 0v3.3"/><path d="M12 14.6v2.4"/></svg></div>
     <h2 id="wklock-h"><span class="wk-en">Developer portal</span><span class="wk-zh">\u5f00\u53d1\u8005\u95e8\u6237</span></h2>
     <p>
-      <span class="wk-en">This part of the wiki is for the project team. Ask Yibei for the password.</span>
-      <span class="wk-zh">\u672c\u7ad9\u8fd9\u4e00\u90e8\u5206\u9762\u5411\u9879\u76ee\u56e2\u961f\u3002\u5bc6\u7801\u8bf7\u5411 Yibei \u7d22\u53d6\u3002</span>
+      <span class="wk-en">This part of the wiki is for the project team. Ask the team for the password.</span>
+      <span class="wk-zh">\u672c\u7ad9\u8fd9\u4e00\u90e8\u5206\u9762\u5411\u9879\u76ee\u56e2\u961f\u3002\u5bc6\u7801\u8bf7\u5411\u9879\u76ee\u56e2\u961f\u7d22\u53d6\u3002</span>
     </p>
     <form id="wklock-f" autocomplete="off">
       <input type="password" id="wklock-i" aria-label="Password" autocomplete="current-password" spellcheck="false">

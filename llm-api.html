@@ -240,8 +240,8 @@
     <div class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10.5" width="16" height="10.5" rx="2.4"/><path d="M8 10.5V7.2a4 4 0 0 1 8 0v3.3"/><path d="M12 14.6v2.4"/></svg></div>
     <h2 id="wklock-h"><span class="wk-en">Developer portal</span><span class="wk-zh">开发者门户</span></h2>
     <p>
-      <span class="wk-en">This part of the wiki is for the project team. Ask Yibei for the password.</span>
-      <span class="wk-zh">本站这一部分面向项目团队。密码请向 Yibei 索取。</span>
+      <span class="wk-en">This part of the wiki is for the project team. Ask the team for the password.</span>
+      <span class="wk-zh">本站这一部分面向项目团队。密码请向项目团队索取。</span>
     </p>
     <form id="wklock-f" autocomplete="off">
       <input type="password" id="wklock-i" aria-label="Password" autocomplete="current-password" spellcheck="false">
@@ -344,17 +344,17 @@
 <!-- /developer gate -->
 <div class="wrap" id="main">
 
-  <p class="ey">Ageas + TPRe · AI Data+ · developer portal</p>
+  <p class="ey">AI Data+ · developer portal</p>
   <h1>Internal LLM API reference</h1>
-  <p class="lede">Developer cheat sheet for the two in-house OpenAI-compatible hosts. Both sit on the company intranet (<code>10.253.x.x</code>), so you must be on the internal network or VPN. Traffic is <b>HTTP, not HTTPS</b>.</p>
+  <p class="lede">Developer cheat sheet for the two in-house OpenAI-compatible hosts. Both sit on the internal network, so you must be on it or on the VPN. Traffic is <b>HTTP, not HTTPS</b>.</p>
   <p class="zhnote">本页为开发者速查表，仅维护英文版本。</p>
 
   <div class="warn">
     <span class="ic" aria-hidden="true">!</span>
     <div>
-      <b>Keys are not published on this page</b>
-      <p>Everywhere a key belongs you will find <span class="redact">see the internal note</span>. The values live in <code>04. docs\LLM-API-REFERENCE.md</code> on the project share, and in each stage's own gitignored config (<code>triage/llm_config.json</code>).</p>
-      <p>These hosts are private company addresses. Keep the endpoints inside TPRe, and never point a cloud provider at a production submission.</p>
+      <b>Keys and addresses are not published on this page</b>
+      <p>Everywhere a key or a host belongs you will find a placeholder such as <code>&lt;chat-host&gt;</code> or <span class="redact">see the internal note</span>. The real hosts, ports and keys live together in the internal API note on the project share, and in each stage's own gitignored config (<code>triage/llm_config.json</code>).</p>
+      <p>These hosts are private company addresses. Keep the endpoints off any page that leaves the internal network, and never point a cloud provider at a production submission.</p>
     </div>
   </div>
 
@@ -378,12 +378,12 @@ POST {base_url}/chat/completions</code></pre>
 Content-Type: application/json</code></pre>
 
   <h2 class="sec" id="mac">1. Mac Studio — LM Studio</h2>
-  <p class="sub">One LM Studio process on the Mac Studio. Reach it on the LAN at <code>:9090</code>, or on the machine itself at <code>localhost:1234</code>.</p>
+  <p class="sub">One LM Studio process on the Mac Studio. Reach it on the LAN at the port in the internal note, or on the machine itself at <code>localhost:1234</code>.</p>
 
   <h3>Connection</h3>
   <div class="tw"><table>
     <tr><th>Field</th><th>Value</th></tr>
-    <tr><td class="k">LAN base URL</td><td><code>http://10.253.17.70:9090/v1</code></td></tr>
+    <tr><td class="k">LAN base URL</td><td><code>http://&lt;vision-host&gt;:&lt;port&gt;/v1</code></td></tr>
     <tr><td class="k">Loopback base URL (on the Mac)</td><td><code>http://localhost:1234/v1</code></td></tr>
     <tr><td class="k">API key / <code>COMPANY_API_KEY</code></td><td><span class="redact">see the internal note</span></td></tr>
     <tr><td class="k">Admin dashboard (on the Mac)</td><td><code>http://localhost:1234/admin</code></td></tr>
@@ -436,7 +436,7 @@ Content-Type: application/json</code></pre>
 <pre class="py"><code>from openai import OpenAI
 
 client = OpenAI(
-    base_url="http://10.253.17.70:9090/v1",
+    base_url="http://&lt;vision-host&gt;:&lt;port&gt;/v1",
     api_key=COMPANY_API_KEY,        # see the internal note
 )
 
@@ -462,10 +462,10 @@ resp = client.chat.completions.create(
 print(resp.choices[0].message.content)</code></pre>
 
   <h3>Curl</h3>
-<pre class="sh"><code>curl -s http://10.253.17.70:9090/v1/models \
+<pre class="sh"><code>curl -s http://&lt;vision-host&gt;:&lt;port&gt;/v1/models \
   -H "Authorization: Bearer $COMPANY_API_KEY"
 
-curl -s http://10.253.17.70:9090/v1/chat/completions \
+curl -s http://&lt;vision-host&gt;:&lt;port&gt;/v1/chat/completions \
   -H "Authorization: Bearer $COMPANY_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
@@ -480,7 +480,7 @@ curl -s http://10.253.17.70:9090/v1/chat/completions \
   <h3>2a. Qwen3.8-27B — port 4000</h3>
   <div class="tw"><table>
     <tr><th>Field</th><th>Value</th></tr>
-    <tr><td class="k">Base URL</td><td><code>http://10.253.16.94:4000/v1</code></td></tr>
+    <tr><td class="k">Base URL</td><td><code>http://&lt;chat-host&gt;:&lt;chat-port&gt;/v1</code></td></tr>
     <tr><td class="k">API key</td><td><span class="redact">see the internal note</span></td></tr>
     <tr><td class="k">Model id</td><td><code>qwen3.8-27b</code></td></tr>
     <tr><td class="k">Display name</td><td>Qwen3.8-27B</td></tr>
@@ -501,7 +501,7 @@ curl -s http://10.253.17.70:9090/v1/chat/completions \
 <pre class="py"><code>from openai import OpenAI
 
 client = OpenAI(
-    base_url="http://10.253.16.94:4000/v1",
+    base_url="http://&lt;chat-host&gt;:&lt;chat-port&gt;/v1",
     api_key=QWEN_KEY,               # see the internal note
 )
 
@@ -513,10 +513,10 @@ resp = client.chat.completions.create(
 )
 print(resp.choices[0].message.content)</code></pre>
 
-<pre class="sh"><code>curl -s http://10.253.16.94:4000/v1/models \
+<pre class="sh"><code>curl -s http://&lt;chat-host&gt;:&lt;chat-port&gt;/v1/models \
   -H "Authorization: Bearer $QWEN_KEY"
 
-curl -s http://10.253.16.94:4000/v1/chat/completions \
+curl -s http://&lt;chat-host&gt;:&lt;chat-port&gt;/v1/chat/completions \
   -H "Authorization: Bearer $QWEN_KEY" \
   -H "Content-Type: application/json" \
   -d '{
@@ -528,7 +528,7 @@ curl -s http://10.253.16.94:4000/v1/chat/completions \
   <h3>2b. Gemma-4-26B-A4B — port 4001</h3>
   <div class="tw"><table>
     <tr><th>Field</th><th>Value</th></tr>
-    <tr><td class="k">Base URL</td><td><code>http://10.253.16.94:4001/v1</code></td></tr>
+    <tr><td class="k">Base URL</td><td><code>http://&lt;chat-host&gt;:&lt;alt-port&gt;/v1</code></td></tr>
     <tr><td class="k">API key</td><td><span class="redact">see the internal note</span></td></tr>
     <tr><td class="k">Model id</td><td><code>gemma-4-26B-A4B</code></td></tr>
     <tr><td class="k">Display name</td><td>Gemma-4-26B-A4B</td></tr>
@@ -541,7 +541,7 @@ curl -s http://10.253.16.94:4000/v1/chat/completions \
 <pre class="py"><code>from openai import OpenAI
 
 client = OpenAI(
-    base_url="http://10.253.16.94:4001/v1",
+    base_url="http://&lt;chat-host&gt;:&lt;alt-port&gt;/v1",
     api_key=GEMMA_KEY,              # see the internal note
 )
 
@@ -552,14 +552,14 @@ resp = client.chat.completions.create(
 )
 print(resp.choices[0].message.content)</code></pre>
 
-<pre class="sh"><code>curl -s http://10.253.16.94:4001/v1/models \
+<pre class="sh"><code>curl -s http://&lt;chat-host&gt;:&lt;alt-port&gt;/v1/models \
   -H "Authorization: Bearer $GEMMA_KEY"</code></pre>
 
   <h2 class="sec" id="stdlib">Stdlib-only call (no <code>openai</code> package)</h2>
   <p class="sub">How this project actually calls the endpoint: a locked workstation cannot <code>pip install</code>, so the pipeline speaks the protocol with <code>urllib</code>, reading the host and key out of its own gitignored config.</p>
 <pre class="py"><code>import json, urllib.request
 
-BASE = "http://10.253.16.94:4000/v1"
+BASE = "http://&lt;chat-host&gt;:&lt;chat-port&gt;/v1"
 KEY = cfg["api_key"]                # triage/llm_config.json, gitignored
 
 req = urllib.request.Request(
@@ -590,7 +590,7 @@ print(body["choices"][0]["message"]["content"])</code></pre>
   </ul>
 
   <footer>
-    Ageas + TPRe · AI Data+ · <a href="developer.html">developer portal</a> · <a href="index.html">overview</a>
+    AI Data+ · <a href="developer.html">developer portal</a> · <a href="index.html">overview</a>
   </footer>
 
 </div>

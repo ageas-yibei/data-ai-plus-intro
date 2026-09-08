@@ -501,7 +501,7 @@
 
   <header class="wkhead" id="main">
     <div class="wkhead-t">
-      <p class="wkey">Ageas + TPRe · AI Data+</p>
+      <p class="wkey">AI Data+</p>
       <h1><span class="en">Submission file lifecycle</span><span class="zh">申请文件生命周期</span></h1>
       <p class="wklede"><span class="en">MVP stage · retrospective submissions, manual triggers, full human validation</span><span class="zh">MVP 阶段 · 回溯案例、人工触发、全量人工验证</span></p>
     </div>
@@ -541,17 +541,17 @@
           <div class="pic"><svg viewBox="0 0 48 48"><use href="#s-pull"/></svg></div>
           <div>
             <p class="phrase"><span class="en">File download</span><span class="zh">文件下载</span></p>
-            <div class="whos"><span class="who p"><svg><use href="#i-person"/></svg>Yibei</span></div>
+            <div class="whos"><span class="who p"><svg><use href="#i-person"/></svg><span class="en">Data &amp; AI Engineer</span><span class="zh">数据与 AI 工程师</span></span></div>
           </div>
           <span class="side">
-            <span class="info" tabindex="0"><svg><use href="#i-i"/></svg><span class="tt"><span class="en">A script fetches the files from EFS; each submission is identified by TNO and underwriting year. Nothing is filtered. Yibei triggers the script at MVP; automatic through Jinchao's API at production. No sign-off.</span><span class="zh">脚本从 EFS 拉取文件；每份申请以 TNO 和承保年度标识。不做筛选。MVP 阶段由 Yibei 触发脚本，上线后通过 Jinchao 的 API 自动完成。无需签核。</span></span></span>
+            <span class="info" tabindex="0"><svg><use href="#i-i"/></svg><span class="tt"><span class="en">A script fetches the files from EFS; each submission is identified by TNO and underwriting year. Nothing is filtered. The Data &amp; AI Engineer triggers the script at MVP; automatic through the IT / Platform API at production. No sign-off.</span><span class="zh">脚本从 EFS 拉取文件；每份申请以 TNO 和承保年度标识。不做筛选。MVP 阶段由数据与 AI 工程师触发脚本，上线后通过 IT / 平台的 API 自动完成。无需签核。</span></span></span>
             <span class="chev"><svg><use href="#i-chev"/></svg></span>
           </span>
         </div>
         <div class="body"><div class="pills">
           <span class="pill o-wait"><svg><use href="#i-clock"/></svg><span class="en">Still in EFS</span><span class="zh">仍在 EFS</span></span>
           <span class="pill o-ok"><svg><use href="#i-check"/></svg><span class="en">All files in folder</span><span class="zh">文件已齐全</span></span>
-          <span class="pill o-fix"><svg><use href="#i-alert"/></svg><span class="en">Files missing</span><span class="zh">文件缺失</span> <small>→ Yibei + Jinchao</small></span>
+          <span class="pill o-fix"><svg><use href="#i-alert"/></svg><span class="en">Files missing</span><span class="zh">文件缺失</span> <small>→ <span class="en">Data &amp; AI Engineer + IT / Platform</span><span class="zh">数据与 AI 工程师 + IT / 平台</span></small></span>
         </div></div>
       </div>
     </section>
@@ -570,17 +570,17 @@
           <div class="pic"><svg viewBox="0 0 48 48"><use href="#s-sort"/></svg></div>
           <div>
             <p class="phrase"><span class="en">File filtering</span><span class="zh">文件筛选</span></p>
-            <div class="whos"><span class="who p"><svg><use href="#i-person"/></svg>Yibei</span><span class="who m"><svg><use href="#i-gear"/></svg>Submission Agent</span></div>
+            <div class="whos"><span class="who p"><svg><use href="#i-person"/></svg><span class="en">Data &amp; AI Engineer</span><span class="zh">数据与 AI 工程师</span></span><span class="who m"><svg><use href="#i-gear"/></svg>Submission Agent</span></div>
           </div>
           <span class="side">
-            <span class="info" tabindex="0"><svg><use href="#i-i"/></svg><span class="tt"><span class="en">Yibei triggers the Submission Agent. A deterministic rule picks the Core files; the LLM only classifies what the rule can't. Every file is kept, tagged Core or Others. Signed off at step 3.</span><span class="zh">Yibei 触发 Submission Agent。确定性规则先选出核心文件，规则未命中的才交给 LLM 分类。所有文件都保留，标记为核心或其他。在第 3 步签核。</span></span></span>
+            <span class="info" tabindex="0"><svg><use href="#i-i"/></svg><span class="tt"><span class="en">The Data &amp; AI Engineer triggers the Submission Agent. A deterministic rule picks the Core files; the LLM only classifies what the rule can't. Every file is kept, tagged Core or Others. Signed off at step 3.</span><span class="zh">数据与 AI 工程师触发 Submission Agent。确定性规则先选出核心文件，规则未命中的才交给 LLM 分类。所有文件都保留，标记为核心或其他。在第 3 步签核。</span></span></span>
             <span class="chev"><svg><use href="#i-chev"/></svg></span>
           </span>
         </div>
         <div class="body"><div class="pills">
           <span class="pill o-wait"><svg><use href="#i-clock"/></svg><span class="en">Not run yet</span><span class="zh">尚未运行</span></span>
           <span class="pill o-ok"><svg><use href="#i-check"/></svg><span class="en">Sorted</span><span class="zh">已分拣</span></span>
-          <span class="pill o-fix"><svg><use href="#i-alert"/></svg><span class="en">Run failed</span><span class="zh">运行失败</span> <small>→ Yibei</small></span>
+          <span class="pill o-fix"><svg><use href="#i-alert"/></svg><span class="en">Run failed</span><span class="zh">运行失败</span> <small>→ <span class="en">Data &amp; AI Engineer</span><span class="zh">数据与 AI 工程师</span></small></span>
         </div></div>
       </div>
     </section>
@@ -593,18 +593,18 @@
           <div class="pic"><svg viewBox="0 0 48 48"><use href="#s-check"/></svg></div>
           <div>
             <p class="phrase"><span class="en">Result validation</span><span class="zh">结果验证</span></p>
-            <div class="whos"><span class="who p"><svg><use href="#i-person"/></svg><span class="en">Reviewer</span><span class="zh">复核人</span></span><span class="arrow">→</span><span class="who s"><svg><use href="#i-stamp"/></svg>Andrew / Susana</span></div>
+            <div class="whos"><span class="who p"><svg><use href="#i-person"/></svg><span class="en">Reviewer</span><span class="zh">复核人</span></span><span class="arrow">→</span><span class="who s"><svg><use href="#i-stamp"/></svg><span class="en">Domain Specialist</span><span class="zh">领域专家</span></span></div>
           </div>
           <span class="side">
-            <span class="info" tabindex="0"><svg><use href="#i-i"/></svg><span class="tt"><span class="en">Validation Flywheel, Module A. The vendor reviewer checks the split; the Domain Specialist signs it off as "validated Core". Corrections go back to Yibei to teach the agent. Green/amber/red gates from MVP 500; full review at MVP 20. Logged to validations/validations.csv.</span><span class="zh">验证飞轮，模块 A。外包复核人检查分拣结果；领域专家签核为"已确认核心"。纠正结果反馈给 Yibei 改进 agent。绿黄红门控自 MVP 500 启用；MVP 20 全检。记录于 validations/validations.csv。</span></span></span>
+            <span class="info" tabindex="0"><svg><use href="#i-i"/></svg><span class="tt"><span class="en">Validation Flywheel, Module A. The vendor reviewer checks the split; the Domain Specialist signs it off as "validated Core". Corrections go back to the Data &amp; AI Engineer to teach the agent. Green/amber/red gates from MVP 500; full review at MVP 20. Logged to validations/validations.csv.</span><span class="zh">验证飞轮，模块 A。外包复核人检查分拣结果；领域专家签核为"已确认核心"。纠正结果反馈给数据与 AI 工程师改进 agent。绿黄红门控自 MVP 500 启用；MVP 20 全检。记录于 validations/validations.csv。</span></span></span>
             <span class="chev"><svg><use href="#i-chev"/></svg></span>
           </span>
         </div>
         <div class="body"><div class="pills">
           <span class="pill o-wait"><svg><use href="#i-clock"/></svg><span class="en">To be reviewed</span><span class="zh">待复核</span> <small>→ <span class="en">Reviewer</span><span class="zh">复核人</span></small></span>
-          <span class="pill o-spot"><svg><use href="#i-mag"/></svg><span class="en">Reviewed, to be signed off</span><span class="zh">已复核，待签核</span> <small>→ Andrew / Susana</small></span>
+          <span class="pill o-spot"><svg><use href="#i-mag"/></svg><span class="en">Reviewed, to be signed off</span><span class="zh">已复核，待签核</span> <small>→ <span class="en">Domain Specialist</span><span class="zh">领域专家</span></small></span>
           <span class="pill o-ok"><svg><use href="#i-check"/></svg><span class="en">Signed off</span><span class="zh">已签核</span></span>
-          <span class="pill o-fix"><svg><use href="#i-loop"/></svg><span class="en">Corrected</span><span class="zh">已纠正</span> <small>→ Yibei</small></span>
+          <span class="pill o-fix"><svg><use href="#i-loop"/></svg><span class="en">Corrected</span><span class="zh">已纠正</span> <small>→ <span class="en">Data &amp; AI Engineer</span><span class="zh">数据与 AI 工程师</span></small></span>
         </div></div>
       </div>
     </section>
@@ -625,10 +625,10 @@
           <div class="pic"><svg viewBox="0 0 48 48"><use href="#s-record"/></svg></div>
           <div>
             <p class="phrase"><span class="en">Data extraction</span><span class="zh">数据提取</span></p>
-            <div class="whos"><span class="who p"><svg><use href="#i-person"/></svg>Henri</span><span class="who m"><svg><use href="#i-gear"/></svg>Facts Agent</span></div>
+            <div class="whos"><span class="who p"><svg><use href="#i-person"/></svg><span class="en">Data &amp; AI Engineer</span><span class="zh">数据与 AI 工程师</span></span><span class="who m"><svg><use href="#i-gear"/></svg>Facts Agent</span></div>
           </div>
           <span class="side">
-            <span class="info" tabindex="0"><svg><use href="#i-i"/></svg><span class="tt"><span class="en">Henri triggers the Facts Agent. It reads the validated Core files into one TreatyRecord: every field on the signed Shopping List, with where each value was found. Locates, never invents. If no recipe fits this treaty, Aidon writes one (with a coding agent) and the run repeats. Signed off at step 5.</span><span class="zh">Henri 触发 Facts Agent。它将已确认的核心文件读取为一条 TreatyRecord：按已签核的 Shopping List 逐字段提取并记录出处。只定位，不臆造。若没有适用的 recipe，由 Aidon（借助编码 agent）编写后重跑。在第 5 步签核。</span></span></span>
+            <span class="info" tabindex="0"><svg><use href="#i-i"/></svg><span class="tt"><span class="en">The Data &amp; AI Engineer triggers the Facts Agent. It reads the validated Core files into one TreatyRecord: every field on the signed Shopping List, with where each value was found. Locates, never invents. If no recipe fits this treaty, the Business Analyst writes one (with a coding agent) and the run repeats. Signed off at step 5.</span><span class="zh">数据与 AI 工程师触发 Facts Agent。它将已确认的核心文件读取为一条 TreatyRecord：按已签核的 Shopping List 逐字段提取并记录出处。只定位，不臆造。若没有适用的 recipe，由业务分析师（借助编码 agent）编写后重跑。在第 5 步签核。</span></span></span>
             <span class="chev"><svg><use href="#i-chev"/></svg></span>
           </span>
         </div>
@@ -636,7 +636,7 @@
           <span class="pill o-wait"><svg><use href="#i-clock"/></svg><span class="en">Waiting for validated Core</span><span class="zh">等待已确认核心</span></span>
           <span class="pill o-ok"><svg><use href="#i-check"/></svg><span class="en">Record extracted</span><span class="zh">记录已提取</span></span>
           <span class="pill o-spot"><svg><use href="#i-loop"/></svg><span class="en">No recipe fits</span><span class="zh">无适用 recipe</span> <small>→ <span class="en">BA writes one</span><span class="zh">BA 编写</span></small></span>
-          <span class="pill o-fix"><svg><use href="#i-alert"/></svg><span class="en">Fields missing</span><span class="zh">字段缺失</span> <small>→ Henri (e.g. image tables)</small></span>
+          <span class="pill o-fix"><svg><use href="#i-alert"/></svg><span class="en">Fields missing</span><span class="zh">字段缺失</span> <small>→ <span class="en">Data &amp; AI Engineer (e.g. image tables)</span><span class="zh">数据与 AI 工程师（如图片表格）</span></small></span>
         </div></div>
       </div>
     </section>
@@ -649,18 +649,18 @@
           <div class="pic"><svg viewBox="0 0 48 48"><use href="#s-check"/></svg></div>
           <div>
             <p class="phrase"><span class="en">Result validation</span><span class="zh">结果验证</span></p>
-            <div class="whos"><span class="who p"><svg><use href="#i-person"/></svg><span class="en">Reviewer</span><span class="zh">复核人</span></span><span class="arrow">→</span><span class="who s"><svg><use href="#i-stamp"/></svg>Andrew / Susana</span></div>
+            <div class="whos"><span class="who p"><svg><use href="#i-person"/></svg><span class="en">Reviewer</span><span class="zh">复核人</span></span><span class="arrow">→</span><span class="who s"><svg><use href="#i-stamp"/></svg><span class="en">Domain Specialist</span><span class="zh">领域专家</span></span></div>
           </div>
           <span class="side">
-            <span class="info" tabindex="0"><svg><use href="#i-i"/></svg><span class="tt"><span class="en">Validation Flywheel, Module B. The vendor reviewer checks the record field by field; the Domain Specialist signs it off and rules on any field that differs from what TPR booked. Answer key = TPR booked values, retrospective cases only. Corrections go back to Henri.</span><span class="zh">验证飞轮，模块 B。外包复核人逐字段检查记录；领域专家签核，并裁定与 TPR 入账值不一致的字段。标准答案 = TPR 入账值，仅回溯案例。纠正结果反馈给 Henri。</span></span></span>
+            <span class="info" tabindex="0"><svg><use href="#i-i"/></svg><span class="tt"><span class="en">Validation Flywheel, Module B. The vendor reviewer checks the record field by field; the Domain Specialist signs it off and rules on any field that differs from what TPR booked. Answer key = TPR booked values, retrospective cases only. Corrections go back to the Data &amp; AI Engineer.</span><span class="zh">验证飞轮，模块 B。外包复核人逐字段检查记录；领域专家签核，并裁定与 TPR 入账值不一致的字段。标准答案 = TPR 入账值，仅回溯案例。纠正结果反馈给数据与 AI 工程师。</span></span></span>
             <span class="chev"><svg><use href="#i-chev"/></svg></span>
           </span>
         </div>
         <div class="body"><div class="pills">
           <span class="pill o-wait"><svg><use href="#i-clock"/></svg><span class="en">To be reviewed</span><span class="zh">待复核</span> <small>→ <span class="en">Reviewer</span><span class="zh">复核人</span></small></span>
-          <span class="pill o-spot"><svg><use href="#i-mag"/></svg><span class="en">Reviewed, to be signed off</span><span class="zh">已复核，待签核</span> <small>→ Andrew / Susana</small></span>
+          <span class="pill o-spot"><svg><use href="#i-mag"/></svg><span class="en">Reviewed, to be signed off</span><span class="zh">已复核，待签核</span> <small>→ <span class="en">Domain Specialist</span><span class="zh">领域专家</span></small></span>
           <span class="pill o-ok"><svg><use href="#i-check"/></svg><span class="en">Signed off</span><span class="zh">已签核</span></span>
-          <span class="pill o-fix"><svg><use href="#i-loop"/></svg><span class="en">Corrected</span><span class="zh">已纠正</span> <small>→ Henri</small></span>
+          <span class="pill o-fix"><svg><use href="#i-loop"/></svg><span class="en">Corrected</span><span class="zh">已纠正</span> <small>→ <span class="en">Data &amp; AI Engineer</span><span class="zh">数据与 AI 工程师</span></small></span>
         </div></div>
       </div>
     </section>
@@ -681,17 +681,17 @@
           <div class="pic"><svg viewBox="0 0 48 48"><use href="#s-reports"/></svg></div>
           <div>
             <p class="phrase"><span class="en">Report generation</span><span class="zh">报告生成</span></p>
-            <div class="whos"><span class="who p"><svg><use href="#i-person"/></svg>Henri</span><span class="who m"><svg><use href="#i-gear"/></svg>Template Agent</span></div>
+            <div class="whos"><span class="who p"><svg><use href="#i-person"/></svg><span class="en">Data &amp; AI Engineer</span><span class="zh">数据与 AI 工程师</span></span><span class="who m"><svg><use href="#i-gear"/></svg>Template Agent</span></div>
           </div>
           <span class="side">
-            <span class="info" tabindex="0"><svg><use href="#i-i"/></svg><span class="tt"><span class="en">Henri triggers the Template Agent. From the one validated record it fills the Analysis Report (for the underwriter) and the Entry Report (for TPR). No sign-off: the numbers were signed off at step 5.</span><span class="zh">Henri 触发 Template Agent。用同一条已确认的记录填出分析报告（给核保人）和录入报告（给 TPR）。无需签核：数据已在第 5 步签核。</span></span></span>
+            <span class="info" tabindex="0"><svg><use href="#i-i"/></svg><span class="tt"><span class="en">The Data &amp; AI Engineer triggers the Template Agent. From the one validated record it fills the Analysis Report (for the underwriter) and the Entry Report (for TPR). No sign-off: the numbers were signed off at step 5.</span><span class="zh">数据与 AI 工程师触发 Template Agent。用同一条已确认的记录填出分析报告（给核保人）和录入报告（给 TPR）。无需签核：数据已在第 5 步签核。</span></span></span>
             <span class="chev"><svg><use href="#i-chev"/></svg></span>
           </span>
         </div>
         <div class="body"><div class="pills">
           <span class="pill o-wait"><svg><use href="#i-clock"/></svg><span class="en">Not run yet</span><span class="zh">尚未运行</span></span>
           <span class="pill o-ok"><svg><use href="#i-check"/></svg><span class="en">Both reports in R:</span><span class="zh">两份报告已入 R:</span></span>
-          <span class="pill o-fix"><svg><use href="#i-alert"/></svg><span class="en">Template failed</span><span class="zh">模板失败</span> <small>→ Henri</small></span>
+          <span class="pill o-fix"><svg><use href="#i-alert"/></svg><span class="en">Template failed</span><span class="zh">模板失败</span> <small>→ <span class="en">Data &amp; AI Engineer</span><span class="zh">数据与 AI 工程师</span></small></span>
         </div></div>
       </div>
     </section>
@@ -712,7 +712,7 @@
                 <div>
                   <span class="lane-tag"><span class="en">Analysis Report</span><span class="zh">分析报告</span></span>
                   <p class="phrase"><span class="en">Underwriting decision</span><span class="zh">核保决策</span></p>
-                  <div class="whos"><span class="who p"><svg><use href="#i-person"/></svg><span class="en">Underwriter · 17F</span><span class="zh">核保人 · 17F</span></span><span class="who s"><svg><use href="#i-stamp"/></svg><span class="en">the decision</span><span class="zh">决策</span></span></div>
+                  <div class="whos"><span class="who p"><svg><use href="#i-person"/></svg><span class="en">Underwriter</span><span class="zh">核保人</span></span><span class="who s"><svg><use href="#i-stamp"/></svg><span class="en">the decision</span><span class="zh">决策</span></span></div>
                 </div>
                 <span class="side">
                   <span class="info" tabindex="0"><svg><use href="#i-i"/></svg><span class="tt"><span class="en">The underwriter reads the Analysis Report and makes the renewal or new-business decision from structured data, not raw documents. Nothing downstream waits on it.</span><span class="zh">核保人阅读分析报告，基于结构化数据（而非原始文件）作出续转或新业务决策。下游不等待此决策。</span></span></span>
@@ -734,10 +734,10 @@
                 <div>
                   <span class="lane-tag"><span class="en">Entry Report</span><span class="zh">录入报告</span></span>
                   <p class="phrase"><span class="en">TPR entry</span><span class="zh">TPR 录入</span></p>
-                  <div class="whos"><span class="who s"><svg><use href="#i-stamp"/></svg><span class="en">Underwriter</span><span class="zh">核保人</span></span><span class="arrow">→</span><span class="who p"><svg><use href="#i-person"/></svg>Yibei</span></div>
+                  <div class="whos"><span class="who s"><svg><use href="#i-stamp"/></svg><span class="en">Underwriter</span><span class="zh">核保人</span></span><span class="arrow">→</span><span class="who p"><svg><use href="#i-person"/></svg><span class="en">Data &amp; AI Engineer</span><span class="zh">数据与 AI 工程师</span></span></div>
                 </div>
                 <span class="side">
-                  <span class="info" tabindex="0"><svg><use href="#i-i"/></svg><span class="tt"><span class="en">The underwriter countersigns the entry data (not the decision); Yibei books it into TPR — RPA / API at production. Runs in parallel with the Analysis Report.</span><span class="zh">核保人会签录入数据（而非决策）；Yibei 录入 TPR——上线后为 RPA／API。与分析报告并行。</span></span></span>
+                  <span class="info" tabindex="0"><svg><use href="#i-i"/></svg><span class="tt"><span class="en">The underwriter countersigns the entry data (not the decision); the Data &amp; AI Engineer books it into TPR — RPA / API at production. Runs in parallel with the Analysis Report.</span><span class="zh">核保人会签录入数据（而非决策）；数据与 AI 工程师录入 TPR——上线后为 RPA／API。与分析报告并行。</span></span></span>
                   <span class="chev"><svg><use href="#i-chev"/></svg></span>
                 </span>
               </div>
@@ -746,7 +746,7 @@
                   <span class="pill o-wait"><svg><use href="#i-clock"/></svg><span class="en">Waiting for countersign</span><span class="zh">待会签</span></span>
                   <span class="pill o-sign"><svg><use href="#i-stamp"/></svg><span class="en">Countersigned</span><span class="zh">已会签</span></span>
                   <span class="pill o-ok"><svg><use href="#i-check"/></svg><span class="en">Booked in TPR</span><span class="zh">已录入 TPR</span></span>
-                  <span class="pill o-fix"><svg><use href="#i-alert"/></svg><span class="en">Booking failed</span><span class="zh">录入失败</span> <small>→ Yibei + Jinchao</small></span>
+                  <span class="pill o-fix"><svg><use href="#i-alert"/></svg><span class="en">Booking failed</span><span class="zh">录入失败</span> <small>→ <span class="en">Data &amp; AI Engineer + IT / Platform</span><span class="zh">数据与 AI 工程师 + IT / 平台</span></small></span>
                 </div>
               </div>
             </div>

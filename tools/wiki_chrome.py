@@ -307,8 +307,26 @@ def block(current):
     return "\n" + OPEN + CHROME_CSS + nav(current) + CHROME_JS + CLOSE + "\n"
 
 
+# This site is shared by link, not offered to a search engine. robots.txt deliberately
+# ALLOWS crawling, because a crawler has to fetch the page to read this tag — so the tag
+# is the thing that actually keeps a page out of the index, and a page without it is the
+# one page that gets indexed. The manual is a copy regenerated elsewhere and lost its
+# tag exactly that way, so the script owns it now rather than trusting a hand-edit.
+ROBOTS = '<meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex">'
+
+
+def robots(html, name):
+    if 'name="robots"' in html:
+        return html
+    m = re.search(r'<meta name="viewport"[^>]*>', html)
+    if not m:
+        raise SystemExit(f"{name}: no viewport meta to sit under")
+    print(f"  {name}: noindex tag restored")
+    return html[:m.end()] + "\n" + ROBOTS + html[m.end():]
+
+
 def apply(path, current):
-    html = path.read_text(encoding="utf-8")
+    html = robots(path.read_text(encoding="utf-8"), path.name)
     fresh = block(current)
     if OPEN in html:
         start = html.index(OPEN)

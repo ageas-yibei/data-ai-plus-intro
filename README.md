@@ -23,12 +23,13 @@ why the pages are the way they are.
 |---|---|
 | `developer.html` | The portal itself, in three parts: General (LLM API), Submission Agent (flywheel manual, the code), Facts Agent (to be filled). |
 | `manual.html` | The flywheel manual. Built from `validate/manual/` in the code repo by `build.py`, which inlines every screenshot; that is why it is one 3.4 MB file. To refresh it, rebuild there and copy the result over this file. |
-| `llm-api.html` | The two in-house OpenAI-compatible hosts: base URLs, model ids, the reasoning switch each expects, and the gotchas. **The API keys are deliberately not on this page** — it says "see the internal note" wherever one belongs. The values live in `04. docs\LLM-API-REFERENCE.md` on the project share and in each stage's gitignored config. Keep it that way while this repository is anywhere near public. |
+| `llm-api.html` | The two in-house OpenAI-compatible hosts: model ids, the reasoning switch each expects, and the gotchas. **Neither the API keys nor the addresses are on this page** — a host reads `<chat-host>` or `<vision-host>`, a key reads "see the internal note". The real values live together in the internal API note on the project share and in each stage's gitignored config. A host and port are credential-class here, not documentation: published together with "traffic is HTTP, not HTTPS" they are a recipe for lifting a key off the wire. Keep both off this page. |
 
 ### The password on it
 
 The three developer pages ask for a password before they show anything. The password is
-not written down anywhere in this repository — ask Yibei, and pass it around out of band.
+not written down anywhere in this repository — ask the project team, and pass it around
+out of band.
 The page starts with `class="wk-locked"` on `<html>`, so
 a browser with JavaScript off shows the lock and nothing else; unlocking is remembered
 in `sessionStorage` for that tab, and covers all three pages at once.
@@ -95,7 +96,13 @@ for that.
   page's existing convention. The one deliberate exception is `llm-api.html`, a developer
   cheat sheet kept in English, which says so on the page. Switching language happens
   in the nav bar, once, for the whole wiki.
-- **The manual is a copy.** It is generated in the code repository, not edited here.
+- **The manual is a copy.** It is generated in the code repository, not edited here — so
+  copying a fresh build over `manual.html` wipes the chrome, the password gate and the
+  `noindex` tag, and that is exactly how it once ended up the only ungated, indexable
+  page on the site. **Re-run both scripts after every copy**, in this order:
+  `python tools/wiki_chrome.py` then `python tools/dev_gate.py --password <the password>`.
+  `wiki_chrome.py` restores the `noindex` tag on any page missing it, so that half can no
+  longer be forgotten; the gate still needs the password, which is why it is a second step.
 
 The language choice is shared across the wiki through `localStorage["aidp.lang"]` and
 the switch in the nav bar, so a reader who switches to Chinese stays in Chinese as
