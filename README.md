@@ -52,6 +52,22 @@ Both scripts write the block into every page they cover, which is how the copies
 identical. The password is an argument and is in neither script — a password in a
 committed file is a published password. Run either one and commit the pages it rewrites.
 
+### Kept out of search
+
+Every page carries `<meta name="robots" content="noindex, nofollow, noarchive, nosnippet,
+noimageindex">` directly under its `viewport` line, and `robots.txt` deliberately leaves
+crawling open so that tag can be read. A `Disallow: /` would look stronger and be weaker:
+the crawler would never fetch the page, never see the `noindex`, and a URL linked from
+somewhere else could still be listed. Keep the tag on any page added later — it is the
+whole mechanism.
+
+This makes the site unlisted, not private. Anyone with the link still opens it, and a
+crawler that ignores the tag still reads it, which is why the password gate above and the
+rule about keeping real secrets off these pages both still apply. If the GitHub repository
+is public, the same HTML is readable — and indexable — on github.com regardless of what
+these pages say; making the repository private while leaving Pages published is the switch
+for that.
+
 ## Four things to keep in step
 
 - **The chrome.** Each page carries an identical copy of it, between
