@@ -216,6 +216,7 @@
       <a href="index.html"><span class="wk-en">Overview</span><span class="wk-zh">总览</span></a>
       <a href="flow.html"><span class="wk-en">How it works</span><span class="wk-zh">整体流程</span></a>
       <a href="lifecycle.html"><span class="wk-en">Step by step</span><span class="wk-zh">逐步流程</span></a>
+      <a href="rules.html"><span class="wk-en">The rules</span><span class="wk-zh">分拣规则</span></a>
       <a href="gate.html" aria-current="page"><span class="wk-en">RAG Gate</span><span class="wk-zh">RAG 闸门</span></a>
     </div>
     <a class="wkdev" href="developer.html"><span class="wk-en">Developer portal</span><span class="wk-zh">开发者门户</span></a>
@@ -386,7 +387,7 @@
       <h1><span class="en">When a person has to look</span><span class="zh">什么时候需要人看</span></h1>
       <p class="wklede">
         <span class="en">After the machine sorts a treaty’s files, it gets a colour. The colour is the only thing that decides how much attention that treaty needs. Green ships. Amber names a short list. Red sends the whole pack back.</span>
-        <span class="zh">机器把一份合约的文件分拣完后，会标出一种颜色。颜色决定这份合约需要人查看多少。绿灯放行。黄灯给出一份短名单。红灯把整份材料包退回给人。</span>
+        <span class="zh">机器分拣完一份合约的文件后，给出一种颜色。这份合约要花多少人力，全看这个颜色：绿灯放行，黄灯给一份短名单，红灯整份退回。</span>
       </p>
     </div>
   </header>
@@ -397,15 +398,15 @@
         <span class="dot" aria-hidden="true"></span>
         <h3><span class="en">Green</span><span class="zh">绿灯</span></h3>
       </div>
-      <p><span class="en">The sort looks sound. Nobody has to open this pack.</span><span class="zh">分拣看起来靠得住。不必打开这份材料包。</span></p>
+      <p><span class="en">The sort looks sound. Nobody has to open this pack.</span><span class="zh">分拣靠得住，不必打开这份材料包。</span></p>
     </article>
     <article class="lamp" style="--c:var(--wait);--cs:var(--amber-2)">
       <div class="lamp-h">
         <span class="dot" aria-hidden="true"></span>
         <h3><span class="en">Amber</span><span class="zh">黄灯</span></h3>
       </div>
-      <p><span class="en">The pack can go forward, but named files need a look.</span><span class="zh">材料包可以往下走，但名单上的文件需要人过目。</span></p>
-      <p class="do"><span class="en">A person works the list the gate wrote — not the whole treaty.</span><span class="zh">人只处理关卡列出的名单，不是整份合约。</span></p>
+      <p><span class="en">The pack can go forward, but named files need a look.</span><span class="zh">材料包仍可往下走，但名单上的文件要人过目。</span></p>
+      <p class="do"><span class="en">A person works the list the gate wrote — not the whole treaty.</span><span class="zh">只处理关卡列出的名单，不是整份合约。</span></p>
     </article>
     <article class="lamp" style="--c:var(--halt);--cs:var(--halt-2)">
       <div class="lamp-h">
@@ -413,26 +414,26 @@
         <h3><span class="en">Red</span><span class="zh">红灯</span></h3>
       </div>
       <p><span class="en">We do not trust the sort. The treaty goes back to a person.</span><span class="zh">不信任这次分拣。整份合约退回给人。</span></p>
-      <p class="do"><span class="en">The amber list still comes with it, so the person knows where to start.</span><span class="zh">黄灯名单一并带上，方便人知道从哪里入手。</span></p>
+      <p class="do"><span class="en">The amber list still comes with it, so the person knows where to start.</span><span class="zh">黄灯名单一并附上，好让人知道从哪里入手。</span></p>
     </article>
   </div>
 
   <div class="pick">
     <h3><span class="en">How the colour is picked</span><span class="zh">颜色怎么定</span></h3>
     <ol>
-      <li><span class="en">If any stop-the-pack test failed → red.</span><span class="zh">任何一个“整份材料包停下”的测试未通过 → 红灯。</span></li>
-      <li><span class="en">Otherwise, if any look-at-these test failed → amber.</span><span class="zh">否则，任何一个“复查这些文件”的测试未通过 → 黄灯。</span></li>
+      <li><span class="en">If any stop-the-pack test failed → red.</span><span class="zh">凡“整份材料包停下”的测试有一条未过 → 红灯。</span></li>
+      <li><span class="en">Otherwise, if any look-at-these test failed → amber.</span><span class="zh">否则，“复查这些文件”的测试有一条未过 → 黄灯。</span></li>
       <li><span class="en">Otherwise → green.</span><span class="zh">否则 → 绿灯。</span></li>
     </ol>
     <p class="note">
-      <span class="en">Doubt only makes the colour worse. Keeping an extra file does not turn the light red — that file is still in the pack, and someone can read it. Throwing a file away on a weak reason does, because nobody will see it unless we say so.</span>
-      <span class="zh">存疑只会让颜色变得更差。多留一份文件不会变红——文件还在材料包里，有人能读到。凭弱理由扔掉文件才会，因为不点出来就没人会看见。</span>
+      <span class="en">Keeping an extra file does not turn the light red: the file is still in the pack, and someone can read it. Throwing one away on a weak reason does, because nobody will see it unless we say so.</span>
+      <span class="zh">多留一份文件不会变红：它还在材料包里，总有人读得到。凭弱理由扔掉才会——不点出来，就没人看得见。</span>
     </p>
   </div>
 
   <section class="block">
     <h2 class="wkh2"><span class="en">Stop the pack</span><span class="zh">整份材料包停下</span></h2>
-    <p class="wksub"><span class="en">These four tests mean we do not trust the sort. Click a row for the technical name.</span><span class="zh">这四条意味着我们不信任这次分拣。点开一行可看技术名称。</span></p>
+    <p class="wksub"><span class="en">These four tests mean we do not trust the sort. Click a row for the technical name.</span><span class="zh">这四条一旦触发，即不信任这次分拣。点开一行可看技术名称。</span></p>
 
     <details class="rule" style="--c:var(--halt)">
       <summary>
@@ -456,7 +457,7 @@
       <summary>
         <div>
           <div class="rname"><span class="en">Nothing was kept as core</span><span class="zh">核心一份都没留</span></div>
-          <div class="rplain"><span class="en">The machine did not name a single core file. There is no pack to send on.</span><span class="zh">机器一份核心文件都没标。没有可往下送的材料。</span></div>
+          <div class="rplain"><span class="en">The machine did not name a single core file. There is no pack to send on.</span><span class="zh">一份核心文件也没标出，没有可往下送的材料。</span></div>
         </div>
         <span class="who-looks"><span class="en">whole TNO</span><span class="zh">整份 TNO</span></span>
       </summary>
@@ -473,8 +474,8 @@
     <details class="rule" style="--c:var(--halt)">
       <summary>
         <div>
-          <div class="rname"><span class="en">The machine could not read anything</span><span class="zh">机器什么都读不出来</span></div>
-          <div class="rplain"><span class="en">Every page is blank to the machine, and scanning the pictures did not help either. Scanned pages that were read off images do count as read.</span><span class="zh">机器读不出任何一页的内容，对页面图片的识别也没有结果。经图片识别读出的扫描件，算作已读。</span></div>
+          <div class="rname"><span class="en">The machine could not read anything</span><span class="zh">一个字也读不出来</span></div>
+          <div class="rplain"><span class="en">Every page is blank to the machine, and scanning the pictures did not help either. Scanned pages that were read off images do count as read.</span><span class="zh">没有一页读得出内容，页面图片的识别也一无所获。经图片识别读出的扫描件，算作已读。</span></div>
         </div>
         <span class="who-looks"><span class="en">whole TNO</span><span class="zh">整份 TNO</span></span>
       </summary>
@@ -485,7 +486,7 @@
           <dt><span class="en">Trigger</span><span class="zh">触发</span></dt>
           <dd><span class="en">Every row is text_state EMPTY and none of those hashes appears in ocr.json as transcribed.</span><span class="zh">每一行 text_state 都是 EMPTY，且哈希都不在 ocr.json 的已转写名单里。</span></dd>
           <dt><span class="en">No longer used</span><span class="zh">已停用</span></dt>
-          <dd><span class="en">A second branch once said “half or more of kept files unreadable → red”. It made 8 of 20 scored treaties red in the 2026-08-27 baseline, and none of them held a miss. Retired. The unreadable count is still stored.</span><span class="zh">曾有第二条：核心里一半以上读不出 → 红灯。在 2026-08-27 基线评分的 20 份合约中，8 份因此变红，却没有一份真的漏了文件。已停用。读不出的计数仍然保留。</span></dd>
+          <dd><span class="en">A second branch once said “half or more of kept files unreadable → red”. It made 8 of 20 scored treaties red in the 2026-08-27 baseline, and none of them held a miss. Retired. The unreadable count is still stored.</span><span class="zh">曾有第二条：核心中一半以上读不出 → 红灯。2026-08-27 基线评分的 20 份合约里，8 份因此变红，却无一真的漏了文件，遂停用。读不出的计数仍旧保留。</span></dd>
         </dl>
       </div>
     </details>
@@ -493,8 +494,8 @@
     <details class="rule" style="--c:var(--halt)">
       <summary>
         <div>
-          <div class="rname"><span class="en">The machine sat on the fence</span><span class="zh">机器大部分没表态</span></div>
-          <div class="rplain"><span class="en">It took no position on more than half the files.</span><span class="zh">超过一半的文件，机器没有给出判断。</span></div>
+          <div class="rname"><span class="en">The machine sat on the fence</span><span class="zh">大半文件没有表态</span></div>
+          <div class="rplain"><span class="en">It took no position on more than half the files.</span><span class="zh">过半文件，机器没有给出判断。</span></div>
         </div>
         <span class="who-looks"><span class="en">whole TNO</span><span class="zh">整份 TNO</span></span>
       </summary>
@@ -511,13 +512,13 @@
 
   <section class="block">
     <h2 class="wkh2"><span class="en">Look at these files</span><span class="zh">复查这些文件</span></h2>
-    <p class="wksub"><span class="en">The pack can still go forward. A person works a named list — or, for two of these, just knows the treaty is an odd shape.</span><span class="zh">材料包仍可以往下走。人按一份名单处理——其中两条只是说明这份合约的形态特殊。</span></p>
+    <p class="wksub"><span class="en">The pack can still go forward. A person works a named list — or, for two of these, just knows the treaty is an odd shape.</span><span class="zh">材料包仍可往下走，人只处理一份名单；其中两条只是说明这份合约形态特殊。</span></p>
 
     <details class="rule" style="--c:var(--wait)">
       <summary>
         <div>
           <div class="rname"><span class="en">It threw a file away on a weak reason</span><span class="zh">凭弱理由扔掉了文件</span></div>
-          <div class="rplain"><span class="en">A file in a submission folder was dropped, and the filename itself does not carry the reason. Check it before it leaves.</span><span class="zh">提交文件夹里的文件被丢弃，而文件名本身不足以支撑这个理由。文件离开前要看一眼。</span></div>
+          <div class="rplain"><span class="en">A file in a submission folder was dropped, and the filename itself does not carry the reason. Check it before it leaves.</span><span class="zh">提交文件夹里的文件遭丢弃，而文件名本身撑不起这个理由。文件离场前得看一眼。</span></div>
         </div>
         <span class="who-looks"><span class="en">named files</span><span class="zh">名单上的文件</span></span>
       </summary>
@@ -526,9 +527,9 @@
           <dt><span class="en">Rule</span><span class="zh">规则</span></dt>
           <dd><span class="code">G5_contested_discard</span></dd>
           <dt><span class="en">Which discards</span><span class="zh">哪些丢弃要看</span></dt>
-          <dd><span class="en">Only unique files in a recognised submission folder. Always contested: version-pair / UW-derivative name shapes. Contested unless the name itself fired: internal-signal, withdrawn-marker (body-only hits). Envelope mail, comparison tags, newsletters, OS junk, notes-folder, internal attachments and broker variants are never contested.</span><span class="zh">仅限可识别的提交文件夹中的唯一文件。一律要看：版本对、核保衍生件这两类文件名形态。内部信号、撤回标记两条，仅命中正文时要看，文件名本身命中则不看。信封邮件、对比标记、通讯、系统垃圾、notes 文件夹、内部附件及经纪人变体，一律不看。</span></dd>
+          <dd><span class="en">Only unique files in a recognised submission folder. Always contested: version-pair / UW-derivative name shapes. Contested unless the name itself fired: internal-signal, withdrawn-marker (body-only hits). Envelope mail, comparison tags, newsletters, OS junk, notes-folder, internal attachments and broker variants are never contested.</span><span class="zh">仅限已识别的提交文件夹内的唯一文件。一律要看：版本对、核保衍生件这两类文件名形态。内部信号、撤回标记两条，仅命中正文时要看，文件名本身命中则不看。信封邮件、对比标记、通讯、系统垃圾、notes 文件夹、内部附件及经纪人变体，一律不看。</span></dd>
           <dt><span class="en">Unknown reason</span><span class="zh">未知理由</span></dt>
-          <dd><span class="en">A discard citing a reason the gate has never seen <em>halts the build</em>. It does not fail open.</span><span class="zh">若丢弃理由是关卡从未见过的，<em>构建直接停止</em>，不会悄悄放过。</span></dd>
+          <dd><span class="en">A discard citing a reason the gate has never seen <em>halts the build</em>. It does not fail open.</span><span class="zh">丢弃理由若是关卡从未见过的，<em>构建直接停止</em>，绝不悄悄放过。</span></dd>
         </dl>
       </div>
     </details>
@@ -536,8 +537,8 @@
     <details class="rule" style="--c:var(--wait)">
       <summary>
         <div>
-          <div class="rname"><span class="en">It never decided on some files</span><span class="zh">有些文件它没下判断</span></div>
-          <div class="rplain"><span class="en">Those files sit as “undecided”. A person has to place them.</span><span class="zh">这些文件停在“未定”状态，需要人来归位。</span></div>
+          <div class="rname"><span class="en">It never decided on some files</span><span class="zh">有些文件没有下判断</span></div>
+          <div class="rplain"><span class="en">Those files sit as “undecided”. A person has to place them.</span><span class="zh">这些文件停在“未定”，要人来归位。</span></div>
         </div>
         <span class="who-looks"><span class="en">named files</span><span class="zh">名单上的文件</span></span>
       </summary>
@@ -554,8 +555,8 @@
     <details class="rule" style="--c:var(--wait)">
       <summary>
         <div>
-          <div class="rname"><span class="en">The folders are not ones we recognise</span><span class="zh">文件夹不是我们认识的那种</span></div>
-          <div class="rplain"><span class="en">Nothing sits in a submission folder the rules know. This treaty is filed a different way.</span><span class="zh">没有文件落在规则认识的提交文件夹里。这份合约的归档方式不同。</span></div>
+          <div class="rname"><span class="en">The folders are not ones we recognise</span><span class="zh">文件夹不是认得的那一套</span></div>
+          <div class="rplain"><span class="en">Nothing sits in a submission folder the rules know. This treaty is filed a different way.</span><span class="zh">没有文件落在规则认得的提交文件夹里。这份合约另有一套归档方式。</span></div>
         </div>
         <span class="who-looks"><span class="en">the treaty</span><span class="zh">整份合约</span></span>
       </summary>
@@ -572,8 +573,8 @@
     <details class="rule" style="--c:var(--wait)">
       <summary>
         <div>
-          <div class="rname"><span class="en">A file looks like another treaty</span><span class="zh">有文件像是另一份合约的</span></div>
-          <div class="rplain"><span class="en">Its market reference belongs somewhere else. Do not silently keep it in this pack.</span><span class="zh">它的市场编号属于别处。不能悄悄留在这份材料包里。</span></div>
+          <div class="rname"><span class="en">A file looks like another treaty</span><span class="zh">有文件疑似属于另一份合约</span></div>
+          <div class="rplain"><span class="en">Its market reference belongs somewhere else. Do not silently keep it in this pack.</span><span class="zh">市场编号指向别处，不能就这么留在材料包里。</span></div>
         </div>
         <span class="who-looks"><span class="en">named files</span><span class="zh">名单上的文件</span></span>
       </summary>
@@ -590,8 +591,8 @@
     <details class="rule" style="--c:var(--wait)">
       <summary>
         <div>
-          <div class="rname"><span class="en">Everything kept as core is a guess</span><span class="zh">留下的核心全是猜测</span></div>
-          <div class="rplain"><span class="en">There is core, but none of it was declared by the cedant or recognised by structure. Weak to ship on.</span><span class="zh">有核心文件，但没有一份由分出公司声明或按结构识别。据此放行，依据偏弱。</span></div>
+          <div class="rname"><span class="en">Everything kept as core is a guess</span><span class="zh">留下的核心全凭推断</span></div>
+          <div class="rplain"><span class="en">There is core, but none of it was declared by the cedant or recognised by structure. Weak to ship on.</span><span class="zh">有核心文件，却无一由分出公司声明、或按结构认出。据此放行，依据偏弱。</span></div>
         </div>
         <span class="who-looks"><span class="en">the treaty</span><span class="zh">整份合约</span></span>
       </summary>
@@ -609,8 +610,8 @@
     <details class="rule" style="--c:var(--wait)">
       <summary>
         <div>
-          <div class="rname"><span class="en">A second look said we dropped a real submission file</span><span class="zh">再读一遍发现扔掉了提交文件</span></div>
-          <div class="rplain"><span class="en">Optional. If we ran a second read, and it called a discarded file a cedant submission document, that file goes on the list.</span><span class="zh">可选。若运行了二次阅读，而它把一份已丢弃的文件认作分出公司的提交文件，该文件即进入名单。</span></div>
+          <div class="rname"><span class="en">A second look said we dropped a real submission file</span><span class="zh">二次阅读认出被扔掉的提交文件</span></div>
+          <div class="rplain"><span class="en">Optional. If we ran a second read, and it called a discarded file a cedant submission document, that file goes on the list.</span><span class="zh">可选。若跑过二次阅读，且它把一份已丢弃的文件认作分出公司的提交文件，该文件即入名单。</span></div>
         </div>
         <span class="who-looks"><span class="en">named files</span><span class="zh">名单上的文件</span></span>
       </summary>
@@ -627,7 +628,7 @@
 
   <section class="scope">
     <h3><span class="en">This is the file-sort gate</span><span class="zh">这是文件分拣这一关</span></h3>
-    <p><span class="en">Facts extraction uses the same three colours later: green auto-accepts, amber checks flagged fields, red reviews the whole record, and retrospective cases are also checked against TPR booked values. That is a separate process, not this gate.</span><span class="zh">后续的信息提取环节同样使用红黄绿三色：绿灯自动通过，黄灯核对被标出的字段，红灯复核整单；回溯案例还要与 TPR 入账值核对。那是另一套流程，不是这一关。</span></p>
+    <p><span class="en">Facts extraction uses the same three colours later: green auto-accepts, amber checks flagged fields, red reviews the whole record, and retrospective cases are also checked against TPR booked values. That is a separate process, not this gate.</span><span class="zh">后续的信息提取环节同样用红黄绿三色：绿灯自动通过，黄灯核对标出的字段，红灯复核整单；回溯案例还要与 TPR 入账值比对。那是另一关，不是这一关。</span></p>
   </section>
 
   <!-- wiki next -->
@@ -648,6 +649,11 @@
     <a class="wknext-c" href="lifecycle.html">
       <b><span class="wk-en">Step by step</span><span class="wk-zh">逐步流程</span></b>
       <span class="wknext-d"><span class="wk-en">Seven steps: who runs each one, who signs it off, and every outcome it can have.</span><span class="wk-zh">七个步骤：每步由谁执行、由谁签核，可能出现哪些结果。</span></span>
+      <span class="wknext-go" aria-hidden="true">→</span>
+    </a>
+    <a class="wknext-c" href="rules.html">
+      <b><span class="wk-en">The rules</span><span class="wk-zh">分拣规则</span></b>
+      <span class="wknext-d"><span class="wk-en">What the machine looks at when it decides what each file is — folder, name, type, content.</span><span class="wk-zh">机器判定每份文件时到底看什么——位置、文件名、格式、内容。</span></span>
       <span class="wknext-go" aria-hidden="true">→</span>
     </a>
   </div>

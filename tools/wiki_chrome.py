@@ -258,6 +258,10 @@ NEXT_CARDS = [
      "Seven steps: who runs each one, who signs it off, and every outcome it can have.",
      "七个步骤：每步由谁执行、由谁签核，"
      "可能出现哪些结果。"),
+    ("rules.html", "The rules", "分拣规则",
+     "What the machine looks at when it decides what each file is — folder, name, type, content.",
+     "机器判定每份文件时到底看什么——"
+     "位置、文件名、格式、内容。"),
     ("gate.html", "RAG Gate", "RAG 闸门",
      "Red, amber, green — every rule that decides how much attention a treaty needs.",
      "红、黄、绿——决定一份合约"
@@ -269,6 +273,7 @@ NAV_LINKS = [
     ("index.html",     "Overview",     "\u603b\u89c8"),
     ("flow.html",      "How it works", "\u6574\u4f53\u6d41\u7a0b"),
     ("lifecycle.html", "Step by step", "\u9010\u6b65\u6d41\u7a0b"),
+    ("rules.html",     "The rules",    "\u5206\u62e3\u89c4\u5219"),
     ("gate.html",      "RAG Gate",     "RAG \u95f8\u95e8"),
 ]
 DEV = ("developer.html", "Developer portal", "\u5f00\u53d1\u8005\u95e8\u6237")
@@ -408,6 +413,7 @@ PAGES = {
     "index.html":     "index.html",
     "flow.html":      "flow.html",
     "lifecycle.html": "lifecycle.html",
+    "rules.html":     "rules.html",
     "gate.html":      "gate.html",
     "developer.html": "developer.html",
     "manual.html":    "developer.html",
@@ -416,7 +422,7 @@ PAGES = {
 
 # The Overview is the reference, so it carries no kit; the developer portal is
 # its own room and is left alone.
-KIT_PAGES = ["flow.html", "lifecycle.html", "gate.html"]
+KIT_PAGES = ["flow.html", "lifecycle.html", "rules.html", "gate.html"]
 
 if __name__ == "__main__":
     for name, current in PAGES.items():

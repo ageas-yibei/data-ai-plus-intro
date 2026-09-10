@@ -15,6 +15,7 @@ why the pages are the way they are.
 | `index.html` | **Overview** — the landing page. One submission, scrolled from the pack that arrives to the data the underwriter reads. Ends with the contents of this wiki. |
 | `flow.html` | **How it works** — the whole programme in four pictures, then the process stage by stage. Three views (at a glance / module overview / full detail), printable. |
 | `lifecycle.html` | **Step by step** — the seven steps of one submission: who runs each, who signs it off, and every outcome a step can have. |
+| `rules.html` | **The rules** — how the machine decides what each file is, arranged by what a rule actually reads: the folder, the file name, the file type, the content. Ends with what it is known to get wrong. |
 | `gate.html` | **RAG Gate** — red / amber / green, and every rule behind the colour, in plain words beside its rule name in `triage/gate.py`. |
 
 ## The developer portal
@@ -84,7 +85,7 @@ for that.
   footer. It rides in the same script, between `<!-- wiki page kit -->` and
   `<!-- /wiki page kit -->`, with the cards between `<!-- wiki next -->` and
   `<!-- /wiki next -->`, and it is loaded **after** the chrome so its tokens win over
-  whatever a page declared for itself. It goes on `flow.html`, `lifecycle.html` and
+  whatever a page declared for itself. It goes on `flow.html`, `lifecycle.html`, `rules.html` and
   `gate.html` only: the Overview carries none of it because it *is* the reference and
   declares the same palette for itself, and the developer portal is its own room.
   A page then styles itself out of the kit's tokens — a hard-coded hex on those three

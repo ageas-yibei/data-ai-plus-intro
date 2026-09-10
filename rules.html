@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="en" data-lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
+<meta name="description" content="What the machine reads when it decides what each file in a submission is.">
+<title>AI Data+ · The rules</title>
+<script>try{if(localStorage.getItem("aidp.lang")==="zh"){document.documentElement.setAttribute("data-lang","zh");document.documentElement.setAttribute("lang","zh-Hans");}}catch(e){}</script>
+<style>
+  /* ---- page-private styles. Everything shared lives in the page kit below,
+         which is loaded after this block and therefore wins on :root.
+
+         Colour is carried by ONE element on this page, the answer badge, and it
+         says one thing: green if the file goes downstream, neutral if it does
+         not. No card has an edge band and no small tag has a stripe. ---- */
+  :root{
+    /* CORE is green; every other answer is the neutral badge. The reader's
+       question is whether the file goes downstream, and that is a two-way
+       split - six colours for six answers coded a distinction nobody needs. */
+    --core:var(--green-ink); --core-w:var(--green-2);
+  }
+  *{box-sizing:border-box}
+  html[data-lang="en"] .zh{display:none}
+  html[data-lang="zh"] .en{display:none}
+  body{margin:0;background:var(--paper);color:var(--copy);font-family:var(--body);
+       font-size:var(--t-body);line-height:1.55;-webkit-font-smoothing:antialiased}
+  a{color:var(--orange-ink);text-decoration:none}
+  a:hover{text-decoration:underline}
+
+  /* the container is the nav's column, so every page on this site starts its text
+     at the same place; --wkw then holds the reading measure inside it */
+  .wrap{max-width:1200px;margin:0 auto;
+        padding-left:var(--pad-x);padding-right:var(--pad-x);padding-bottom:88px}
+  .wrap > *{max-width:var(--wkw)}
+
+  /* ---- the answer badge: the only coloured thing on the page ---- */
+  .verd{display:inline-block;font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;
+        padding:3px 8px;border-radius:var(--r-ctl);white-space:nowrap;
+        color:var(--c,var(--slate));background:var(--c-w,var(--sky))}
+  .verd.core{--c:var(--core);--c-w:var(--core-w)}
+
+  /* ---- the four things it can read ---- */
+  .looks{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:0}
+  .look{padding:18px 20px 20px;background:var(--card);border:1px solid var(--line);
+        border-radius:var(--r-card);box-shadow:var(--sh-1)}
+  .look h3{font-family:var(--disp);font-weight:700;font-size:var(--t-h3);margin:0 0 8px;
+           letter-spacing:-.02em;color:var(--navy)}
+  .look p{margin:0;color:var(--copy);font-size:14.5px;line-height:1.5;text-wrap:pretty}
+  .look .blind{margin-top:11px;padding-top:11px;border-top:1px solid var(--line);
+               font-size:13.5px;color:var(--copy)}
+  .look .blind b{color:var(--navy);font-weight:700}
+  .look.rest{grid-column:1 / -1}
+
+  /* ---- the matrix ---- */
+  .mx-scroll{overflow-x:auto;margin:0;padding-bottom:4px;background:var(--card);
+             border:1px solid var(--line);border-radius:var(--r-card);box-shadow:var(--sh-1)}
+  table.mx{width:100%;border-collapse:collapse;font-size:14px;min-width:640px}
+  table.mx th,table.mx td{padding:9px 10px;border-bottom:1px solid var(--line);text-align:left;
+                          vertical-align:middle}
+  table.mx thead th{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;
+                    text-transform:uppercase;color:var(--mute);font-weight:600;
+                    border-bottom:1px solid var(--line-2);white-space:nowrap}
+  table.mx tbody tr:last-child td{border-bottom:0}
+  table.mx tbody tr:hover{background:var(--sky-2)}
+  table.mx .step{font-family:var(--mono);font-size:11px;color:var(--mute);width:1%;
+                 padding-right:0;white-space:nowrap}
+  table.mx .what{color:var(--navy);font-weight:600;line-height:1.35;min-width:190px}
+  table.mx .m{text-align:center;width:1%;padding-left:14px;padding-right:14px;white-space:nowrap}
+  table.mx .m i{font-style:normal;font-size:15px;line-height:1;color:var(--navy)}
+  table.mx .m i.c{color:var(--mute-2);font-size:13px}
+  table.mx .m i.n{color:var(--line)}
+  .legend{display:flex;gap:20px;flex-wrap:wrap;margin:12px 0 0;font-size:13px;color:var(--copy)}
+  .legend span i{font-style:normal;color:var(--navy);margin-right:6px}
+  .legend span i.c{color:var(--mute-2)}
+
+  /* ---- the ladder ---- */
+  .rung{margin:0 0 10px;background:var(--card);border:1px solid var(--line);
+        border-radius:var(--r-card);box-shadow:var(--sh-1);
+        transition:transform .18s cubic-bezier(.2,.7,.2,1),box-shadow .18s,border-color .18s}
+  .rung:hover{transform:translateY(-2px);border-color:var(--line-2);box-shadow:var(--sh-2)}
+  .rung[open]{border-color:var(--line-2)}
+  .rung summary{position:relative;list-style:none;cursor:pointer;
+                padding:14px 40px 14px 18px;display:flex;align-items:flex-start;gap:12px;
+                flex-wrap:wrap}
+  .rung summary::-webkit-details-marker{display:none}
+  .rung summary:focus-visible{outline:2px solid var(--orange);outline-offset:-2px}
+  .rung summary>div.body{flex:1 1 260px;min-width:0}
+  .rung summary::after{content:"";position:absolute;right:17px;top:19px;width:8px;height:8px;
+        border-right:2px solid var(--mute);border-bottom:2px solid var(--mute);
+        transform:rotate(45deg);
+        transition:transform .18s cubic-bezier(.2,.7,.2,1),border-color .18s}
+  .rung:hover summary::after{border-color:var(--orange)}
+  .rung[open] summary::after{top:22px;transform:rotate(-135deg);border-color:var(--orange)}
+  .rnum{flex:0 0 auto;width:24px;height:24px;border-radius:50%;background:var(--sky);
+        color:var(--navy);font-family:var(--mono);font-size:11px;font-weight:700;
+        display:flex;align-items:center;justify-content:center;margin-top:1px}
+  .rname{font-family:var(--disp);font-weight:700;font-size:16.5px;letter-spacing:-.015em;
+         color:var(--navy)}
+  .rplain{color:var(--copy);font-size:14px;line-height:1.5;margin-top:3px;text-wrap:pretty}
+  .chips{display:flex;gap:5px;flex-wrap:wrap;margin-top:9px}
+  .chip{font-family:var(--mono);font-size:10.5px;letter-spacing:.05em;padding:3px 7px;
+        border-radius:var(--r-ctl);background:var(--sky);color:var(--navy);white-space:nowrap}
+  .chip.cond{background:transparent;color:var(--mute);border:1px solid var(--line)}
+  .rverd{flex:0 0 auto;margin-left:auto}
+  .drawer{display:none;margin-left:4px;padding:0 16px 16px 14px;border-top:1px solid var(--line)}
+  .rung[open] .drawer{display:block;padding-top:14px}
+  .drawer dl{margin:0}
+  .drawer dt{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--mute);
+             margin:15px 0 5px}
+  .drawer dt:first-child{margin-top:0}
+  .drawer dd{margin:0;font-size:14px;line-height:1.6;color:var(--copy);text-wrap:pretty}
+  .drawer dd + dd{margin-top:7px}
+  .code{font-family:var(--mono);font-size:12px;background:var(--sky);color:var(--navy);
+        padding:2px 6px;border-radius:var(--r-ctl)}
+
+  /* ---- plain cards: the after-the-ladder passes and the four guarantees ---- */
+  .plain{margin:0 0 10px;padding:16px 20px 18px;background:var(--card);
+         border:1px solid var(--line);border-radius:var(--r-card);box-shadow:var(--sh-1)}
+  .plain h3{font-family:var(--disp);font-weight:700;font-size:16.5px;margin:0 0 5px;
+            letter-spacing:-.015em;color:var(--navy)}
+  .plain p{margin:0;color:var(--copy);font-size:14px;line-height:1.55;text-wrap:pretty}
+  .plain p + p{margin-top:8px}
+
+  /* the closing note: set apart by its ground, not by a band */
+  .note{margin:44px 0 0;padding:20px 24px 22px;background:var(--sky);
+        border:1px solid var(--line);border-radius:var(--r-card);box-shadow:var(--sh-1)}
+  .note h3{font-family:var(--disp);font-weight:700;font-size:var(--t-h3);margin:0 0 8px;
+           letter-spacing:-.02em;color:var(--navy)}
+  .note p{margin:0;color:var(--copy);font-size:14.5px;line-height:1.6;text-wrap:pretty}
+  .note p + p{margin-top:10px}
+
+  .wkfoot .code{font-size:11px;padding:1px 5px}
+
+  /* ---- Chinese: looser lines, no negative tracking ---- */
+  html[lang^="zh"] .look p,html[lang^="zh"] .look .blind,html[lang^="zh"] .rplain,
+  html[lang^="zh"] .drawer dd,html[lang^="zh"] .plain p,
+  html[lang^="zh"] .note p,html[lang^="zh"] table.mx td{line-height:1.75;letter-spacing:.01em}
+  html[lang^="zh"] .look h3,html[lang^="zh"] .rname,html[lang^="zh"] .plain h3,
+  html[lang^="zh"] .note h3{letter-spacing:0;line-height:1.3}
+  html[lang^="zh"] .chip,html[lang^="zh"] .verd,html[lang^="zh"] .drawer dt,
+  html[lang^="zh"] table.mx thead th{letter-spacing:.02em}
+
+  @media (prefers-reduced-motion:reduce){
+    .rung,.rung summary::after{transition:none}
+    .rung:hover{transform:none}
+  }
+  @media (max-width:980px){.wrap{padding-left:22px;padding-right:22px}}
+  @media (max-width:700px){
+    .looks{grid-template-columns:1fr}
+    .rverd{margin-left:0}
+  }
+  @media print{
+    body{background:#fff;color:#000}
+    .wrap{max-width:none;padding:0}
+    .look,.mx-scroll,.rung,.plain,.note{box-shadow:none;break-inside:avoid;page-break-inside:avoid}
+    .rung{transform:none}
+    .rung .drawer{display:block;padding-top:14px}   /* print every drawer, open or not */
+    .rung summary::after{display:none}
+    .mx-scroll{overflow:visible}
+    .note{background:#fff}
+  }
+</style>
+</head>
+<body>
+<!-- wiki chrome · identical in every page of this site: edit one, edit all -->
+<style id="wk-chrome">
+  /* ---- project wiki chrome (shared across every page of this site) ---- */
+  :root{
+    --ink:#14243A; --navy:#1C3557; --slate:#5B6B7F; --mute:#8D9BAB;
+    --paper:#F5F7FA; --card:#FFFFFF; --line:#DCE3EA;
+    --orange:#E0632A; --purple:#7B2D8E; --green:#3F8F5F; --amber:#C98A1E; --halt:#B44538;
+    --person:#C4674A; --blue:#4A7DBD;
+    --disp:"Aptos Display","Segoe UI Variable Display","Segoe UI","Noto Sans SC","PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+    --body:"Aptos","Segoe UI Variable Text","Segoe UI","Noto Sans SC","PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+    --mono:ui-monospace,"Cascadia Mono","Segoe UI Mono",Consolas,monospace;
+    --wk-nav-h:46px;
+    --r-ctl:6px; --r-card:10px; --r-lg:14px;
+  }
+  .wknav *,.wkc *,.wklang *{box-sizing:border-box}
+  .wk-zh{display:none}
+  html[data-lang="zh"] .wk-zh,html[lang^="zh"] .wk-zh,body[data-lang="zh"] .wk-zh{display:inline}
+  html[data-lang="zh"] .wk-en,html[lang^="zh"] .wk-en,body[data-lang="zh"] .wk-en{display:none}
+
+  .wkskip{position:absolute;left:16px;top:-56px;z-index:400;padding:8px 14px;
+          background:var(--navy);color:#fff;text-decoration:none;border-radius:var(--r-ctl);
+          font-family:var(--disp);font-weight:600;font-size:13px}
+  .wkskip:focus{top:8px;color:#fff;outline:2px solid var(--orange);outline-offset:2px}
+
+  .wknav{position:sticky;top:0;z-index:200;background:rgba(255,255,255,.90);
+         -webkit-backdrop-filter:saturate(1.5) blur(10px);backdrop-filter:saturate(1.5) blur(10px);
+         border-bottom:1px solid rgba(20,36,58,.10);
+         font-family:var(--disp)}
+  .wknav-in{max-width:1200px;margin:0 auto;padding:0 40px;height:var(--wk-nav-h);display:flex;align-items:center;
+            gap:14px;overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none}
+  .wknav-in::-webkit-scrollbar{display:none}
+  .wkmark{flex:0 0 auto;display:inline-flex;align-items:baseline;gap:8px;text-decoration:none;white-space:nowrap}
+  .wkmark b{font-size:14px;font-weight:700;letter-spacing:-.012em;color:var(--ink)}
+  .wkmark b i{font-style:normal;color:var(--orange)}
+  .wkmark span{font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:#9AA6B4;font-weight:600}
+  .wkrule{flex:0 0 auto;width:1px;height:17px;background:rgba(20,36,58,.14)}
+  .wklinks{flex:1 1 auto;display:flex;align-items:center;gap:1px;white-space:nowrap}
+  .wknav a{position:relative;padding:7px 10px;border-radius:5px;font-size:13px;font-weight:600;
+           color:var(--slate);text-decoration:none;white-space:nowrap;transition:color .15s,background .15s}
+  .wknav .wklinks a:hover,.wknav .wkdev:hover{background:rgba(20,36,58,.055);color:var(--ink)}
+  .wknav a:focus-visible{outline:2px solid var(--orange);outline-offset:1px}
+  .wknav a[aria-current="page"]{color:var(--ink)}
+  .wknav a[aria-current="page"]::after{content:"";position:absolute;left:10px;right:10px;bottom:0;
+           height:2px;border-radius:2px;background:var(--orange)}
+  .wkdev{flex:0 0 auto;display:inline-flex;align-items:center;gap:6px}
+  .wkdev::before{content:"";position:absolute;left:-8px;top:9px;bottom:9px;width:1px;background:rgba(20,36,58,.14)}
+
+  .wklang{flex:0 0 auto;display:flex;height:28px;overflow:hidden;margin-left:4px;
+          background:var(--card);border:1px solid var(--line);border-radius:var(--r-ctl)}
+  .wklang button{font:inherit;font-family:var(--disp);font-weight:600;font-size:11.5px;
+                 padding:0 10px;border:0;background:transparent;color:var(--slate);cursor:pointer}
+  .wklang button + button{border-left:1px solid var(--line)}
+  .wklang button:hover{background:#EEF2F6;color:var(--navy)}
+  .wklang button[aria-selected="true"]{background:var(--navy);color:#fff}
+  .wklang button[aria-selected="true"]:hover{background:var(--navy);color:#fff}
+  .wklang button:focus-visible{outline:2px solid var(--orange);outline-offset:-2px}
+
+  @media (max-width:980px){.wknav-in{padding:0 22px}}
+  @media (max-width:780px){.wkmark span{display:none}}
+  @media print{.wknav,.wkskip,.wklang{display:none}}
+</style>
+
+<a class="wkskip" href="#main"><span class="wk-en">Skip to content</span><span class="wk-zh">跳到正文</span></a>
+<nav class="wknav" aria-label="Project wiki">
+  <div class="wknav-in">
+    <a class="wkmark" href="index.html">
+      <b>AI Data<i>+</i></b><span class="wk-en">project wiki</span><span class="wk-zh">项目手册</span>
+    </a>
+    <span class="wkrule" aria-hidden="true"></span>
+    <div class="wklinks">
+      <a href="index.html"><span class="wk-en">Overview</span><span class="wk-zh">总览</span></a>
+      <a href="flow.html"><span class="wk-en">How it works</span><span class="wk-zh">整体流程</span></a>
+      <a href="lifecycle.html"><span class="wk-en">Step by step</span><span class="wk-zh">逐步流程</span></a>
+      <a href="rules.html" aria-current="page"><span class="wk-en">The rules</span><span class="wk-zh">分拣规则</span></a>
+      <a href="gate.html"><span class="wk-en">RAG Gate</span><span class="wk-zh">RAG 闸门</span></a>
+    </div>
+    <a class="wkdev" href="developer.html"><span class="wk-en">Developer portal</span><span class="wk-zh">开发者门户</span></a>
+    <div class="wklang" role="group" aria-label="Language">
+      <button type="button" data-v="en" aria-selected="true">EN</button>
+      <button type="button" data-v="zh" aria-selected="false">中文</button>
+    </div>
+  </div>
+</nav>
+
+<script>
+"use strict";
+(function(){
+  function read(){
+    try{ return localStorage.getItem("aidp.lang")==="zh" ? "zh" : "en"; }
+    catch(e){ return "en"; }
+  }
+  function paint(v){
+    document.querySelectorAll(".wklang button").forEach(function(b){
+      b.setAttribute("aria-selected", b.getAttribute("data-v")===v ? "true" : "false");
+    });
+  }
+  function apply(v, silent){
+    var r=document.documentElement;
+    r.setAttribute("data-lang", v);
+    r.setAttribute("lang", v==="zh" ? "zh-Hans" : "en");
+    if(document.body) document.body.setAttribute("data-lang", v);
+    try{ localStorage.setItem("aidp.lang", v); }catch(e){}
+    paint(v);
+    if(!silent){
+      try{ document.dispatchEvent(new CustomEvent("aidp:lang", {detail:v})); }
+      catch(e){}
+    }
+  }
+  window.aidpSetLang = function(v){ apply(v==="zh"?"zh":"en", false); };
+  apply(read(), true);
+  document.addEventListener("click", function(e){
+    var b=e.target && e.target.closest && e.target.closest(".wklang button");
+    if(!b) return;
+    apply(b.getAttribute("data-v"), false);
+  });
+  document.addEventListener("aidp:lang", function(e){
+    if(e && e.detail) paint(e.detail==="zh"?"zh":"en");
+  });
+})();
+</script>
+<!-- /wiki chrome -->
+<!-- wiki page kit · identical in every page that carries it: edit one, edit all -->
+<style id="wk-kit">
+  /* ---- AI Data+ page kit: the Overview's look, shared by the pages behind it ---- */
+  :root{
+    /* palette · the Overview's, to the byte */
+    --navy:#13294B; --copy:#3A4A63; --mute:#8A97AA; --line:#D3DEEA; --sky:#EAF2F8;
+    /* line-2 is the border a card takes when it lifts; sky-2 a row under the pointer */
+    --line-2:#C3D0DD; --mute-2:#C8D3E0; --sky-2:#F6F9FC;
+    /* every -ink is the readable version of its colour: 4.5:1 on white AND on its own
+       wash, so a label may sit on either without a second decision */
+    --orange:#E8752A; --orange-2:#F1A26C; --orange-3:#FCE9DC; --orange-ink:#A34A14;
+    --purple:#6B2C91; --purple-2:#EFE6F5; --purple-ink:#6B2C91;
+    --green:#2E9E6B;  --green-2:#E3F4EB;  --green-ink:#1F7A45;
+    --blue-ink:#355F91;
+    --amber:#C9922B;  --amber-2:#FBF0DA; --amber-ink:#8A6410;
+    --halt:#C8443A;   --halt-2:#F8E3E1;  --halt-ink:#A8382F;
+    --paper:#FFFFFF;  --card:#FFFFFF;
+    /* surfaces · one card, one lift, everywhere */
+    --sh-1:0 1px 2px rgba(19,41,75,.05);
+    --sh-2:0 12px 30px rgba(19,41,75,.08);
+    --sh-3:0 18px 44px rgba(19,41,75,.14);
+    --r-ctl:6px; --r-card:14px; --r-lg:18px;
+    /* type scale · one ladder, every page */
+    --t-h1:clamp(32px,4.2vw,54px);
+    --t-h2:clamp(21px,2.1vw,27px);
+    --t-h3:19px;
+    --t-body:15.5px;
+    --t-lede:17px;
+    --wkw:860px;              /* the reading column; a chart page overrides it */
+    --pad-x:40px;
+  }
+  :focus-visible{outline:2px solid var(--orange);outline-offset:2px}
+
+  /* the ground: two soft washes and a dot grid, exactly as the Overview draws them */
+  .wkbg{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
+  .wkbg i{position:absolute;width:64vmax;height:64vmax;border-radius:50%;
+          filter:blur(100px);opacity:.34;animation:wkdrift 22s ease-in-out infinite}
+  .wkbg i:nth-child(1){left:-24vmax;top:-18vmax;background:var(--orange-3)}
+  .wkbg i:nth-child(2){right:-28vmax;bottom:-26vmax;background:var(--sky);animation-delay:-11s}
+  .wkbg:after{content:"";position:absolute;inset:0;opacity:.05;
+          background-image:radial-gradient(#13294B .9px,transparent 1px);background-size:30px 30px}
+  @keyframes wkdrift{0%,100%{margin-left:0;margin-top:0}50%{margin-left:3vw;margin-top:2vh}}
+  @media (prefers-reduced-motion:reduce){.wkbg i{animation:none}}
+  @media print{.wkbg{display:none}}
+
+  /* the page head: eyebrow, title, lede, and whatever controls the page owns */
+  .wkhead{display:flex;align-items:flex-end;justify-content:space-between;gap:16px 32px;
+          flex-wrap:wrap;padding:34px 0 20px;margin:0 0 24px;border-bottom:1px solid var(--line)}
+  .wkhead-t{flex:1 1 420px;min-width:0}
+  .wkhead-a{flex:0 0 auto;display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding-bottom:4px}
+  .wkey{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.14em;
+        color:var(--purple);margin:0 0 11px}
+  .wkhead h1{font-family:var(--disp);font-weight:800;color:var(--navy);font-size:var(--t-h1);
+             line-height:1.02;letter-spacing:-.032em;margin:0;text-wrap:balance}
+  .wklede{font-size:var(--t-lede);line-height:1.55;color:var(--copy);margin:14px 0 0;
+          max-width:58ch;text-wrap:pretty}
+  /* a page whose own toolbar sits right below the title draws no rule under it */
+  .wkhead.wk-bare{border-bottom:0;padding-bottom:10px;margin-bottom:12px}
+
+  /* section heads, one size on every page */
+  .wkh2{font-family:var(--disp);font-weight:800;font-size:var(--t-h2);letter-spacing:-.022em;
+        color:var(--navy);margin:44px 0 6px;text-wrap:balance}
+  .wkh3{font-family:var(--disp);font-weight:700;font-size:var(--t-h3);letter-spacing:-.02em;
+        color:var(--navy);margin:0}
+  .wksub{font-size:15px;line-height:1.5;color:var(--copy);margin:0 0 16px;max-width:58ch;
+         text-wrap:pretty}
+
+  /* one card, one lift. A page adds its own edge or band on top of these. */
+  .wkcard{background:var(--card);border:1px solid var(--line);border-radius:var(--r-card);
+          box-shadow:var(--sh-1)}
+  .wkcard-lift{transition:transform .18s cubic-bezier(.2,.7,.2,1),box-shadow .18s,border-color .18s}
+  .wkcard-lift:hover{transform:translateY(-2px);border-color:var(--line-2);box-shadow:var(--sh-2)}
+  @media (prefers-reduced-motion:reduce){.wkcard-lift{transition:none}
+    .wkcard-lift:hover{transform:none}}
+
+  /* keep reading: the Overview's contents cards, minus the page you are on */
+  .wknext{margin:60px 0 0;padding:28px 0 0;border-top:1px solid var(--line)}
+  .wknext-h{font-family:var(--disp);font-weight:800;font-size:var(--t-h2);letter-spacing:-.022em;
+            color:var(--navy);margin:0 0 6px}
+  .wknext-s{font-size:15px;line-height:1.5;color:var(--copy);margin:0 0 20px;max-width:52ch}
+  .wknext-g{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;
+            max-width:var(--wkw);margin:0}
+  .wknext-c{position:relative;display:block;padding:18px 20px 20px;background:var(--card);
+            border:1px solid var(--line);border-radius:var(--r-card);box-shadow:var(--sh-1);
+            text-decoration:none;color:inherit;
+            transition:transform .18s cubic-bezier(.2,.7,.2,1),box-shadow .18s,border-color .18s}
+  .wknext-c:hover{transform:translateY(-2px);border-color:var(--line-2);box-shadow:var(--sh-2)}
+  .wknext-c b{display:block;font-family:var(--disp);font-weight:700;font-size:18px;line-height:1.2;
+              letter-spacing:-.02em;color:var(--navy);margin:0 0 6px;padding-right:20px}
+  .wknext-d{display:block;font-size:13.5px;line-height:1.5;color:var(--copy);text-wrap:pretty}
+  .wknext-go{position:absolute;right:18px;top:16px;font-size:15px;color:var(--mute-2);
+             transition:color .18s,transform .18s}
+  .wknext-c:hover .wknext-go{color:var(--orange);transform:translateX(2px)}
+  @media (prefers-reduced-motion:reduce){.wknext-c,.wknext-go{transition:none}}
+  @media print{.wknext{display:none}}
+
+  /* the last line on every page, said the same way */
+  .wkfoot{margin:36px 0 0;padding:14px 0 0;border-top:1px solid var(--line);
+          font-family:var(--mono);font-size:11px;letter-spacing:.03em;color:var(--mute);
+          display:flex;gap:18px;flex-wrap:wrap}
+  .wkfoot a{color:var(--orange-ink);text-decoration:none}
+  .wkfoot a:hover{text-decoration:underline}
+
+  html[lang^="zh"] .wkhead h1{font-size:clamp(28px,3.6vw,46px);line-height:1.2;letter-spacing:.01em}
+  html[lang^="zh"] .wkey{letter-spacing:.08em}
+  html[lang^="zh"] .wklede,html[lang^="zh"] .wknext-s,html[lang^="zh"] .wknext-d{line-height:1.75}
+  html[lang^="zh"] .wknext-h{letter-spacing:0;line-height:1.35}
+
+  @media (max-width:980px){
+    .wkhead{padding-top:26px}
+    .wknext-g{grid-template-columns:1fr}
+  }
+</style>
+<div class="wkbg" aria-hidden="true"><i></i><i></i></div>
+<!-- /wiki page kit -->
+
+<div class="wrap">
+
+  <header class="wkhead" id="main">
+    <div class="wkhead-t">
+      <p class="wkey">AI Data+</p>
+      <h1><span class="en">What the machine reads</span><span class="zh">机器读什么</span></h1>
+      <p class="wklede">
+        <span class="en">Every file goes down one ladder, and the first step that fires decides it. A step reads some of four things: the folder, the file name, the file type, the content. Most read the name and nothing else.</span>
+        <span class="zh">每份文件都走同一条阶梯，首条命中的规则即为结论。每一步只读四样东西中的几样：位置、文件名、格式、内容——多数规则只读文件名。</span>
+      </p>
+    </div>
+  </header>
+
+  <h2 class="wkh2"><span class="en">The four things it can read</span><span class="zh">能读的只有四样</span></h2>
+  <p class="wksub"><span class="en">The name does most of the deciding, and causes most of the mistakes.</span><span class="zh">判断多半落在文件名上，错判也多半出在这里。</span></p>
+
+  <div class="looks">
+    <article class="look">
+      <h3><span class="en">Folder</span><span class="zh">位置</span></h3>
+      <p><span class="en">Where the file sits in the export: a submission folder, a notes folder, an approvals folder.</span><span class="zh">文件在导出目录中的位置：提交材料、备注、审批。</span></p>
+      <p class="blind"><b><span class="en">Blind to:</span><span class="zh">看不见：</span></b><span class="en"> a document filed in the wrong place. A folder can keep a file out; it can never let one in.</span><span class="zh">放错位置的文件。文件夹只能挡，不能放行。</span></p>
+    </article>
+    <article class="look">
+      <h3><span class="en">File name</span><span class="zh">文件名</span></h3>
+      <p><span class="en">The filename text, and for most rules the only thing they read.</span><span class="zh">文件名本身，也是多数规则唯一读的东西。</span></p>
+      <p class="blind"><b><span class="en">Blind to:</span><span class="zh">看不见：</span></b><span class="en"> a name that says nothing, or says the wrong thing. Every known miss started here.</span><span class="zh">什么都没说、或说错了的名字。已知漏判都始于此。</span></p>
+    </article>
+    <article class="look">
+      <h3><span class="en">File type</span><span class="zh">格式</span></h3>
+      <p><span class="en">The extension. This one is never misread.</span><span class="zh">扩展名。这一样不会看错。</span></p>
+      <p class="blind"><b><span class="en">Blind to:</span><span class="zh">看不见：</span></b><span class="en"> what is inside. A PDF is a slip, a printed email or a photograph, and the extension cannot say which.</span><span class="zh">文件里究竟是什么。同为 PDF，可能是条款单，可能是打印的邮件，也可能只是一张照片。</span></p>
+    </article>
+    <article class="look">
+      <h3><span class="en">Content</span><span class="zh">内容</span></h3>
+      <p><span class="en">The text the machine extracted. Most rules see only the first 500 to 800 characters of it.</span><span class="zh">机器读出的文字。多数规则只看开头 500 至 800 字符。</span></p>
+      <p class="blind"><b><span class="en">Blind to:</span><span class="zh">看不见：</span></b><span class="en"> a scan, until the vision model has read it — and anything past the opening.</span><span class="zh">扫描件（除非视觉模型已读过），以及开头之后的一切。</span></p>
+    </article>
+    <article class="look rest">
+      <h3><span class="en">And a fifth: the rest of the treaty</span><span class="zh">还有第五样：同一份合约里的其他文件</span></h3>
+      <p><span class="en">Four questions a single file cannot answer: is there a numbered appendix series, is a cleaner copy already kept, were these bytes seen before, are the submission folders in use.</span><span class="zh">有四个问题单看一份文件答不上来：附件是否成套编号、是否已留下更干净的一版、这批字节此前是否见过、提交文件夹是否在用。</span></p>
+    </article>
+  </div>
+
+  <h2 class="wkh2"><span class="en">At a glance</span><span class="zh">一览</span></h2>
+  <p class="wksub"><span class="en">Eleven steps, six answers.</span><span class="zh">十一步，六种结论。</span></p>
+
+  <div class="mx-scroll">
+    <table class="mx">
+      <thead>
+        <tr>
+          <th class="step"></th>
+          <th class="what"><span class="en">The step</span><span class="zh">步骤</span></th>
+          <th class="m"><span class="en">Folder</span><span class="zh">位置</span></th>
+          <th class="m"><span class="en">Name</span><span class="zh">文件名</span></th>
+          <th class="m"><span class="en">Type</span><span class="zh">格式</span></th>
+          <th class="m"><span class="en">Content</span><span class="zh">内容</span></th>
+          <th class="m"><span class="en">Others</span><span class="zh">其他文件</span></th>
+          <th><span class="en">Answer</span><span class="zh">结论</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="step">0</td>
+          <td class="what"><span class="en">Files the computer wrote</span><span class="zh">电脑生成的文件</span></td>
+          <td class="m"><i class="n">·</i></td><td class="m"><i>●</i></td><td class="m"><i class="n">·</i></td><td class="m"><i class="n">·</i></td><td class="m"><i class="n">·</i></td>
+          <td><span class="verd">SECONDARY</span></td>
+        </tr>
+        <tr>
+          <td class="step">1</td>
+          <td class="what"><span class="en">The sender said to ignore it</span><span class="zh">发件方说了别用</span></td>
+          <td class="m"><i class="n">·</i></td><td class="m"><i>●</i></td><td class="m"><i class="n">·</i></td><td class="m"><i>●</i></td><td class="m"><i class="n">·</i></td>
+          <td><span class="verd">WITHDRAWN</span></td>
+        </tr>
+        <tr>
+          <td class="step">2</td>
+          <td class="what"><span class="en">On the cedant's own list</span><span class="zh">在分出公司的清单上</span></td>
+          <td class="m"><i class="n">·</i></td><td class="m"><i>●</i></td><td class="m"><i class="n">·</i></td><td class="m"><i class="n">·</i></td><td class="m"><i>●</i></td>
+          <td><span class="verd core">CORE</span></td>
+        </tr>
+        <tr>
+          <td class="step">3</td>
+          <td class="what"><span class="en">Made from the pack, not part of it</span><span class="zh">据材料包做出来的，不是材料本身</span></td>
+          <td class="m"><i class="n">·</i></td><td class="m"><i>●</i></td><td class="m"><i class="n">·</i></td><td class="m"><i class="n">·</i></td><td class="m"><i class="n">·</i></td>
+          <td><span class="verd">DERIVED</span></td>
+        </tr>
+        <tr>
+          <td class="step">4</td>
+          <td class="what"><span class="en">The envelope, not the contents</span><span class="zh">是信封，不是里面的文件</span></td>
+          <td class="m"><i class="n">·</i></td><td class="m"><i>●</i></td><td class="m"><i>●</i></td><td class="m"><i>●</i></td><td class="m"><i class="n">·</i></td>
+          <td><span class="verd">SECONDARY</span></td>
+        </tr>
+        <tr>
+          <td class="step">5</td>
+          <td class="what"><span class="en">Ours, not theirs</span><span class="zh">我们自己的，不是对方的</span></td>
+          <td class="m"><i class="n">·</i></td><td class="m"><i>●</i></td><td class="m"><i class="n">·</i></td><td class="m"><i>●</i></td><td class="m"><i class="n">·</i></td>
+          <td><span class="verd">INTERNAL</span></td>
+        </tr>
+        <tr>
+          <td class="step">6</td>
+          <td class="what"><span class="en">One of the seven kinds, from the cedant, filed where submissions go</span><span class="zh">分出公司发来、属七类之一、且放在提交材料的位置</span></td>
+          <td class="m"><i>●</i></td><td class="m"><i>●</i></td><td class="m"><i class="n">·</i></td><td class="m"><i>●</i></td><td class="m"><i class="c">○</i></td>
+          <td><span class="verd core">CORE</span></td>
+        </tr>
+        <tr>
+          <td class="step">7</td>
+          <td class="what"><span class="en">Filed under notes, and readable</span><span class="zh">放在备注类文件夹，且读得出字</span></td>
+          <td class="m"><i>●</i></td><td class="m"><i class="n">·</i></td><td class="m"><i class="n">·</i></td><td class="m"><i class="c">○</i></td><td class="m"><i class="n">·</i></td>
+          <td><span class="verd">INTERNAL</span></td>
+        </tr>
+        <tr>
+          <td class="step">—</td>
+          <td class="what"><span class="en">Nothing fired</span><span class="zh">没有规则命中</span></td>
+          <td class="m"><i class="n">·</i></td><td class="m"><i class="n">·</i></td><td class="m"><i class="n">·</i></td><td class="m"><i class="n">·</i></td><td class="m"><i class="n">·</i></td>
+          <td><span class="verd">UNDECIDED</span></td>
+        </tr>
+        <tr>
+          <td class="step">+</td>
+          <td class="what"><span class="en">A cleaner copy is already kept</span><span class="zh">已留下更干净的一版</span></td>
+          <td class="m"><i class="n">·</i></td><td class="m"><i>●</i></td><td class="m"><i class="n">·</i></td><td class="m"><i class="n">·</i></td><td class="m"><i>●</i></td>
+          <td><span class="verd">SECONDARY</span></td>
+        </tr>
+        <tr>
+          <td class="step">+</td>
+          <td class="what"><span class="en">The same bytes as another file</span><span class="zh">与另一份文件字节相同</span></td>
+          <td class="m"><i class="n">·</i></td><td class="m"><i class="n">·</i></td><td class="m"><i class="n">·</i></td><td class="m"><i class="n">·</i></td><td class="m"><i>●</i></td>
+          <td><span class="verd"><span class="en">copies its twin</span><span class="zh">照抄同源文件</span></span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="legend">
+    <span><i>●</i><span class="en">the rule decides on this</span><span class="zh">规则据此下结论</span></span>
+    <span><i class="c">○</i><span class="en">checked as a condition, decides nothing on its own</span><span class="zh">只作条件检查，本身不下结论</span></span>
+  </p>
+
+  <h2 class="wkh2"><span class="en">The ladder, step by step</span><span class="zh">阶梯，逐步展开</span></h2>
+  <p class="wksub"><span class="en">Click a row for the rule names and the exact test.</span><span class="zh">点开一行，可看规则名与具体判定条件。</span></p>
+
+  <details class="rung">
+    <summary>
+      <span class="rnum" aria-hidden="true">0</span>
+      <div class="body">
+        <div class="rname"><span class="en">Files the computer wrote</span><span class="zh">电脑生成的文件</span></div>
+        <div class="rplain"><span class="en">Windows leaves <span class="code">Thumbs.db</span>; Word leaves <span class="code">~$</span> files. Nobody sent them and nobody can read them.</span><span class="zh">Windows 留下 <span class="code">Thumbs.db</span>，Word 留下 <span class="code">~$</span> 文件。无人发送，也无从读起。</span></div>
+        <div class="chips"><span class="chip"><span class="en">Name</span><span class="zh">文件名</span></span></div>
+      </div>
+      <span class="rverd verd">SECONDARY</span>
+    </summary>
+    <div class="drawer">
+      <dl>
+        <dt><span class="en">Rule</span><span class="zh">规则</span></dt>
+        <dd><span class="code">R16_os_artefact</span></dd>
+        <dt><span class="en">The test</span><span class="zh">判定条件</span></dt>
+        <dd><span class="en">Exact filenames, plus the <span class="code">~$</span> prefix. Nothing on an extension or a substring: a loose match here costs a real document its place in the pack.</span><span class="zh">只匹配完整文件名，另加 <span class="code">~$</span> 前缀；不看扩展名，不做子串匹配。匹配一松，真文件就会被挤出材料包。</span></dd>
+        <dt><span class="en">Why it goes first</span><span class="zh">为什么排在最前</span></dt>
+        <dd><span class="en">Five of these once came out CORE: the CORE step reads the folder, so a cache sitting in <span class="code">Slip &amp; End't</span> was graded a slip and went into the pack.</span><span class="zh">曾有五个这样的文件判成了 CORE：判 CORE 那一步读的是文件夹，放在 <span class="code">Slip &amp; End't</span> 里的缓存于是成了条款单，一路进了材料包。</span></dd>
+      </dl>
+    </div>
+  </details>
+
+  <details class="rung">
+    <summary>
+      <span class="rnum" aria-hidden="true">1</span>
+      <div class="body">
+        <div class="rname"><span class="en">The sender said to ignore it</span><span class="zh">发件方说了别用</span></div>
+        <div class="rplain"><span class="en">“please ignore”, “superseded”, “void”, 作废, 请忽略, in the name or in the opening text. Of the six answers, only this one sets a document aside outright.</span><span class="zh">文件名或开头正文里写着“please ignore”“superseded”“void”、作废、请忽略。六种结论里，只有这一种是整个搁置。</span></div>
+        <div class="chips"><span class="chip"><span class="en">Name</span><span class="zh">文件名</span></span><span class="chip"><span class="en">Content</span><span class="zh">内容</span></span></div>
+      </div>
+      <span class="rverd verd">WITHDRAWN</span>
+    </summary>
+    <div class="drawer">
+      <dl>
+        <dt><span class="en">Rule</span><span class="zh">规则</span></dt>
+        <dd><span class="code">R2_withdrawn_marker</span></dd>
+        <dt><span class="en">The test</span><span class="zh">判定条件</span></dt>
+        <dd><span class="en">The filename is matched against the full marker list; the body only against the unambiguous ones, and only in its first 500 characters — “null and void” appears legitimately in a wording.</span><span class="zh">文件名对全表匹配；正文只对没有歧义的词，且只看开头 500 字符。“null and void”本就是合约条文里的常语。</span></dd>
+        <dt><span class="en">What does not withdraw a file</span><span class="zh">不据此搁置的情形</span></dt>
+        <dd><span class="en">A market reference belonging to another treaty. It records a finding (<span class="code">R3_umr_mismatch_review</span>) and leaves the verdict to the rest of the ladder.</span><span class="zh">文件带着别份合约的市场编号。只记一条提示（<span class="code">R3_umr_mismatch_review</span>），结论留给后面的规则，不在这里搁置。</span></dd>
+      </dl>
+    </div>
+  </details>
+
+  <details class="rung">
+    <summary>
+      <span class="rnum" aria-hidden="true">2</span>
+      <div class="body">
+        <div class="rname"><span class="en">On the cedant's own list</span><span class="zh">在分出公司的清单上</span></div>
+        <div class="rplain"><span class="en">The strongest signal there is: the cedant naming this file as part of what it sent. Nothing lower on the ladder can overrule it.</span><span class="zh">最强的信号：分出公司自认这份文件属于它送来的材料。阶梯下方的规则一概推翻不了。</span></div>
+        <div class="chips"><span class="chip"><span class="en">Name</span><span class="zh">文件名</span></span><span class="chip"><span class="en">Rest of the treaty</span><span class="zh">其他文件</span></span></div>
+      </div>
+      <span class="rverd verd core">CORE</span>
+    </summary>
+    <div class="drawer">
+      <dl>
+        <dt><span class="en">Rules</span><span class="zh">规则</span></dt>
+        <dd><span class="code">R10_mrc_declared</span> <span class="en">— the filename appears in a document's “information made available to and seen by” section. The list comes from another file's content; this file matches to it by name.</span><span class="zh">—— 文件名出现在某份文件的 “information made available to and seen by” 一节中。清单取自另一份文件的正文，本文件按名对应。</span></dd>
+        <dd><span class="code">R10b_app_series_declared</span> <span class="en">— a complete numbered appendix series, on only when three or more appendix numbers appear in the treaty.</span><span class="zh">—— 成套编号的附件；合约中出现三个以上附件编号方才启用。</span></dd>
+        <dt><span class="en">What can still change it</span><span class="zh">之后仍可能被改写</span></dt>
+        <dd><span class="en">Two passes run after the ladder and read only a file's standing, never why it has it. Both can overwrite a cedant declaration.</span><span class="zh">阶梯之后还有两轮，只认当前结论，不问结论由来，都可能覆盖分出公司的声明。</span></dd>
+      </dl>
+    </div>
+  </details>
+
+  <details class="rung">
+    <summary>
+      <span class="rnum" aria-hidden="true">3</span>
+      <div class="body">
+        <div class="rname"><span class="en">Made from the pack, not part of it</span><span class="zh">据材料包做出来的，不是材料本身</span></div>
+        <div class="rplain"><span class="en">Somebody in the office produced this out of the submission — this year against last, a profitability study, one version redlined against another.</span><span class="zh">公司内部拿这批材料另做的：今年对去年、盈利能力分析、两版之间的修订对照。</span></div>
+        <div class="chips"><span class="chip"><span class="en">Name</span><span class="zh">文件名</span></span></div>
+      </div>
+      <span class="rverd verd">DERIVED</span>
+    </summary>
+    <div class="drawer">
+      <dl>
+        <dt><span class="en">Rules</span><span class="zh">规则</span></dt>
+        <dd><span class="code">R6_comparison_tag</span> <span class="en">— a bracketed tag somebody typed on purpose: <span class="code">[compare report]</span>, <span class="code">[比較報告]</span>.</span><span class="zh">—— 特意打上的方括号标签：<span class="code">[compare report]</span>、<span class="code">[比較報告]</span>。</span></dd>
+        <dd><span class="code">R6_uw_derivative</span> <span class="en">— “profitability” anywhere in the name.</span><span class="zh">—— 文件名中任何位置出现 “profitability”。</span></dd>
+        <dd><span class="code">R6_version_pair</span> <span class="en">— <span class="code">2024 Final - 2025 FOTs</span>: a version word on <em>each</em> side of the dash. A treaty name on the left is not a version side.</span><span class="zh">—— <span class="code">2024 Final - 2025 FOTs</span>：破折号<em>两侧</em>都须有版本词。左侧若为合约名称，不算版本。</span></dd>
+        <dd><span class="code">R6_vs_pair</span> <span class="en">— <span class="code">final vs draft</span>, <span class="code">us slip vs uk slip</span>: a version or jurisdiction label on every side of the “vs”.</span><span class="zh">—— <span class="code">final vs draft</span>、<span class="code">us slip vs uk slip</span>：“vs”两侧皆为版本或法域标签。</span></dd>
+        <dd><span class="code">R6_compare_name</span> <span class="en">— a stem starting <span class="code">Compare</span> or <span class="code">[comparison</span>, or saying “redline to expiring”.</span><span class="zh">—— 以 <span class="code">Compare</span> 或 <span class="code">[comparison</span> 开头，或写着 “redline to expiring”。</span></dd>
+        <dt><span class="en">What these never match</span><span class="zh">这些不会命中</span></dt>
+        <dd><span class="en">Broker redline slips stay CORE. So does a cedant-declared file, decided at step 2 and not revisited here.</span><span class="zh">经纪人的修订版条款单仍判 CORE。分出公司已声明的文件在第 2 步定案，此处不再过问。</span></dd>
+        <dt><span class="en">Which of them send work to a person</span><span class="zh">哪几条会送人复核</span></dt>
+        <dd><span class="en">Two of the five always do; the other three never do.</span><span class="zh">五条中有两条必送，另外三条从不。</span></dd>
+      </dl>
+    </div>
+  </details>
+
+  <details class="rung">
+    <summary>
+      <span class="rnum" aria-hidden="true">4</span>
+      <div class="body">
+        <div class="rname"><span class="en">The envelope, not the contents</span><span class="zh">是信封，不是里面的文件</span></div>
+        <div class="rplain"><span class="en">The correspondence a submission travels in. What is inside an email or a zip is extracted and judged on its own, from the top of the ladder.</span><span class="zh">材料在传递途中的外壳。邮件与压缩包内的文件另行取出，从阶梯顶端单独判定。</span></div>
+        <div class="chips"><span class="chip"><span class="en">Type</span><span class="zh">格式</span></span><span class="chip"><span class="en">Content</span><span class="zh">内容</span></span><span class="chip"><span class="en">Name</span><span class="zh">文件名</span></span></div>
+      </div>
+      <span class="rverd verd">SECONDARY</span>
+    </summary>
+    <div class="drawer">
+      <dl>
+        <dt><span class="en">Rules</span><span class="zh">规则</span></dt>
+        <dd><span class="code">R1_email</span> <span class="en">— a native <span class="code">.msg</span> or <span class="code">.eml</span>, or two or more distinct header labels in the first 800 characters. This catches most correspondence.</span><span class="zh">—— 原生 <span class="code">.msg</span> 或 <span class="code">.eml</span>；或开头 800 字符内出现两个以上不同的邮件头标签。往来信件多由此条认出。</span></dd>
+        <dd><span class="code">R1_email_print</span> <span class="en">— a PDF <em>named</em> as an email, headers or not: a scanned print has none.</span><span class="zh">—— <em>名字</em>像邮件的 PDF，有无邮件头皆算：扫描件本就没有。</span></dd>
+        <dd><span class="code">R1_container</span> <span class="en">— a zip; its payload is extracted separately.</span><span class="zh">—— 压缩包；里面的文件单独解出。</span></dd>
+        <dd><span class="code">R1_image</span> <span class="en">— a picture file, which carries no underwriting content.</span><span class="zh">—— 图片文件，不承载核保内容。</span></dd>
+        <dd><span class="code">R15_newsletter</span> <span class="en">— a periodic market circular.</span><span class="zh">—— 定期的市场简报。</span></dd>
+      </dl>
+    </div>
+  </details>
+
+  <details class="rung">
+    <summary>
+      <span class="rnum" aria-hidden="true">5</span>
+      <div class="body">
+        <div class="rname"><span class="en">Ours, not theirs</span><span class="zh">我们自己的，不是对方的</span></div>
+        <div class="rplain"><span class="en">TPRe's own working material: pricing tool, RBC, meeting notes, 核保审批, 承保指引.</span><span class="zh">太平再自己的工作材料：定价工具、RBC、会议记录、核保审批、承保指引。</span></div>
+        <div class="chips"><span class="chip"><span class="en">Name</span><span class="zh">文件名</span></span><span class="chip"><span class="en">Content</span><span class="zh">内容</span></span></div>
+      </div>
+      <span class="rverd verd">INTERNAL</span>
+    </summary>
+    <div class="drawer">
+      <dl>
+        <dt><span class="en">Rule</span><span class="zh">规则</span></dt>
+        <dd><span class="code">R7_internal_signal</span></dd>
+        <dt><span class="en">The test</span><span class="zh">判定条件</span></dt>
+        <dd><span class="en">The filename is matched against the full list, the body against a shorter one: a cedant's ordinary pricing vocabulary is not evidence that we wrote the file.</span><span class="zh">文件名对全表，正文只对一份更短的表：分出公司日常的定价用语，不足以证明文件出自我们之手。</span></dd>
+        <dt><span class="en">A test that is switched off</span><span class="zh">一条关着的判定</span></dt>
+        <dd><span class="en">A fourth test matches a colleague's name, and the list is empty: a cedant contact with the same name would misfile a real document.</span><span class="zh">第四条判定匹配同事的名字，名单是空的：分出公司联系人若恰好同名，真文件便会归错。</span></dd>
+      </dl>
+    </div>
+  </details>
+
+  <details class="rung">
+    <summary>
+      <span class="rnum" aria-hidden="true">6</span>
+      <div class="body">
+        <div class="rname"><span class="en">One of the seven kinds, from the cedant, filed where submissions go</span><span class="zh">分出公司发来、属七类之一、且放在提交材料的位置</span></div>
+        <div class="rplain"><span class="en">This step does nearly all the keeping. Three conditions must hold at once.</span><span class="zh">绝大部分“留下”出自这一步。三个条件须同时成立。</span></div>
+        <div class="chips"><span class="chip"><span class="en">Folder</span><span class="zh">位置</span></span><span class="chip"><span class="en">Name</span><span class="zh">文件名</span></span><span class="chip"><span class="en">Content</span><span class="zh">内容</span></span><span class="chip cond"><span class="en">Rest of the treaty</span><span class="zh">其他文件</span></span></div>
+      </div>
+      <span class="rverd verd core">CORE</span>
+    </summary>
+    <div class="drawer">
+      <dl>
+        <dt><span class="en">Condition 1 — it came from the cedant</span><span class="zh">条件一 —— 来自分出公司</span></dt>
+        <dd><span class="en">A broker's forward counts; something we wrote does not. From the sending domain for emails, the folder and the filename for documents.</span><span class="zh">经纪人转发算，我们自己写的不算。邮件看发件域名，文档看文件夹和文件名。</span></dd>
+        <dt><span class="en">Condition 2 — it sits inside the submission folders</span><span class="zh">条件二 —— 位于提交材料文件夹内</span></dt>
+        <dd><span class="en"><span class="code">Slip &amp; End't</span> or <span class="code">U W Information</span> (<span class="code">R14</span>). This blocks only. Outside them nothing is decided: the file goes on to step 7, or ends as “don't know” and reaches a person — so a cedant document misfiled into a notes folder surfaces instead of vanishing.</span><span class="zh"><span class="code">Slip &amp; End't</span> 或 <span class="code">U W Information</span>（<span class="code">R14</span>）。此条只挡不判。两个文件夹之外一律不作结论：文件继续走到第 7 步，或以“不知道”收尾、交给人。错放进备注文件夹的分出公司文件因此浮得出来，不会就此消失。</span></dd>
+        <dd><span class="en">It also switches itself off: if no file in the treaty sits in either folder, that treaty files its papers another way and the condition does not apply.</span><span class="zh">此条还会自行关闭：合约中若无一文件落在这两个文件夹内，即视为另有归档习惯，条件不生效。</span></dd>
+        <dt><span class="en">Condition 3 — a core signal</span><span class="zh">条件三 —— 有核心信号</span></dt>
+        <dd><span class="en">One of the seven kinds: the slip and endorsements · the wording · underwriting information · exposure and schedules of values · loss and claims history · financials · reports and ratings. The kind is read off the folder, the filename and the first words together, and counts only if the machine can quote the keyword behind it.</span><span class="zh">七类之一：条款单与批单 · 合约条文 · 承保信息 · 风险敞口与保额明细 · 赔付与理赔记录 · 财务报表 · 报告与评级。类别由文件夹、文件名与开头文字合读得出；须能指明是哪个关键词，方才作数。</span></dd>
+        <dd><span class="en">Or the file carries this treaty's own market reference (<span class="code">core_umr_in_family</span>).</span><span class="zh">或文件带有本合约自己的市场编号（<span class="code">core_umr_in_family</span>）。</span></dd>
+      </dl>
+    </div>
+  </details>
+
+  <details class="rung">
+    <summary>
+      <span class="rnum" aria-hidden="true">7</span>
+      <div class="body">
+        <div class="rname"><span class="en">Filed under notes, and readable</span><span class="zh">放在备注类文件夹，且读得出字</span></div>
+        <div class="rplain"><span class="en">An underwriter's-note, approval or pricing folder settles the question when the file itself does not.</span><span class="zh">当文件本身给不出答案时，由核保备注、审批或定价类文件夹定案。</span></div>
+        <div class="chips"><span class="chip"><span class="en">Folder</span><span class="zh">位置</span></span><span class="chip cond"><span class="en">Content</span><span class="zh">内容</span></span></div>
+      </div>
+      <span class="rverd verd">INTERNAL</span>
+    </summary>
+    <div class="drawer">
+      <dl>
+        <dt><span class="en">Rule</span><span class="zh">规则</span></dt>
+        <dd><span class="code">R7_notes_folder_no_contrary_signal</span></dd>
+        <dt><span class="en">If nothing could be read</span><span class="zh">一个字也读不出时</span></dt>
+        <dd><span class="en">The file stays “don't know” and goes to a person instead.</span><span class="zh">文件留在“不知道”，转交给人。</span></dd>
+      </dl>
+    </div>
+  </details>
+
+  <details class="rung">
+    <summary>
+      <span class="rnum" aria-hidden="true">—</span>
+      <div class="body">
+        <div class="rname"><span class="en">Nothing fired — don't know</span><span class="zh">没有规则命中 —— 不知道</span></div>
+        <div class="rplain"><span class="en">A file no rule claimed is not discarded. It goes to a person to place.</span><span class="zh">没有规则认领的文件不会被丢掉，交由人来归位。</span></div>
+        <div class="chips"><span class="chip cond"><span class="en">none of the four matched</span><span class="zh">四样都不命中</span></span></div>
+      </div>
+      <span class="rverd verd">UNDECIDED</span>
+    </summary>
+    <div class="drawer">
+      <dl>
+        <dt><span class="en">What happens to it</span><span class="zh">后续</span></dt>
+        <dd><span class="en">It goes on the review queue. The gate turns the treaty amber for it, and red when the machine took no position on more than half the pack — today the only reason a treaty is not trusted.</span><span class="zh">进入复核队列。闸门因此标黄；机器若对过半文件都没有表态，则标红——目前唯一会让一份合约失去信任的理由。</span></dd>
+        <dt><span class="en">It can still carry a finding</span><span class="zh">“不知道”也可能带着提示</span></dt>
+        <dd><span class="en">A file carrying another treaty's market reference is left undecided and carries that finding, so the reviewer sees why it is on the queue.</span><span class="zh">带着别份合约市场编号的文件留在“不知道”，但带上那条提示，复核的人一眼便知它为何在队列里。</span></dd>
+      </dl>
+    </div>
+  </details>
+
+  <h2 class="wkh2"><span class="en">Two passes after the ladder</span><span class="zh">阶梯之后的两轮</span></h2>
+  <p class="wksub"><span class="en">Both read only a file's standing, never why it has it.</span><span class="zh">这两轮只认当前结论，不问由来。</span></p>
+
+  <div class="plain">
+    <h3><span class="en">A cleaner copy is already kept</span><span class="zh">已留下更干净的一版</span></h3>
+    <p><span class="en">A CORE file with <span class="code">_broker</span> in its name drops to SECONDARY when a non-broker CORE sibling exists. Because it reads only the standing, it can override even a cedant declaration.</span><span class="zh">名字带 <span class="code">_broker</span> 的 CORE 文件，若已有非经纪人版本同为 CORE，则降为 SECONDARY。因只认当前结论，连分出公司的声明也能覆盖。</span></p>
+  </div>
+
+  <div class="plain">
+    <h3><span class="en">The same bytes as another file</span><span class="zh">与另一份文件字节相同</span></h3>
+    <p><span class="en">No rule is run on a byte-identical copy. It is inventoried so it stays visible, then takes its twin's answer at the end — so the same bytes never come out CORE in one folder and SECONDARY in another. Its reason reads <span class="code">inherited_from_representative</span>.</span><span class="zh">字节相同的副本不参与任何规则判定，但照样进清单以保持可见，最后照抄同源文件的结论。同一批字节，不会在一处是 CORE、在另一处是 SECONDARY。理由写作 <span class="code">inherited_from_representative</span>。</span></p>
+    <p><span class="en">A last step follows the chain of copies to the original, so opening a duplicate always leads to the real document.</span><span class="zh">最后一步顺副本链上溯到原件，点开副本总能落到真正的文件上。</span></p>
+  </div>
+
+  <h2 class="wkh2"><span class="en">Four guarantees</span><span class="zh">四条底线</span></h2>
+  <p class="wksub"><span class="en">Four things that hold whatever the file is.</span><span class="zh">无论文件是什么，这四条都成立。</span></p>
+
+  <div class="plain">
+    <h3><span class="en">Nothing is ever deleted</span><span class="zh">任何文件都不会被删除</span></h3>
+    <p><span class="en">Every demotion lands on a visible answer. A file set aside is still in the inventory, with the rule and the quoted evidence beside it.</span><span class="zh">每次降级都落在一个看得见的结论上。搁置的文件仍在清单里，旁边写明规则与引用的证据。</span></p>
+  </div>
+  <div class="plain">
+    <h3><span class="en">Out of scope means undecided, not dropped</span><span class="zh">超出范围等于“不知道”，不等于丢弃</span></h3>
+    <p><span class="en">The folder condition refuses to <em>grant</em> CORE; it never takes a file off the ladder. A cedant document misfiled into a notes folder surfaces for a person.</span><span class="zh">文件夹条件只是拒绝<em>授予</em> CORE，从不把文件逐出阶梯。错放进备注文件夹的分出公司文件，仍会浮出来交给人。</span></p>
+  </div>
+  <div class="plain">
+    <h3><span class="en">An unfamiliar folder layout costs a treaty nothing</span><span class="zh">归档方式不同，不连累整份合约</span></h3>
+    <p><span class="en">A treaty using neither submission folder files its papers another way, so the condition does not apply. Without this, one unfamiliar layout would strip CORE from that treaty at once.</span><span class="zh">两个提交文件夹都不用的合约，另有归档习惯，条件不生效。否则一种没见过的目录结构，便会一次剥掉这份合约的全部 CORE。</span></p>
+  </div>
+  <div class="plain">
+    <h3><span class="en">No folder ever grants CORE</span><span class="zh">文件夹永远不能授予 CORE</span></h3>
+    <p><span class="en">A folder can keep a file out at step 6 and push it to internal at step 7. It can never let one in. A core-looking document filed under notes is flagged as possibly misfiled, not reclassified.</span><span class="zh">文件夹能在第 6 步挡住文件，也能在第 7 步把它推成 INTERNAL，却永远不能放行。看着像核心、却放在备注文件夹的文档，只标“可能放错位置”，不予改判。</span></p>
+  </div>
+
+  <div class="note">
+    <h3><span class="en">Not on this page</span><span class="zh">不在这一页的事</span></h3>
+    <p><span class="en">These rules decide what each <em>file</em> is. Whether the <em>treaty</em> can go downstream without a person is a separate judgement, made afterwards on the result as a whole — that is the <a href="gate.html">RAG Gate</a>.</span><span class="zh">这些规则决定每<em>份文件</em>是什么。整<em>份合约</em>能否不经人工直接往下走，是此后就整体结果另作的判断，即 <a href="gate.html">RAG 闸门</a>。</span></p>
+    <p><span class="en">A mistake is never quietly corrected downstream; it surfaces as a disagreement in the review app. And the count of documents it is known to miss is a floor, not a measurement: the selections it was scored against were themselves made starting from its output.</span><span class="zh">出错不会在下游被悄悄改掉，只会作为“分歧”出现在复核工具里。已知漏判数是下限，不是测量值：用来对照的人工选取，本身就是从机器的输出出发做的。</span></p>
+  </div>
+
+  <!-- wiki next -->
+  <nav class="wknext" aria-labelledby="wknext-h">
+    <h2 class="wknext-h" id="wknext-h"><span class="wk-en">Keep reading</span><span class="wk-zh">继续阅读</span></h2>
+    <p class="wknext-s"><span class="wk-en">The rest of the wiki, one page at a time.</span><span class="wk-zh">手册的其余部分，一页一页看。</span></p>
+    <div class="wknext-g">
+      <a class="wknext-c" href="index.html">
+        <b><span class="wk-en">Overview</span><span class="wk-zh">总览</span></b>
+        <span class="wknext-d"><span class="wk-en">One submission, from the pack that arrives to the data the underwriter reads.</span><span class="wk-zh">一份申请：从收到的材料包，到核保人读到的数据。</span></span>
+        <span class="wknext-go" aria-hidden="true">→</span>
+      </a>
+      <a class="wknext-c" href="flow.html">
+        <b><span class="wk-en">How it works</span><span class="wk-zh">整体流程</span></b>
+        <span class="wknext-d"><span class="wk-en">The whole programme in four pictures, then the process stage by stage.</span><span class="wk-zh">先用四张图看懂整个项目，再按阶段展开流程。</span></span>
+        <span class="wknext-go" aria-hidden="true">→</span>
+      </a>
+      <a class="wknext-c" href="lifecycle.html">
+        <b><span class="wk-en">Step by step</span><span class="wk-zh">逐步流程</span></b>
+        <span class="wknext-d"><span class="wk-en">Seven steps: who runs each one, who signs it off, and every outcome it can have.</span><span class="wk-zh">七个步骤：每步由谁执行、由谁签核，可能出现哪些结果。</span></span>
+        <span class="wknext-go" aria-hidden="true">→</span>
+      </a>
+      <a class="wknext-c" href="gate.html">
+        <b><span class="wk-en">RAG Gate</span><span class="wk-zh">RAG 闸门</span></b>
+        <span class="wknext-d"><span class="wk-en">Red, amber, green — every rule that decides how much attention a treaty needs.</span><span class="wk-zh">红、黄、绿——决定一份合约需要多少人工的每一条规则。</span></span>
+        <span class="wknext-go" aria-hidden="true">→</span>
+      </a>
+    </div>
+  </nav>
+  <!-- /wiki next -->
+  <footer class="wkfoot">
+    <span class="en">Source of truth: <span class="code">triage/tpre_triage.py</span> · <a href="gate.html">RAG Gate</a> · Written 2026-09-10</span>
+    <span class="zh">准绳：<span class="code">triage/tpre_triage.py</span> · <a href="gate.html">RAG 闸门</a> · 写于 2026-09-10</span>
+  </footer>
+</div>
+
+<script>
+"use strict";
+function setLang(v){
+  var r=document.documentElement;
+  r.setAttribute("data-lang",v);
+  r.setAttribute("lang",v==="zh"?"zh-Hans":"en");
+  document.title=v==="zh"?"AI Data+ · 分拣规则":"AI Data+ · The rules";
+}
+document.addEventListener("aidp:lang", function(e){ setLang(e.detail==="zh"?"zh":"en"); });
+setLang(document.documentElement.getAttribute("data-lang")||"en");
+</script>
+</body>
+</html>
