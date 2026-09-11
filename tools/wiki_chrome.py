@@ -61,6 +61,40 @@ CHROME_CSS = """
   .wknav a[aria-current="page"]{color:var(--ink)}
   .wknav a[aria-current="page"]::after{content:"";position:absolute;left:10px;right:10px;bottom:0;
            height:2px;border-radius:2px;background:var(--orange)}
+
+  /* a group of pages under one name. The button rides in the strip; the panel
+     hangs off .wknav rather than the strip, because the strip scrolls sideways
+     and clips what overflows it - so the panel's left is set from the button,
+     in JS. A browser with no JavaScript gets the plain links (.wkmenu-fb). */
+  .wkmenu{flex:0 0 auto;display:inline-flex;align-items:center;position:static}
+  .wkmenu-fb{display:none}
+  .wknav .wkmenu-btn{position:relative;display:inline-flex;align-items:center;gap:6px;
+           font:inherit;font-family:var(--disp);font-size:13px;font-weight:600;
+           padding:7px 10px;border:0;border-radius:5px;background:transparent;color:var(--slate);
+           white-space:nowrap;cursor:pointer;transition:color .15s,background .15s}
+  .wknav .wkmenu-btn:hover,.wknav .wkmenu-btn[aria-expanded="true"]{background:rgba(20,36,58,.055);color:var(--ink)}
+  .wknav .wkmenu-btn:focus-visible{outline:2px solid var(--orange);outline-offset:1px}
+  .wknav .wkmenu-btn.wk-cur{color:var(--ink)}
+  .wknav .wkmenu-btn.wk-cur::after{content:"";position:absolute;left:10px;right:10px;bottom:0;
+           height:2px;border-radius:2px;background:var(--orange)}
+  .wkcar{width:6px;height:6px;margin-top:-2px;opacity:.7;
+         border-right:1.6px solid currentColor;border-bottom:1.6px solid currentColor;
+         transform:rotate(45deg);transition:transform .18s}
+  .wkmenu-btn[aria-expanded="true"] .wkcar{margin-top:1px;transform:rotate(-135deg)}
+
+  .wkmenu-p{position:absolute;top:calc(100% + 5px);left:0;z-index:210;min-width:190px;padding:6px;
+            background:var(--card);border:1px solid var(--line);border-radius:10px;
+            box-shadow:0 14px 34px rgba(20,36,58,.14),0 2px 5px rgba(20,36,58,.06);
+            opacity:0;transform:translateY(-4px);transition:opacity .14s,transform .14s}
+  .wkmenu-p.wk-open{opacity:1;transform:none}
+  .wkmenu-p[hidden]{display:none}
+  .wknav .wkmenu-p a{display:block;padding:8px 11px;border-radius:6px;font-size:13px;
+           font-weight:600;color:var(--ink);white-space:nowrap}
+  .wknav .wkmenu-p a:hover{background:#EEF2F6;color:var(--ink)}
+  .wknav .wkmenu-p a[aria-current="page"]{background:rgba(224,99,42,.09)}
+  .wknav .wkmenu-p a[aria-current="page"]::after{display:none}
+  @media (prefers-reduced-motion:reduce){.wkmenu-p,.wkcar{transition:none}}
+
   .wkdev{flex:0 0 auto;display:inline-flex;align-items:center;gap:6px}
   .wkdev::before{content:"";position:absolute;left:-8px;top:9px;bottom:9px;width:1px;background:rgba(20,36,58,.14)}
 
@@ -115,6 +149,97 @@ CHROME_JS = """
   document.addEventListener("aidp:lang", function(e){
     if(e && e.detail) paint(e.detail==="zh"?"zh":"en");
   });
+})();
+(function(){
+  var btn = document.getElementById("wkmenu-b"),
+      panel = document.getElementById("wkmenu-p"),
+      strip = document.querySelector(".wknav-in"),
+      nav = document.querySelector(".wknav");
+  if(!btn || !panel || !nav) return;
+
+  function items(){ return Array.prototype.slice.call(panel.querySelectorAll("a")); }
+
+  // The panel hangs off the bar, not off the strip the button sits in, so its
+  // left is the button's - measured on open, because the strip can be scrolled.
+  function place(){
+    if(panel.hidden) return;
+    var b = btn.getBoundingClientRect(), n = nav.getBoundingClientRect(),
+        max = n.width - panel.offsetWidth - 8,
+        x = b.left - n.left;
+    if(x > max) x = max;
+    if(x < 8) x = 8;
+    panel.style.left = Math.round(x) + "px";
+  }
+  // on a narrow screen the strip scrolls sideways, and the button can be off
+  // its own edge: a panel under a button nobody can see reads as a stray card.
+  function reveal(){
+    if(!strip) return;
+    var b = btn.getBoundingClientRect(), s = strip.getBoundingClientRect();
+    if(b.right > s.right) strip.scrollLeft += b.right - s.right + 10;
+    else if(b.left < s.left) strip.scrollLeft -= s.left - b.left + 10;
+  }
+  function open_(toFirst){
+    if(panel.hidden){
+      panel.hidden = false;
+      btn.setAttribute("aria-expanded", "true");
+      reveal();
+      place();
+      void panel.offsetWidth;
+      panel.classList.add("wk-open");
+    }
+    if(toFirst){ var it = items(); if(it[0]) it[0].focus(); }
+  }
+  function close_(toBtn){
+    if(panel.hidden) return;
+    panel.classList.remove("wk-open");
+    panel.hidden = true;
+    btn.setAttribute("aria-expanded", "false");
+    if(toBtn) btn.focus();
+  }
+
+  btn.addEventListener("click", function(){ panel.hidden ? open_(false) : close_(false); });
+  // in the CAPTURE phase: pages stop their own clicks from reaching the document
+  // (a tooltip chip, a card), and an open panel must close under those too
+  document.addEventListener("click", function(e){
+    var t = e.target;
+    if(!t || !t.closest) return;
+    if(t.closest("#wkmenu-p") || t.closest("#wkmenu-b")) return;
+    close_(false);
+  }, true);
+  // focus that leaves the pair closes it: Tab from the button, Shift+Tab off the
+  // first link. Handled here rather than on the Tab key, which fires BEFORE the
+  // browser has moved focus and would tear the panel down under it.
+  nav.addEventListener("focusout", function(e){
+    var to = e.relatedTarget;
+    if(!to) return;                       // focus left the window: leave it be
+    if(to === btn || panel.contains(to)) return;
+    close_(false);
+  });
+  document.addEventListener("keydown", function(e){
+    var k = e.key;
+    if(k === "Escape" || k === "Esc"){
+      // while the panel is open Escape is the menu's; closed, it is the page's
+      if(!panel.hidden){
+        e.preventDefault();
+        if(e.stopImmediatePropagation) e.stopImmediatePropagation();
+        close_(true);
+      }
+      return;
+    }
+    var onBtn = document.activeElement === btn,
+        inPanel = !panel.hidden && panel.contains(document.activeElement);
+    if(onBtn && (k === "ArrowDown" || k === "Down")){ e.preventDefault(); open_(true); return; }
+    if(!inPanel) return;
+    var it = items(), at = it.indexOf(document.activeElement), to = -1;
+    if(k === "ArrowDown" || k === "Down") to = (at + 1) % it.length;
+    else if(k === "ArrowUp" || k === "Up") to = (at - 1 + it.length) % it.length;
+    else if(k === "Home") to = 0;
+    else if(k === "End") to = it.length - 1;
+    if(to > -1){ e.preventDefault(); it[to].focus(); }
+  });
+  window.addEventListener("resize", place);
+  if(strip) strip.addEventListener("scroll", place);
+  document.addEventListener("aidp:lang", place);   // every label in the bar changes width
 })();
 </script>
 """
@@ -273,18 +398,51 @@ NAV_LINKS = [
     ("index.html",     "Overview",     "\u603b\u89c8"),
     ("flow.html",      "How it works", "\u6574\u4f53\u6d41\u7a0b"),
     ("lifecycle.html", "Step by step", "\u9010\u6b65\u6d41\u7a0b"),
-    ("rules.html",     "The rules",    "\u5206\u62e3\u89c4\u5219"),
-    ("gate.html",      "RAG Gate",     "RAG \u95f8\u95e8"),
 ]
+
+# The two pages that are about one thing - what the Submission Agent decides,
+# and how much attention its result needs - sit under its name rather than
+# beside the pages about the programme. English, Chinese, then the contents.
+MENU = ("Submission Agent", "\u6587\u4ef6\u5206\u62e3\u667a\u80fd\u4f53", [
+    ("rules.html", "The rules", "\u5206\u62e3\u89c4\u5219"),
+    ("gate.html",  "RAG Gate",  "RAG \u95f8\u95e8"),
+])
 DEV = ("developer.html", "Developer portal", "\u5f00\u53d1\u8005\u95e8\u6237")
+
+
+def pair(en, zh):
+    return f'<span class="wk-en">{en}</span><span class="wk-zh">{zh}</span>'
 
 
 def nav(current):
     rows = []
     for href, en, zh in NAV_LINKS:
         cur = ' aria-current="page"' if href == current else ""
-        rows.append(f'      <a href="{href}"{cur}><span class="wk-en">{en}</span>'
-                    f'<span class="wk-zh">{zh}</span></a>')
+        rows.append(f'      <a href="{href}"{cur}>{pair(en, zh)}</a>')
+
+    # the grouped pages: a button in the strip, a panel that hangs off the bar
+    # below it, and the same links in plain sight where there is no JavaScript
+    men, mzh, contents = MENU
+    inside = any(href == current for href, _, _ in contents)
+    mcur = " wk-cur" if inside else ""
+    # the link that carries aria-current is inside a closed panel, so the button
+    # says it too - "true" and not "page", because the button is not the page
+    mnow = ' aria-current="true"' if inside else ""
+    rooms, fallback = [], []
+    for href, en, zh in contents:
+        cur = ' aria-current="page"' if href == current else ""
+        rooms.append(f'          <a href="{href}"{cur}>{pair(en, zh)}</a>')
+        fallback.append(f'<a href="{href}"{cur}>{pair(en, zh)}</a>')
+    menu = "\n".join(rooms)
+    rows.append(
+        f'      <span class="wkmenu"><button class="wkmenu-btn{mcur}"{mnow} type="button"'
+        f' id="wkmenu-b" aria-expanded="false" aria-controls="wkmenu-p">{pair(men, mzh)}'
+        f'<span class="wkcar" aria-hidden="true"></span></button>\n'
+        f'        <div class="wkmenu-p" id="wkmenu-p" hidden>\n{menu}\n'
+        f'        </div></span>')
+    rows.append(f'      <span class="wkmenu-fb">{"".join(fallback)}</span>')
+    rows.append('      <noscript><style>.wkmenu{display:none}'
+                '.wkmenu-fb{display:contents}</style></noscript>')
     links = "\n".join(rows)
     dcur = ' aria-current="page"' if current == DEV[0] else ""
     return f"""

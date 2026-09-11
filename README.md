@@ -78,6 +78,14 @@ for that.
   owns the colour tokens, the sticky nav, the language switch, and the skip link.
   Edit `tools/wiki_chrome.py` and re-run it rather than editing seven copies by hand;
   the manual and the API reference both mark *Developer portal* as their current page.
+  Two of the five pages do not sit beside the others: `rules.html` and `gate.html` are
+  both about what the Submission Agent decides, so they hang under a **Submission
+  Agent** dropdown. The grouping is the `MENU` tuple in the script - moving a page in
+  or out of it is an edit there and a re-run, never a hand-edit of eight bars. The
+  panel hangs off the bar rather than off the strip the button sits in, because that
+  strip scrolls sideways on a narrow screen and clips whatever overflows it; its left
+  is measured from the button. A browser with no JavaScript gets the two links in
+  plain sight instead, out of the `<noscript>` block the same script writes.
 - **The page kit.** `index.html` is the reference for how this wiki looks — white ground
   with two soft washes and a dot grid, navy display headings, one warm orange accent,
   14px cards that lift on hover. The kit is that look written down: palette, shadows,
