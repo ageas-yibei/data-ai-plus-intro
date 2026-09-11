@@ -15,7 +15,7 @@ why the pages are the way they are.
 | `index.html` | **Overview** — the landing page. One submission, scrolled from the pack that arrives to the data the underwriter reads. Ends with the contents of this wiki. |
 | `flow.html` | **How it works** — the whole programme in four pictures, then the process stage by stage. Three views (at a glance / module overview / full detail), printable. |
 | `lifecycle.html` | **Step by step** — the seven steps of one submission: who runs each, who signs it off, and every outcome a step can have. |
-| `rules.html` | **The rules** — how the machine decides what each file is, arranged by what a rule actually reads: the folder, the file name, the file type, the content. Ends with what it is known to get wrong. |
+| `rules.html` | **The rules** — how the machine decides what each file is, arranged by what a rule actually reads: the folder, the file name, the file type, the content. |
 | `gate.html` | **RAG Gate** — red / amber / green, and every rule behind the colour, in plain words beside its rule name in `triage/gate.py`. |
 
 ## The developer portal
@@ -119,3 +119,37 @@ they move between pages. Pages that have extra work on a switch (rebuilding a
 chart, rewriting a title) listen for `aidp:lang`. The illustrated manual still
 writes `flywheel-manual-lang` as well, so a rebuild of that file does not forget
 the last choice, but it follows the wiki bar.
+
+## How these pages are written
+
+Four tests, applied line by line. They were set over four rounds on
+`rules.html`, and every round's correction turned out to be the same one: the
+page kept talking about itself instead of about the system.
+
+- **Every line is a fact or an action.** A sentence either states something true
+  about the system, or tells the reader what they can do. Everything else goes —
+  sentences explaining the page to its own reader, design rationale, the history
+  of a rule, the evidence a decision rested on, and anything the table below it
+  already shows. Two that were cut by name: 「规则可依据的只有这些。各有所长，也各
+  有盲区。」 states the obvious, and 「读了哪几样，最能说明这条规则靠不靠得住。」
+  means nothing to anybody who has not already read the code.
+- **Name the thing, never a metaphor for it.** 材料包, 信封 and 清单 all went:
+  a reader who does not already know the system cannot decode any of them. Write
+  邮件、压缩包、图片、简报. Where a rule matches on literal names, print the names —
+  `Slip & End't` and `U W Information`, not 「提交材料的位置」. A label that needs a
+  glossary is the wrong label.
+- **The Chinese is written, not translated.** The failure mode is 翻译腔: English
+  em-dash asides carried straight across, 会 / 被 / 它 kept where Chinese drops
+  them, 「如果⋯⋯就会被⋯⋯」 for 若⋯⋯则, and translated metaphors. Break the aside
+  into its own sentence or use a colon; drop every pronoun the sentence can carry
+  without. Both languages are edited in the same pass — see *Both languages*
+  above, which is the mechanical half of the same rule.
+- **Colour encodes the reader's question, not the system's taxonomy.** The answer
+  badge on `rules.html` had six colours for six roles; the reader's question is
+  whether the file goes downstream, so it has two — green for CORE, neutral for
+  every other answer. The same test is why no card carries an edge band and no
+  small tag carries a stripe.
+
+`manual.html` is generated in the code repository and is **not** edited to this
+standard here — it has its own, stricter one (write so a reviewer can act, never
+teach the system), which lives beside its source.
