@@ -516,8 +516,8 @@
       <p class="wkey">AI Data+</p>
       <h1><span class="en">When a person has to look</span><span class="zh">什么时候需要人看</span></h1>
       <p class="wklede">
-        <span class="en">After the machine sorts a treaty’s files, it gets a colour. The colour is the only thing that decides how much attention that treaty needs. Green ships. Amber names a short list. Red sends the whole pack back.</span>
-        <span class="zh">机器分拣完一份合约的文件后，给出一种颜色。这份合约要花多少人力，全看这个颜色：绿灯放行，黄灯给一份短名单，红灯整份退回。</span>
+        <span class="en">Can this submission be passed on to downstream? After the machine sorts a treaty’s files, the gate asks that one question about the result — and the three colours are the three answers. Green: it can. Amber: a double check is needed first. Red: the result is not trusted, so find out why.</span>
+        <span class="zh">这份提交能不能往下送给下游？机器分拣完一份合约的文件后，闸门就对这个结果只问这一个问题，三种颜色就是三个答案：绿灯，可以往下送；黄灯，要先复核；红灯，不信任这次结果，先查清原因。</span>
       </p>
     </div>
   </header>
@@ -528,22 +528,23 @@
         <span class="dot" aria-hidden="true"></span>
         <h3><span class="en">Green</span><span class="zh">绿灯</span></h3>
       </div>
-      <p><span class="en">The sort looks sound. Nobody has to open this pack.</span><span class="zh">分拣靠得住，不必打开这份材料包。</span></p>
+      <p><span class="en">It can be passed on. Downstream gets it with nobody looking first.</span><span class="zh">可以往下送。下游直接拿到，事先不必有人看。</span></p>
+      <p class="do"><span class="en">Minus a standing audit sample: about one treaty in five is read anyway, so the gate keeps being measured after it stops being reviewed.</span><span class="zh">但保留固定抽查：约每五份抽一份照样有人读，好让闸门在没人复核之后仍被持续检验。</span></p>
     </article>
     <article class="lamp" style="--c:var(--wait);--cs:var(--amber-2)">
       <div class="lamp-h">
         <span class="dot" aria-hidden="true"></span>
         <h3><span class="en">Amber</span><span class="zh">黄灯</span></h3>
       </div>
-      <p><span class="en">The pack can go forward, but named files need a look.</span><span class="zh">材料包仍可往下走，但名单上的文件要人过目。</span></p>
-      <p class="do"><span class="en">A person works the list the gate wrote — not the whole treaty.</span><span class="zh">只处理关卡列出的名单，不是整份合约。</span></p>
+      <p><span class="en">Double check needed. Somebody looks before it goes on.</span><span class="zh">需要复核。先有人过目，再往下送。</span></p>
+      <p class="do"><span class="en">Most amber rules name the files to look at, and that list is the work — not the whole treaty. Two of them name no file: they are facts about the treaty itself.</span><span class="zh">多数黄灯规则会列出要看的文件，要做的就是这份名单，而不是整份合约；其中两条不列文件，说的是这份合约本身的情况。</span></p>
     </article>
     <article class="lamp" style="--c:var(--halt);--cs:var(--halt-2)">
       <div class="lamp-h">
         <span class="dot" aria-hidden="true"></span>
         <h3><span class="en">Red</span><span class="zh">红灯</span></h3>
       </div>
-      <p><span class="en">We do not trust the sort. The treaty goes back to a person.</span><span class="zh">不信任这次分拣。整份合约退回给人。</span></p>
+      <p><span class="en">Investigation needed. The result is not trusted — find out why before anything goes on.</span><span class="zh">需要查清。不信任这次结果——先弄明白原因，再谈往下送。</span></p>
       <p class="do"><span class="en">The amber list still comes with it, so the person knows where to start.</span><span class="zh">黄灯名单一并附上，好让人知道从哪里入手。</span></p>
     </article>
   </div>
@@ -553,17 +554,17 @@
     <ol>
       <li><span class="en">If any stop-the-pack test failed → red.</span><span class="zh">凡“整份材料包停下”的测试有一条未过 → 红灯。</span></li>
       <li><span class="en">Otherwise, if any look-at-these test failed → amber.</span><span class="zh">否则，“复查这些文件”的测试有一条未过 → 黄灯。</span></li>
-      <li><span class="en">Otherwise → green.</span><span class="zh">否则 → 绿灯。</span></li>
+      <li><span class="en">Otherwise → green. Nothing fired, and having no reason to stop is what “it can be passed on” means.</span><span class="zh">否则 → 绿灯。没有任何一条触发；没有要停下的理由，就是“可以往下送”的意思。</span></li>
     </ol>
     <p class="note">
-      <span class="en">Keeping an extra file does not turn the light red: the file is still in the pack, and someone can read it. Throwing one away on a weak reason does, because nobody will see it unless we say so.</span>
-      <span class="zh">多留一份文件不会变红：它还在材料包里，总有人读得到。凭弱理由扔掉才会——不点出来，就没人看得见。</span>
+      <span class="en">Keeping an extra file does not change the colour at all: the file is still in the pack, and someone can read it. Throwing one away on a weak reason turns the light amber, because nobody will see it unless we say so.</span>
+      <span class="zh">多留一份文件根本不影响颜色：它还在材料包里，总有人读得到。凭弱理由扔掉才会亮黄灯——不点出来，就没人看得见。</span>
     </p>
   </div>
 
   <section class="block">
     <h2 class="wkh2"><span class="en">Stop the pack</span><span class="zh">整份材料包停下</span></h2>
-    <p class="wksub"><span class="en">These four tests mean we do not trust the sort. Click a row for the technical name.</span><span class="zh">这四条一旦触发，即不信任这次分拣。点开一行可看技术名称。</span></p>
+    <p class="wksub"><span class="en">These four mean the result is not trusted: find out why before anything is passed on. Click a row for the technical name.</span><span class="zh">这四条一旦触发，即不信任这次结果：往下送之前，先查清原因。点开一行可看技术名称。</span></p>
 
     <details class="rule" style="--c:var(--halt)">
       <summary>
@@ -635,6 +636,8 @@
           <dd><span class="code">G4_mostly_undecided</span></dd>
           <dt><span class="en">Trigger</span><span class="zh">触发</span></dt>
           <dd><span class="en">UNDECIDED rows × 2 &gt; total rows.</span><span class="zh">UNDECIDED 行数 × 2 &gt; 总行数。</span></dd>
+          <dt><span class="en">A review clears it</span><span class="zh">复核可消除</span></dt>
+          <dd><span class="en">Yes. A file somebody has placed is no longer one nobody took a position on, so it drops out of this count.</span><span class="zh">可以。有人归过位的文件，不再算“没人表态”，也就不再计入这个数字。</span></dd>
         </dl>
       </div>
     </details>
@@ -642,7 +645,7 @@
 
   <section class="block">
     <h2 class="wkh2"><span class="en">Look at these files</span><span class="zh">复查这些文件</span></h2>
-    <p class="wksub"><span class="en">The pack can still go forward. A person works a named list — or, for two of these, just knows the treaty is an odd shape.</span><span class="zh">材料包仍可往下走，人只处理一份名单；其中两条只是说明这份合约形态特殊。</span></p>
+    <p class="wksub"><span class="en">The pack is not stopped — but somebody looks before it goes on. Most of these rules name the files to work through; two of them name no file, because what needs the second look is the treaty itself.</span><span class="zh">材料包不必停下，但要先有人过目，再往下送。多数规则会列出要看的文件；其中两条不列文件，因为要复核的是这份合约本身。</span></p>
 
     <details class="rule" style="--c:var(--wait)">
       <summary>
@@ -657,9 +660,11 @@
           <dt><span class="en">Rule</span><span class="zh">规则</span></dt>
           <dd><span class="code">G5_contested_discard</span></dd>
           <dt><span class="en">Which discards</span><span class="zh">哪些丢弃要看</span></dt>
-          <dd><span class="en">Only unique files in a recognised submission folder. Always contested: version-pair / UW-derivative name shapes. Contested unless the name itself fired: internal-signal, withdrawn-marker (body-only hits). Envelope mail, comparison tags, newsletters, OS junk, notes-folder, internal attachments and broker variants are never contested.</span><span class="zh">仅限已识别的提交文件夹内的唯一文件。一律要看：版本对、核保衍生件这两类文件名形态。内部信号、撤回标记两条，仅命中正文时要看，文件名本身命中则不看。信封邮件、对比标记、通讯、系统垃圾、notes 文件夹、内部附件及经纪人变体，一律不看。</span></dd>
+          <dd><span class="en">Only unique files in a recognised submission folder. Always contested: version-pair / UW-derivative name shapes. Contested unless the name itself fired: internal-signal, withdrawn-marker (body-only hits). Envelope mail and the containers it came in, picture files, comparison tags, newsletters, OS junk, notes-folder, internal attachments and broker variants are never contested.</span><span class="zh">仅限已识别的提交文件夹内的唯一文件。一律要看：版本对、核保衍生件这两类文件名形态。内部信号、撤回标记两条，仅命中正文时要看，文件名本身命中则不看。信封邮件及其所在的压缩包、图片文件、对比标记、通讯、系统垃圾、notes 文件夹、内部附件及经纪人变体，一律不看。</span></dd>
           <dt><span class="en">Unknown reason</span><span class="zh">未知理由</span></dt>
           <dd><span class="en">A discard citing a reason the gate has never seen <em>halts the build</em>. It does not fail open.</span><span class="zh">丢弃理由若是关卡从未见过的，<em>构建直接停止</em>，绝不悄悄放过。</span></dd>
+          <dt><span class="en">A review clears it</span><span class="zh">复核可消除</span></dt>
+          <dd><span class="en">No. A submission somebody went through end to end still comes out amber if it holds one contested discard. This is the rule the whole gate rests on — every real miss found so far had this shape — and a review is not evidence about it.</span><span class="zh">不可。即便整份提交有人从头看到尾，只要还有一份存疑的丢弃，仍是黄灯。这条规则是整个闸门的立足点——目前发现的真漏掉，每一例都是这个形状——复核并不能替它作证。</span></dd>
         </dl>
       </div>
     </details>
@@ -678,6 +683,8 @@
           <dd><span class="code">G6_pending</span></dd>
           <dt><span class="en">Trigger</span><span class="zh">触发</span></dt>
           <dd><span class="en">Any row with role UNDECIDED, including a market-reference that belongs to another treaty (that one also fires G9).</span><span class="zh">任何 role 为 UNDECIDED 的行，包括市场编号属于另一份合约的（那条同时触发 G9）。</span></dd>
+          <dt><span class="en">A review clears it</span><span class="zh">复核可消除</span></dt>
+          <dd><span class="en">Yes — this is the rule a review usually clears. A file somebody settled is no longer pending. A flagged row is not settled, and neither is one two reviewers answered opposite ways.</span><span class="zh">可以，而且复核通常消除的就是这一条：有人定下来的文件不再待定。被标记疑问的行不算已定，两个人给出相反答复的行也不算。</span></dd>
         </dl>
       </div>
     </details>
@@ -714,6 +721,8 @@
           <dd><span class="code">G9_finding</span></dd>
           <dt><span class="en">Trigger</span><span class="zh">触发</span></dt>
           <dd><span class="en">role_reason is R3_umr_mismatch_review. Triage leaves the row UNDECIDED on purpose.</span><span class="zh">role_reason 为 R3_umr_mismatch_review。分拣故意把该行留在 UNDECIDED。</span></dd>
+          <dt><span class="en">A review clears it</span><span class="zh">复核可消除</span></dt>
+          <dd><span class="en">No. Settling the row clears <em>it never decided on some files</em>, but this rule reads every row, settled or not — the market reference belonging elsewhere is still on the document. It stays amber until the file itself is dealt with.</span><span class="zh">不可。把该行定下来，可以消除<em>有些文件没有下判断</em>；但这条规则读的是全部行，不论是否已定——属于别处的市场编号仍旧写在文件上。在该文件本身处理掉之前，仍是黄灯。</span></dd>
         </dl>
       </div>
     </details>
@@ -756,6 +765,37 @@
     </details>
   </section>
 
+  <section class="block">
+    <h2 class="wkh2"><span class="en">When somebody has already looked</span><span class="zh">已经有人看过之后</span></h2>
+    <p class="wksub"><span class="en">A person’s reading reaches the gate. It is recorded file by file, and the colour is worked out again with it.</span><span class="zh">人看过的结果会送到闸门：逐份文件记录下来，再据此重新算一遍颜色。</span></p>
+
+    <div class="pick">
+      <h3><span class="en">What a review changes</span><span class="zh">复核会改变什么</span></h3>
+      <ol>
+        <li><span class="en">It clears the two rules about files nobody placed — <em>the machine sat on the fence</em> and <em>it never decided on some files</em>. A reviewer places them, so the reason is gone.</span><span class="zh">它只消除两条与“没人归位的文件”有关的规则：<em>大半文件没有表态</em>、<em>有些文件没有下判断</em>。复核的人把这些文件归了位，理由自然不在了。</span></li>
+        <li><span class="en">It clears nothing else. A submission somebody went through end to end is still amber if one file was thrown away on a weak reason, if a file carries another treaty’s market reference, if the folders are unfamiliar, or if everything kept rests on inference.</span><span class="zh">其余一概不消除。即便整份提交有人从头看到尾，只要有一份文件是凭弱理由扔掉的、或哪份文件带着另一份合约的市场编号、或文件夹不是认得的那一套、或留下的核心全凭推断，仍是黄灯。</span></li>
+        <li><span class="en">Nothing recorded, nothing changed. A submission nobody has reviewed comes out exactly as it did before anyone could — which is why green is still reachable in production, where there is no review step at all.</span><span class="zh">没有记录，就什么都不变。没人复核过的提交，判定结果与从前完全一致——所以在根本没有复核环节的生产流程里，绿灯照样拿得到。</span></li>
+      </ol>
+      <p class="note">
+        <span class="en">So a person looking can only ever make a verdict better, and a green never depends on one.</span>
+        <span class="zh">因此，有人看过只可能让判定变好，而绿灯从不以它为前提。</span>
+      </p>
+    </div>
+
+    <div class="pick">
+      <h3><span class="en">What counts as a review</span><span class="zh">什么才算复核</span></h3>
+      <ol>
+        <li><span class="en">An answer on each file, from a named person. Marking a row as one you could not settle is not settling it — that is how somebody says so.</span><span class="zh">对每份文件都有答复，且署名到人。把一行标为“定不了”并不算定下来——那正是在说这件事。</span></li>
+        <li><span class="en">A review done before the review app existed counts too, on the authority of a register that names who went through which submission, and when.</span><span class="zh">在复核工具出现之前做过的复核同样算数，依据是一份登记表：谁看过哪份提交、什么时候看的。</span></li>
+        <li><span class="en">The work having been compared is never read as somebody signing it off. A file landing in a folder must not turn a submission green; a person’s name has to be in the register.</span><span class="zh">光有一份比对结果，绝不等于有人签核过。一份文件落进某个文件夹，不能就此把提交变成绿灯；人的名字得落在登记表上。</span></li>
+      </ol>
+      <p class="note">
+        <span class="en">If the treaty is sorted again and its documents move, the review no longer covers them: the build stops rather than grade on stale answers. A rule change that only relabels a file does not stale it — the person read the document, not the label.</span>
+        <span class="zh">若合约重新分拣、文件本身发生变动，原先的复核就覆盖不到它们：构建会停下，而不是拿过时的答复去判定。仅仅是规则改动、只换了标签，则不算过时——人读的是文件本身，不是机器贴的标签。</span>
+      </p>
+    </div>
+  </section>
+
   <section class="scope">
     <h3><span class="en">This is the file-sort gate</span><span class="zh">这是文件分拣这一关</span></h3>
     <p><span class="en">Facts extraction uses the same three colours later: green auto-accepts, amber checks flagged fields, red reviews the whole record, and retrospective cases are also checked against TPR booked values. That is a separate process, not this gate.</span><span class="zh">后续的信息提取环节同样用红黄绿三色：绿灯自动通过，黄灯核对标出的字段，红灯复核整单；回溯案例还要与 TPR 入账值比对。那是另一关，不是这一关。</span></p>
@@ -790,8 +830,8 @@
 </nav>
 <!-- /wiki next -->
   <footer class="wkfoot">
-    <span class="en">Source of truth: <span class="code">triage/gate.py</span> · <a href="lifecycle.html">Step by step</a> · Written 2026-09-04</span>
-    <span class="zh">准绳：<span class="code">triage/gate.py</span> · <a href="lifecycle.html">逐步流程</a> · 写于 2026-09-04</span>
+    <span class="en">Source of truth: <span class="code">triage/gate.py</span> · <a href="lifecycle.html">Step by step</a> · Written 2026-09-04, updated 2026-09-11</span>
+    <span class="zh">准绳：<span class="code">triage/gate.py</span> · <a href="lifecycle.html">逐步流程</a> · 写于 2026-09-04，2026-09-11 更新</span>
   </footer>
 </div>
 

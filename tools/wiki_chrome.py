@@ -388,9 +388,9 @@ NEXT_CARDS = [
      "机器判定每份文件时到底看什么——"
      "位置、文件名、格式、内容。"),
     ("gate.html", "RAG Gate", "RAG 闸门",
-     "Red, amber, green — every rule that decides how much attention a treaty needs.",
-     "红、黄、绿——决定一份合约"
-     "需要多少人工的每一条规则。"),
+     "Can a submission be passed on? Red, amber, green — and every rule behind the colour.",
+     "一份提交能不能往下送？红、黄、绿，"
+     "以及决定颜色的每一条规则。"),
 ]
 
 # href, English label, Chinese label
