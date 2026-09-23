@@ -549,11 +549,11 @@
     <article class="look">
       <h3><span class="en">Folder</span><span class="zh">位置</span></h3>
       <p><span class="en">Where the file sits in the export: a submission folder, a notes folder, an approvals folder.</span><span class="zh">文件在导出目录中的位置：提交材料、备注、审批。</span></p>
-      <p class="blind"><b><span class="en">Blind to:</span><span class="zh">看不见：</span></b><span class="en"> a document filed in the wrong place. A folder can keep a file out; it can never let one in.</span><span class="zh">放错位置的文件。文件夹只能挡，不能放行。</span></p>
+      <p class="blind"><b><span class="en">Blind to:</span><span class="zh">看不见：</span></b><span class="en"> a document filed in the wrong place. A folder can keep a file out, and only the two submission folders can let one in — under a reason that says so.</span><span class="zh">放错位置的文件。文件夹能挡；只有两个提交文件夹能放行，且结论会写明是文件夹放行的。</span></p>
     </article>
     <article class="look">
       <h3><span class="en">File name</span><span class="zh">文件名</span></h3>
-      <p><span class="en">The filename text, and for most rules the only thing they read.</span><span class="zh">文件名本身，也是多数规则唯一读的东西。</span></p>
+      <p><span class="en">The filename text, and for most rules the only thing they read. Read as its author wrote it: the export's id prefix is not part of the name, and a name the export split at a “/” is put back together first.</span><span class="zh">文件名本身，也是多数规则唯一读的东西。读的是作者起的名字：导出系统加的编号前缀不算名字，被导出系统在“/”处拆成两级的名字先拼回去。</span></p>
       <p class="blind"><b><span class="en">Blind to:</span><span class="zh">看不见：</span></b><span class="en"> a name that says nothing, or says the wrong thing. Every known miss started here.</span><span class="zh">什么都没说、或说错了的名字。已知漏判都始于此。</span></p>
     </article>
     <article class="look">
@@ -628,7 +628,7 @@
         </tr>
         <tr>
           <td class="step">6</td>
-          <td class="what"><span class="en">One of seven business documents, in a submission folder</span><span class="zh">提交文件夹里的七类业务文件</span></td>
+          <td class="what"><span class="en">In a submission folder: one of seven business documents, or a file naming no kind of its own</span><span class="zh">提交文件夹里：七类业务文件之一，或自身指不出类别的文件</span></td>
           <td class="m"><i>●</i></td><td class="m"><i>●</i></td><td class="m"><i class="n">·</i></td><td class="m"><i>●</i></td><td class="m"><i class="c">○</i></td>
           <td><span class="verd core">CORE</span></td>
         </tr>
@@ -640,7 +640,7 @@
         </tr>
         <tr>
           <td class="step">—</td>
-          <td class="what"><span class="en">Nothing fired</span><span class="zh">没有规则命中</span></td>
+          <td class="what"><span class="en">Nothing fired; the row says where the ladder stalled</span><span class="zh">没有规则命中；行上写明阶梯停在何处</span></td>
           <td class="m"><i class="n">·</i></td><td class="m"><i class="n">·</i></td><td class="m"><i class="n">·</i></td><td class="m"><i class="n">·</i></td><td class="m"><i class="n">·</i></td>
           <td><span class="verd">UNDECIDED</span></td>
         </tr>
@@ -704,7 +704,7 @@
         <dt><span class="en">Rule</span><span class="zh">规则</span></dt>
         <dd><span class="code">R2_withdrawn_marker</span></dd>
         <dt><span class="en">The test</span><span class="zh">判定条件</span></dt>
-        <dd><span class="en">The filename is matched against the full marker list; the body only against the unambiguous ones, and only in its first 500 characters — “null and void” appears legitimately in a wording.</span><span class="zh">文件名对全表匹配；正文只对没有歧义的词，且只看开头 500 字符。“null and void”本就是合约条文里的常语。</span></dd>
+        <dd><span class="en">The filename is matched against the full marker list, as whole words — “void” is not “avoidance”; the body only against the unambiguous ones, and only in its first 500 characters — “null and void” appears legitimately in a wording.</span><span class="zh">文件名对全表按整词匹配，“void”不是“avoidance”；正文只对没有歧义的词，且只看开头 500 字符。“null and void”本就是合约条文里的常语。</span></dd>
         <dt><span class="en">What does not withdraw a file</span><span class="zh">不据此搁置的情形</span></dt>
         <dd><span class="en">A market reference belonging to another treaty. It records a finding (<span class="code">R3_umr_mismatch_review</span>) and leaves the verdict to the rest of the ladder.</span><span class="zh">文件带着别份合约的市场编号。只记一条提示（<span class="code">R3_umr_mismatch_review</span>），结论留给后面的规则，不在这里搁置。</span></dd>
       </dl>
@@ -807,7 +807,7 @@
       <span class="rnum" aria-hidden="true">6</span>
       <div class="body">
         <div class="rname"><span class="en">One of seven business documents, in a submission folder</span><span class="zh">提交文件夹里的七类业务文件</span></div>
-        <div class="rplain"><span class="en">This step does nearly all the keeping. Three conditions must hold at once: it came from the cedant, it sits in one of two named folders, and it is one of seven kinds of business document.</span><span class="zh">绝大部分“留下”出自这一步。三个条件须同时成立：来自分出公司、位于两个指定文件夹之一、且属于七类业务文件之一。</span></div>
+        <div class="rplain"><span class="en">This step does nearly all the keeping. Two conditions must hold at once: it came from the cedant, and it sits in one of two named folders. Then it is CORE under one of two reasons: its own name or text names one of seven kinds of business document, or they name none and the folder is the whole evidence.</span><span class="zh">绝大部分“留下”出自这一步。两个条件须同时成立：来自分出公司、位于两个指定文件夹之一。然后以两种理由之一判 CORE：文件名或正文指向七类业务文件之一；或两者都指不出，文件夹就是全部证据。</span></div>
         <div class="chips"><span class="chip"><span class="en">Folder</span><span class="zh">位置</span></span><span class="chip"><span class="en">Name</span><span class="zh">文件名</span></span><span class="chip"><span class="en">Content</span><span class="zh">内容</span></span><span class="chip cond"><span class="en">Rest of the treaty</span><span class="zh">其他文件</span></span></div>
       </div>
       <span class="rverd verd core">CORE</span>
@@ -817,10 +817,11 @@
         <dt><span class="en">Condition 1 — it came from the cedant</span><span class="zh">条件一 —— 来自分出公司</span></dt>
         <dd><span class="en">A broker's forward counts; something we wrote does not. From the sending domain for emails, the folder and the filename for documents.</span><span class="zh">经纪人转发算，我们自己写的不算。邮件看发件域名，文档看文件夹和文件名。</span></dd>
         <dt><span class="en">Condition 2 — it sits inside the submission folders</span><span class="zh">条件二 —— 位于提交材料文件夹内</span></dt>
-        <dd><span class="en">The two folders are named: <span class="code">Slip &amp; End't</span> and <span class="code">U W Information</span> (<span class="code">R14</span>), spelling variants included. This blocks only. Outside them nothing is decided: the file goes on to step 7, or ends as “don't know” and reaches a person — so a cedant document misfiled into a notes folder surfaces instead of vanishing.</span><span class="zh">只认这两个文件夹名：<span class="code">Slip &amp; End't</span> 和 <span class="code">U W Information</span>（<span class="code">R14</span>），拼写变体也算。此条只挡不判。两个文件夹之外一律不作结论：文件继续走到第 7 步，或以“不知道”收尾、交给人。错放进备注文件夹的分出公司文件因此浮得出来，不会就此消失。</span></dd>
+        <dd><span class="en">The two folders are named: <span class="code">Slip &amp; End't</span> and <span class="code">U W Information</span> (<span class="code">R14</span>), spelling variants included. This blocks only. Outside them nothing is decided: the file goes on to step 7, or ends as “don't know” with the folder named on the row (<span class="code">R14_outside_boundary</span>) and reaches a person — so a cedant document misfiled into a notes folder surfaces instead of vanishing, and a folder of 221 special acceptances is one ruling rather than 221.</span><span class="zh">只认这两个文件夹名：<span class="code">Slip &amp; End't</span> 和 <span class="code">U W Information</span>（<span class="code">R14</span>），拼写变体也算。此条只挡不判。两个文件夹之外一律不作结论：文件继续走到第 7 步，或以“不知道”收尾、行上注明所在文件夹（<span class="code">R14_outside_boundary</span>）、交给人。错放进备注文件夹的分出公司文件因此浮得出来，不会就此消失；一个装着 221 份特别承保申请的文件夹，也只需裁定一次，而不是 221 次。</span></dd>
         <dd><span class="en">It also switches itself off: if no file in the treaty sits in either folder, that treaty files its papers another way and the condition does not apply.</span><span class="zh">此条还会自行关闭：合约中若无一文件落在这两个文件夹内，即视为另有归档习惯，条件不生效。</span></dd>
-        <dt><span class="en">Condition 3 — a core signal</span><span class="zh">条件三 —— 有核心信号</span></dt>
-        <dd><span class="en">One of the seven kinds: the slip and endorsements · the wording · underwriting information · exposure and schedules of values · loss and claims history · financials · reports and ratings. The kind is read off the folder, the filename and the first words together, and counts only if the machine can quote the keyword behind it.</span><span class="zh">七类之一：条款单与批单 · 合约条文 · 承保信息 · 风险敞口与保额明细 · 赔付与理赔记录 · 财务报表 · 报告与评级。类别由文件夹、文件名与开头文字合读得出；须能指明是哪个关键词，方才作数。</span></dd>
+        <dt><span class="en">Then — the reason it is kept</span><span class="zh">然后 —— 留下的理由</span></dt>
+        <dd><span class="code">core_structural_category</span> <span class="en">— one of the seven kinds: the slip and endorsements · the wording · underwriting information · exposure and schedules of values · loss and claims history · financials · reports and ratings. The kind is read off the filename and the first words, never off the folder, and counts only if the machine can quote the keyword behind it.</span><span class="zh">—— 七类之一：条款单与批单 · 合约条文 · 承保信息 · 风险敞口与保额明细 · 赔付与理赔记录 · 财务报表 · 报告与评级。类别由文件名与开头文字得出，从不看文件夹；须能指明是哪个关键词，方才作数。</span></dd>
+        <dd><span class="code">core_in_submission_folder</span> <span class="en">— the name and the text name no kind, and the folder is the whole evidence. On the analyst's answers it is as accurate as the other; the gate does not count it as strong. Until 2026-09-22 it rode under the first reason, because the kind was scored off the folder path as words.</span><span class="zh">—— 文件名和正文都指不出类别，文件夹就是全部证据。按分析员的答案看，准确率与前一种相当；闸门不把它算作强理由。2026-09-22 之前它混在前一种理由里，因为类别把文件夹路径也当词来数。</span></dd>
         <dd><span class="en">Or the file carries this treaty's own market reference (<span class="code">core_umr_in_family</span>).</span><span class="zh">或文件带有本合约自己的市场编号（<span class="code">core_umr_in_family</span>）。</span></dd>
       </dl>
     </div>
@@ -831,7 +832,7 @@
       <span class="rnum" aria-hidden="true">7</span>
       <div class="body">
         <div class="rname"><span class="en">In a notes, approval or pricing folder, and readable</span><span class="zh">备注、审批或定价文件夹里，且读得出文字</span></div>
-        <div class="rplain"><span class="en">A folder whose name carries underwriter's note, UW note, UC approval, approval, analysis, P&amp;A or pricing settles the question when the file itself does not.</span><span class="zh">文件夹名里含 underwriter's note、UW note、UC approval、approval、analysis、P&amp;A、pricing 之一。文件本身给不出答案时，由它定案。</span></div>
+        <div class="rplain"><span class="en">A folder whose name carries underwriter's note, UW note, UC approval, approval, analysis, P&amp;A or pricing settles the question when the file itself does not. The folder, not the file name: a file called “… analysis …” in a submission folder is not in a notes folder.</span><span class="zh">文件夹名里含 underwriter's note、UW note、UC approval、approval、analysis、P&amp;A、pricing 之一。文件本身给不出答案时，由它定案。看的是文件夹，不是文件名：提交文件夹里一份叫“… analysis …”的文件，不算在备注文件夹里。</span></div>
         <div class="chips"><span class="chip"><span class="en">Folder</span><span class="zh">位置</span></span><span class="chip cond"><span class="en">Content</span><span class="zh">内容</span></span></div>
       </div>
       <span class="rverd verd">INTERNAL</span>
@@ -841,7 +842,7 @@
         <dt><span class="en">Rule</span><span class="zh">规则</span></dt>
         <dd><span class="code">R7_notes_folder_no_contrary_signal</span></dd>
         <dt><span class="en">If nothing could be read</span><span class="zh">一个字也读不出时</span></dt>
-        <dd><span class="en">The file stays “don't know” and goes to a person instead.</span><span class="zh">文件留在“不知道”，转交给人。</span></dd>
+        <dd><span class="en">The file stays “don't know” and goes to a person instead, and the row says so: <span class="code">R7_notes_folder_unreadable</span>.</span><span class="zh">文件留在“不知道”，转交给人，行上写明：<span class="code">R7_notes_folder_unreadable</span>。</span></dd>
       </dl>
     </div>
   </details>
@@ -851,7 +852,7 @@
       <span class="rnum" aria-hidden="true">—</span>
       <div class="body">
         <div class="rname"><span class="en">Nothing fired — don't know</span><span class="zh">没有规则命中 —— 不知道</span></div>
-        <div class="rplain"><span class="en">A file no rule claimed is not discarded. It goes to a person to place.</span><span class="zh">没有规则认领的文件不会被丢掉，交由人来归位。</span></div>
+        <div class="rplain"><span class="en">A file no rule claimed is not discarded. It goes to a person to place, and the row says where the ladder stalled: outside the two submission folders, with the folder named; in a notes folder the machine could not read; or nothing fired at all.</span><span class="zh">没有规则认领的文件不会被丢掉，交由人来归位；行上写明阶梯停在何处：在两个提交文件夹之外，并注明所在文件夹；在机器读不出正文的备注文件夹里；或者什么都没命中。</span></div>
         <div class="chips"><span class="chip cond"><span class="en">none of the four matched</span><span class="zh">四样都不命中</span></span></div>
       </div>
       <span class="rverd verd">UNDECIDED</span>
@@ -859,7 +860,7 @@
     <div class="drawer">
       <dl>
         <dt><span class="en">What happens to it</span><span class="zh">后续</span></dt>
-        <dd><span class="en">It goes on the review queue. Until somebody places it, the gate turns the treaty amber for it, and red when the machine took no position on more than half the pack — today the only reason a treaty is not trusted. A file a person has placed stops counting, so a treaty amber for this reason alone turns green once it has been reviewed.</span><span class="zh">进入复核队列。在有人给它归位之前，闸门因此标黄；机器若对过半文件都没有表态，则标红——目前唯一会让一份合约失去信任的理由。有人归过位的文件不再计入，因此仅凭这一条转黄的合约，复核之后即转绿。</span></dd>
+        <dd><span class="en">It goes on the review queue. Until somebody places it, the gate turns the treaty amber for it, and red when the machine took no position, and gave no reason, on more than half the pack. A row that names its folder is amber work, not evidence that the result cannot be trusted. A file a person has placed stops counting, so a treaty amber for this reason alone turns green once it has been reviewed.</span><span class="zh">进入复核队列。在有人给它归位之前，闸门因此标黄；机器若对过半文件既没表态、也没说明原因，则标红。注明了所在文件夹的行是黄灯的工作，不是结果不可信的证据。有人归过位的文件不再计入，因此仅凭这一条转黄的合约，复核之后即转绿。</span></dd>
         <dt><span class="en">It can still carry a finding</span><span class="zh">“不知道”也可能带着提示</span></dt>
         <dd><span class="en">A file carrying another treaty's market reference is left undecided and carries that finding, so the reviewer sees why it is on the queue.</span><span class="zh">带着别份合约市场编号的文件留在“不知道”，但带上那条提示，复核的人一眼便知它为何在队列里。</span></dd>
       </dl>
@@ -871,7 +872,7 @@
 
   <div class="plain">
     <h3><span class="en">A cleaner copy is already kept</span><span class="zh">已留下更干净的一版</span></h3>
-    <p><span class="en">A CORE file with <span class="code">_broker</span> in its name drops to SECONDARY when a non-broker CORE sibling exists. Because it reads only the standing, it can override even a cedant declaration.</span><span class="zh">名字带 <span class="code">_broker</span> 的 CORE 文件，若已有非经纪人版本同为 CORE，则降为 SECONDARY。因只认当前结论，连分出公司的声明也能覆盖。</span></p>
+    <p><span class="en">A CORE file with <span class="code">_broker</span> in its name drops to SECONDARY when a non-broker CORE sibling exists. Because it reads only the standing, it can override even a cedant declaration. The pair is matched on the name as its author wrote it, so two export ids do not keep it apart.</span><span class="zh">名字带 <span class="code">_broker</span> 的 CORE 文件，若已有非经纪人版本同为 CORE，则降为 SECONDARY。因只认当前结论，连分出公司的声明也能覆盖。配对按作者起的名字，两份文件各带一个导出编号也不妨碍。</span></p>
   </div>
 
   <div class="plain">
@@ -889,15 +890,15 @@
   </div>
   <div class="plain">
     <h3><span class="en">Out of scope means undecided, not dropped</span><span class="zh">超出范围等于“不知道”，不等于丢弃</span></h3>
-    <p><span class="en">The folder condition refuses to <em>grant</em> CORE; it never takes a file off the ladder. A cedant document misfiled into a notes folder surfaces for a person.</span><span class="zh">文件夹条件只是拒绝<em>授予</em> CORE，从不把文件逐出阶梯。错放进备注文件夹的分出公司文件，仍会浮出来交给人。</span></p>
+    <p><span class="en">The folder condition refuses to <em>grant</em> CORE; it never takes a file off the ladder. A cedant document misfiled into a notes folder surfaces for a person. The row names the folder, so a whole folder can be ruled on at once.</span><span class="zh">文件夹条件只是拒绝<em>授予</em> CORE，从不把文件逐出阶梯。错放进备注文件夹的分出公司文件，仍会浮出来交给人。行上注明所在文件夹，整个文件夹可以一次裁定。</span></p>
   </div>
   <div class="plain">
     <h3><span class="en">An unfamiliar folder layout costs a treaty nothing</span><span class="zh">归档方式不同，不连累整份合约</span></h3>
     <p><span class="en">A treaty using neither submission folder files its papers another way, so the condition does not apply. Without this, one unfamiliar layout would strip CORE from that treaty at once.</span><span class="zh">两个提交文件夹都不用的合约，另有归档习惯，条件不生效。否则一种没见过的目录结构，便会一次剥掉这份合约的全部 CORE。</span></p>
   </div>
   <div class="plain">
-    <h3><span class="en">No folder ever grants CORE</span><span class="zh">文件夹永远不能授予 CORE</span></h3>
-    <p><span class="en">A folder can keep a file out at step 6 and push it to internal at step 7. It can never let one in. A core-looking document filed under notes is flagged as possibly misfiled, not reclassified.</span><span class="zh">文件夹能在第 6 步挡住文件，也能在第 7 步把它推成 INTERNAL，却永远不能放行。看着像核心、却放在备注文件夹的文档，只标“可能放错位置”，不予改判。</span></p>
+    <h3><span class="en">Only the two submission folders let a file in, and the answer says when they did</span><span class="zh">只有两个提交文件夹能放行，且结论会写明是文件夹放行的</span></h3>
+    <p><span class="en">A file kept on the folder alone carries <span class="code">core_in_submission_folder</span>; a file kept on its own words carries <span class="code">core_structural_category</span>, and only that one counts as strong at the gate. Any other folder can keep a file out at step 6 or push it to internal at step 7, never let one in: a core-looking document filed under notes is flagged as possibly misfiled, not reclassified. Until 2026-09-22 this page said no folder ever grants CORE, while 419 files were kept on the folder alone.</span><span class="zh">仅凭文件夹留下的文件，理由写作 <span class="code">core_in_submission_folder</span>；凭自身用词留下的写作 <span class="code">core_structural_category</span>，闸门只把后者算作强理由。其他文件夹只能在第 6 步挡住文件、在第 7 步把它推成 INTERNAL，永远不能放行：看着像核心、却放在备注文件夹的文档，只标“可能放错位置”，不予改判。2026-09-22 之前这一页写着“文件夹永远不能授予 CORE”，而当时有 419 份文件正是仅凭文件夹留下的。</span></p>
   </div>
 
   <div class="note">

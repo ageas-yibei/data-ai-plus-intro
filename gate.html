@@ -635,7 +635,7 @@
           <dt><span class="en">Rule</span><span class="zh">规则</span></dt>
           <dd><span class="code">G4_mostly_undecided</span></dd>
           <dt><span class="en">Trigger</span><span class="zh">触发</span></dt>
-          <dd><span class="en">UNDECIDED rows × 2 &gt; total rows.</span><span class="zh">UNDECIDED 行数 × 2 &gt; 总行数。</span></dd>
+          <dd><span class="en">UNDECIDED rows that give no reason × 2 &gt; total rows. A row that says where the ladder stalled — outside the submission folders (<span class="code">R14_outside_boundary</span>), or in a notes folder the machine could not read (<span class="code">R7_notes_folder_unreadable</span>) — is still pending, but it is <em>it never decided on some files</em> work and does not count here (2026-09-22).</span><span class="zh">没有说明原因的 UNDECIDED 行数 × 2 &gt; 总行数。写明了阶梯停在何处的行——在提交文件夹之外（<span class="code">R14_outside_boundary</span>），或在机器读不出正文的备注文件夹里（<span class="code">R7_notes_folder_unreadable</span>）——仍是待定，但属于<em>有些文件没有下判断</em>那一条的工作，不计入这里（2026-09-22 起）。</span></dd>
           <dt><span class="en">A review clears it</span><span class="zh">复核可消除</span></dt>
           <dd><span class="en">Yes. A file somebody has placed is no longer one nobody took a position on, so it drops out of this count.</span><span class="zh">可以。有人归过位的文件，不再算“没人表态”，也就不再计入这个数字。</span></dd>
         </dl>
@@ -660,7 +660,7 @@
           <dt><span class="en">Rule</span><span class="zh">规则</span></dt>
           <dd><span class="code">G5_contested_discard</span></dd>
           <dt><span class="en">Which discards</span><span class="zh">哪些丢弃要看</span></dt>
-          <dd><span class="en">Only unique files in a recognised submission folder. Always contested: version-pair / UW-derivative name shapes. Contested unless the name itself fired: internal-signal, withdrawn-marker (body-only hits). Envelope mail and the containers it came in, picture files, comparison tags, newsletters, OS junk, notes-folder, internal attachments and broker variants are never contested.</span><span class="zh">仅限已识别的提交文件夹内的唯一文件。一律要看：版本对、核保衍生件这两类文件名形态。内部信号、撤回标记两条，仅命中正文时要看，文件名本身命中则不看。信封邮件及其所在的压缩包、图片文件、对比标记、通讯、系统垃圾、notes 文件夹、内部附件及经纪人变体，一律不看。</span></dd>
+          <dd><span class="en">Only unique files in a recognised submission folder. Always contested: version-pair / UW-derivative name shapes. Contested unless the name itself fired: internal-signal, withdrawn-marker (body-only hits). Envelope mail and the containers it came in, picture files, comparison tags, newsletters, OS junk, notes-folder and broker variants are never contested.</span><span class="zh">仅限已识别的提交文件夹内的唯一文件。一律要看：版本对、核保衍生件这两类文件名形态。内部信号、撤回标记两条，仅命中正文时要看，文件名本身命中则不看。信封邮件及其所在的压缩包、图片文件、对比标记、通讯、系统垃圾、notes 文件夹及经纪人变体，一律不看。</span></dd>
           <dt><span class="en">Unknown reason</span><span class="zh">未知理由</span></dt>
           <dd><span class="en">A discard citing a reason the gate has never seen <em>halts the build</em>. It does not fail open.</span><span class="zh">丢弃理由若是关卡从未见过的，<em>构建直接停止</em>，绝不悄悄放过。</span></dd>
           <dt><span class="en">A review clears it</span><span class="zh">复核可消除</span></dt>
@@ -682,7 +682,7 @@
           <dt><span class="en">Rule</span><span class="zh">规则</span></dt>
           <dd><span class="code">G6_pending</span></dd>
           <dt><span class="en">Trigger</span><span class="zh">触发</span></dt>
-          <dd><span class="en">Any row with role UNDECIDED, including a market-reference that belongs to another treaty (that one also fires G9).</span><span class="zh">任何 role 为 UNDECIDED 的行，包括市场编号属于另一份合约的（那条同时触发 G9）。</span></dd>
+          <dd><span class="en">Any row with role UNDECIDED, including a market-reference that belongs to another treaty (that one also fires G9). The detail says how many sit outside the submission folders, and in which folders, so the list can be worked by the folder.</span><span class="zh">任何 role 为 UNDECIDED 的行，包括市场编号属于另一份合约的（那条同时触发 G9）。说明里写着有多少行在提交文件夹之外、各在哪个文件夹，名单可以按文件夹来处理。</span></dd>
           <dt><span class="en">A review clears it</span><span class="zh">复核可消除</span></dt>
           <dd><span class="en">Yes — this is the rule a review usually clears. A file somebody settled is no longer pending. A flagged row is not settled, and neither is one two reviewers answered opposite ways.</span><span class="zh">可以，而且复核通常消除的就是这一条：有人定下来的文件不再待定。被标记疑问的行不算已定，两个人给出相反答复的行也不算。</span></dd>
         </dl>
@@ -741,7 +741,7 @@
           <dd><span class="code">G10_no_strong_core</span></dd>
           <dt><span class="en">Strong core means</span><span class="zh">何谓强核心</span></dt>
           <dd><span class="code">core_structural_category</span>, <span class="code">core_umr_in_family</span>, <span class="code">R10_mrc_declared</span>, <span class="code">R10b_app_series_declared</span>.
-            <span class="en">A byte-for-byte duplicate inherits the original’s reason.</span><span class="zh">字节级重复件继承原件的理由。</span></dd>
+            <span class="en">A byte-for-byte duplicate inherits the original’s reason. <span class="code">core_in_submission_folder</span> — a file kept on the folder alone — is core and not strong.</span><span class="zh">字节级重复件继承原件的理由。<span class="code">core_in_submission_folder</span>——仅凭文件夹留下的文件——算核心，不算强理由。</span></dd>
         </dl>
       </div>
     </details>
