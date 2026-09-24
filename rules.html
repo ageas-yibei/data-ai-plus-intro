@@ -114,6 +114,57 @@
   .code{font-family:var(--mono);font-size:12px;background:var(--sky);color:var(--navy);
         padding:2px 6px;border-radius:var(--r-ctl)}
 
+  /* ---- the decision tree: one question per row, "yes" to the right, "no" down ---- */
+  .tree{--qw:340px;--ln:var(--line-2);margin:0}
+  .tstep{display:grid;grid-template-columns:var(--qw) minmax(0,1fr);align-items:center}
+  .tq{position:relative;padding:12px 16px 13px 46px;background:var(--card);
+      border:1px solid var(--line);border-radius:var(--r-card);box-shadow:var(--sh-1)}
+  .tnum{position:absolute;left:13px;top:13px;width:22px;height:22px;border-radius:50%;
+        background:var(--sky);color:var(--navy);font-family:var(--mono);font-size:11px;
+        font-weight:700;display:flex;align-items:center;justify-content:center}
+  .tqt{font-family:var(--disp);font-weight:700;font-size:15.5px;line-height:1.3;
+       letter-spacing:-.012em;color:var(--navy);text-wrap:pretty}
+  .tqs{margin-top:4px;font-size:13px;line-height:1.45;color:var(--copy);text-wrap:pretty}
+  .tyes{position:relative;display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+        padding-left:48px}
+  .tyes::before{content:"";position:absolute;left:0;top:50%;width:38px;
+                border-top:2px solid var(--ln)}
+  .tyes>.tlbl{position:absolute;left:7px;top:50%;transform:translateY(-50%)}
+  .tlbl{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;
+        color:var(--mute);background:var(--paper);padding:1px 3px;white-space:nowrap}
+  .tcodes{display:flex;gap:5px;flex-wrap:wrap;align-items:center}
+  .tno{width:var(--qw);position:relative;height:34px;display:flex;align-items:center;
+       justify-content:center}
+  .tno::before{content:"";position:absolute;left:50%;top:0;bottom:0;border-left:2px solid var(--ln)}
+  .tno .tlbl{position:relative}
+  /* a second question asked inside a "yes" branch */
+  .tq2{flex:1 1 280px;padding-left:16px}
+  .tout{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:9px;padding-top:9px;
+        border-top:1px solid var(--line)}
+  .tout>.tlbl{background:var(--card);padding-left:0}
+  .tnote{font-size:13px;color:var(--copy)}
+  .tlist{margin:6px 0 0;padding:0;list-style:none;font-size:13.5px;line-height:1.45;
+         color:var(--copy);flex:1 1 100%}
+  .tlist li{display:flex;gap:8px;align-items:baseline;flex-wrap:wrap;padding:3px 0}
+  .tlist li::before{content:"·";color:var(--mute)}
+  .tafter{margin:26px 0 0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .tafter .plain{margin:0}
+  .tafter .plain p{margin-top:6px}
+  html[lang^="zh"] .tqt{letter-spacing:0;line-height:1.4}
+  html[lang^="zh"] .tqs,html[lang^="zh"] .tnote,html[lang^="zh"] .tlist{line-height:1.7;
+        letter-spacing:.01em}
+  @media (max-width:700px){
+    .tree{--qw:100%}
+    .tstep{grid-template-columns:1fr}
+    .tyes{padding:12px 0 2px 26px}
+    .tyes::before{left:11px;top:0;bottom:0;width:0;border-top:0;border-left:2px solid var(--ln)}
+    .tyes>.tlbl{left:2px;top:10px;transform:none}
+    .tno{justify-content:flex-start;padding-left:0}
+    .tno::before{left:12px}
+    .tno .tlbl{margin-left:2px}
+    .tafter{grid-template-columns:1fr}
+  }
+
   /* ---- plain cards: the after-the-ladder passes and the four guarantees ---- */
   .plain{margin:0 0 10px;padding:16px 20px 18px;background:var(--card);
          border:1px solid var(--line);border-radius:var(--r-card);box-shadow:var(--sh-1)}
@@ -153,7 +204,8 @@
   @media print{
     body{background:#fff;color:#000}
     .wrap{max-width:none;padding:0}
-    .look,.mx-scroll,.rung,.plain,.note{box-shadow:none;break-inside:avoid;page-break-inside:avoid}
+    .look,.mx-scroll,.rung,.plain,.note,.tq{box-shadow:none;break-inside:avoid;page-break-inside:avoid}
+    .tstep{break-inside:avoid;page-break-inside:avoid}
     .rung{transform:none}
     .rung .drawer{display:block;padding-top:14px}   /* print every drawer, open or not */
     .rung summary::after{display:none}
@@ -570,6 +622,133 @@
       <h3><span class="en">And a fifth: the rest of the treaty</span><span class="zh">还有第五样：同一份合约里的其他文件</span></h3>
       <p><span class="en">Four questions a single file cannot answer: is there a numbered appendix series, is a cleaner copy already kept, were these bytes seen before, are the submission folders in use.</span><span class="zh">有四个问题单看一份文件答不上来：附件是否成套编号、是否已留下更干净的一版、这批字节此前是否见过、提交文件夹是否在用。</span></p>
     </article>
+  </div>
+
+  <h2 class="wkh2" id="decision-tree"><span class="en">The ladder as a decision tree</span><span class="zh">阶梯，画成决策树</span></h2>
+  <p class="wksub"><span class="en">Top to bottom, one question at a time. The first “yes” is the answer; every “no” falls to the next question. Two questions ask a second one before they answer.</span><span class="zh">自上而下，一次一问。第一个“是”即为结论，每个“否”落到下一问。有两问在作答前还要再问一句。</span></p>
+
+  <div class="tree" role="list">
+    <div class="tstep" role="listitem">
+      <div class="tq"><span class="tnum" aria-hidden="true">0</span>
+        <div class="tqt"><span class="en">Did the computer write it?</span><span class="zh">是电脑生成的文件？</span></div>
+        <div class="tqs"><span class="en"><span class="code">Thumbs.db</span>, <span class="code">desktop.ini</span>, a Word <span class="code">~$</span> owner file — exact names only</span><span class="zh"><span class="code">Thumbs.db</span>、<span class="code">desktop.ini</span>、Word 的 <span class="code">~$</span> 占位文件——只认完整文件名</span></div>
+      </div>
+      <div class="tyes"><span class="tlbl"><span class="en">yes</span><span class="zh">是</span></span>
+        <span class="verd">SECONDARY</span><span class="tcodes"><span class="code">R16_os_artefact</span></span>
+      </div>
+    </div>
+    <div class="tno" aria-hidden="true"><span class="tlbl"><span class="en">no</span><span class="zh">否</span></span></div>
+
+    <div class="tstep" role="listitem">
+      <div class="tq"><span class="tnum" aria-hidden="true">1</span>
+        <div class="tqt"><span class="en">Does the sender say to ignore it?</span><span class="zh">发件方说了别用？</span></div>
+        <div class="tqs"><span class="en">“please ignore”, “superseded”, “void”, 作废, 请忽略 — a whole word in the name, or in the opening text</span><span class="zh">“please ignore”“superseded”“void”、作废、请忽略——文件名里整词出现，或写在开头正文里</span></div>
+      </div>
+      <div class="tyes"><span class="tlbl"><span class="en">yes</span><span class="zh">是</span></span>
+        <span class="verd">WITHDRAWN</span><span class="tcodes"><span class="code">R2_withdrawn_marker</span></span>
+      </div>
+    </div>
+    <div class="tno" aria-hidden="true"><span class="tlbl"><span class="en">no</span><span class="zh">否</span></span></div>
+
+    <div class="tstep" role="listitem">
+      <div class="tq"><span class="tnum" aria-hidden="true">2</span>
+        <div class="tqt"><span class="en">Did the cedant list it as sent?</span><span class="zh">分出公司列明送来的文件？</span></div>
+        <div class="tqs"><span class="en">named in a document's “information made available to and seen by” section, or one of a numbered appendix series</span><span class="zh">出现在某份文件的 “information made available to and seen by” 一节，或成套编号附件之一</span></div>
+      </div>
+      <div class="tyes"><span class="tlbl"><span class="en">yes</span><span class="zh">是</span></span>
+        <span class="verd core">CORE</span><span class="tcodes"><span class="code">R10_mrc_declared</span><span class="code">R10b_app_series_declared</span></span>
+      </div>
+    </div>
+    <div class="tno" aria-hidden="true"><span class="tlbl"><span class="en">no</span><span class="zh">否</span></span></div>
+
+    <div class="tstep" role="listitem">
+      <div class="tq"><span class="tnum" aria-hidden="true">3</span>
+        <div class="tqt"><span class="en">Was it made from the files?</span><span class="zh">是拿送来的文件另做的？</span></div>
+        <div class="tqs"><span class="en">a comparison tag, a profitability study, “2024 Final - 2025 FOTs”, “final vs draft”, a name starting Compare</span><span class="zh">对比标签、盈利能力分析、“2024 Final - 2025 FOTs”、“final vs draft”、以 Compare 开头的名字</span></div>
+      </div>
+      <div class="tyes"><span class="tlbl"><span class="en">yes</span><span class="zh">是</span></span>
+        <span class="verd">DERIVED</span><span class="tcodes"><span class="code">R6_comparison_tag</span><span class="code">R6_uw_derivative</span><span class="code">R6_version_pair</span><span class="code">R6_vs_pair</span><span class="code">R6_compare_name</span></span>
+      </div>
+    </div>
+    <div class="tno" aria-hidden="true"><span class="tlbl"><span class="en">no</span><span class="zh">否</span></span></div>
+
+    <div class="tstep" role="listitem">
+      <div class="tq"><span class="tnum" aria-hidden="true">4</span>
+        <div class="tqt"><span class="en">Is it an email, a zip, an image or a newsletter?</span><span class="zh">是邮件、压缩包、图片或简报？</span></div>
+        <div class="tqs"><span class="en">what is inside an email or a zip is taken out and judged on its own, from the top</span><span class="zh">邮件和压缩包里的文件另行取出，从顶端单独判定</span></div>
+      </div>
+      <div class="tyes"><span class="tlbl"><span class="en">yes</span><span class="zh">是</span></span>
+        <span class="verd">SECONDARY</span><span class="tcodes"><span class="code">R1_email</span><span class="code">R1_email_print</span><span class="code">R1_container</span><span class="code">R1_image</span><span class="code">R15_newsletter</span></span>
+      </div>
+    </div>
+    <div class="tno" aria-hidden="true"><span class="tlbl"><span class="en">no</span><span class="zh">否</span></span></div>
+
+    <div class="tstep" role="listitem">
+      <div class="tq"><span class="tnum" aria-hidden="true">5</span>
+        <div class="tqt"><span class="en">Is it ours?</span><span class="zh">是我们自己的文件？</span></div>
+        <div class="tqs"><span class="en">pricing tool, RBC, meeting note, 核保审批, 承保指引 — in the name, or in the opening text</span><span class="zh">定价工具、RBC、会议记录、核保审批、承保指引——在文件名里，或在开头正文里</span></div>
+      </div>
+      <div class="tyes"><span class="tlbl"><span class="en">yes</span><span class="zh">是</span></span>
+        <span class="verd">INTERNAL</span><span class="tcodes"><span class="code">R7_internal_signal</span></span>
+      </div>
+    </div>
+    <div class="tno" aria-hidden="true"><span class="tlbl"><span class="en">no</span><span class="zh">否</span></span></div>
+
+    <div class="tstep" role="listitem">
+      <div class="tq"><span class="tnum" aria-hidden="true">6</span>
+        <div class="tqt"><span class="en">From the cedant, and inside <span class="code">Slip &amp; End't</span> / <span class="code">U W Information</span>?</span><span class="zh">来自分出公司，且在 <span class="code">Slip &amp; End't</span> / <span class="code">U W Information</span> 里？</span></div>
+        <div class="tqs"><span class="en">any spelling on disk. A treaty with neither folder skips this question, and can keep only on the next one</span><span class="zh">拼写变体都算。两个文件夹都没有的合约跳过这一问，只能凭下一问留下</span></div>
+      </div>
+      <div class="tyes"><span class="tlbl"><span class="en">yes</span><span class="zh">是</span></span>
+        <div class="tq tq2">
+          <div class="tqt"><span class="en">Do its own name or text name one of the seven kinds, or carry this treaty's market reference?</span><span class="zh">文件名或正文指向七类之一，或带有本合约的市场编号？</span></div>
+          <div class="tout"><span class="tlbl"><span class="en">yes</span><span class="zh">是</span></span><span class="verd core">CORE</span><span class="tcodes"><span class="code">core_structural_category</span><span class="code">core_umr_in_family</span></span></div>
+          <div class="tout"><span class="tlbl"><span class="en">no</span><span class="zh">否</span></span><span class="verd core">CORE</span><span class="tcodes"><span class="code">core_in_submission_folder</span></span><span class="tnote"><span class="en">the folder is the whole evidence</span><span class="zh">文件夹就是全部证据</span></span></div>
+        </div>
+      </div>
+    </div>
+    <div class="tno" aria-hidden="true"><span class="tlbl"><span class="en">no</span><span class="zh">否</span></span></div>
+
+    <div class="tstep" role="listitem">
+      <div class="tq"><span class="tnum" aria-hidden="true">7</span>
+        <div class="tqt"><span class="en">In a notes, approval or pricing folder?</span><span class="zh">在备注、审批或定价文件夹里？</span></div>
+        <div class="tqs"><span class="en">the folder, not the file name</span><span class="zh">看文件夹，不看文件名</span></div>
+      </div>
+      <div class="tyes"><span class="tlbl"><span class="en">yes</span><span class="zh">是</span></span>
+        <div class="tq tq2">
+          <div class="tqt"><span class="en">Could the text be read?</span><span class="zh">读得出正文？</span></div>
+          <div class="tout"><span class="tlbl"><span class="en">yes</span><span class="zh">是</span></span><span class="verd">INTERNAL</span><span class="tcodes"><span class="code">R7_notes_folder_no_contrary_signal</span></span></div>
+          <div class="tout"><span class="tlbl"><span class="en">no</span><span class="zh">否</span></span><span class="verd">UNDECIDED</span><span class="tcodes"><span class="code">R7_notes_folder_unreadable</span></span><span class="tnote"><span class="en">a person opens it</span><span class="zh">交给人打开</span></span></div>
+        </div>
+      </div>
+    </div>
+    <div class="tno" aria-hidden="true"><span class="tlbl"><span class="en">no</span><span class="zh">否</span></span></div>
+
+    <div class="tstep" role="listitem">
+      <div class="tq"><span class="tnum" aria-hidden="true">—</span>
+        <div class="tqt"><span class="en">Nothing fired</span><span class="zh">没有规则命中</span></div>
+        <div class="tqs"><span class="en">it goes to a person, and the row says where the ladder stalled</span><span class="zh">交给人归位，行上写明阶梯停在何处</span></div>
+      </div>
+      <div class="tyes"><span class="tlbl"><span class="en">so</span><span class="zh">即</span></span>
+        <span class="verd">UNDECIDED</span>
+        <ul class="tlist">
+          <li><span class="en">outside the two submission folders — the folder is named</span><span class="zh">在两个提交文件夹之外——注明所在文件夹</span><span class="code">R14_outside_boundary</span></li>
+          <li><span class="en">carrying another treaty's market reference</span><span class="zh">带着别份合约的市场编号</span><span class="code">R3_umr_mismatch_review</span></li>
+          <li><span class="en">nothing at all</span><span class="zh">什么都没命中</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="tafter">
+    <div class="plain">
+      <h3><span class="en">Then, over the answers: a cleaner copy is already kept</span><span class="zh">然后再过一轮：已留下更干净的一版</span></h3>
+      <p><span class="en">A CORE file with <span class="code">_broker</span> in its name, when a non-broker copy is CORE → <span class="verd">SECONDARY</span> <span class="code">R_broker_variant</span></span><span class="zh">名字带 <span class="code">_broker</span> 的 CORE 文件，若非经纪人版本已是 CORE → <span class="verd">SECONDARY</span> <span class="code">R_broker_variant</span></span></p>
+    </div>
+    <div class="plain">
+      <h3><span class="en">And: the same bytes as another file</span><span class="zh">再一轮：与另一份文件字节相同</span></h3>
+      <p><span class="en">No question is asked; it takes its twin's answer → <span class="code">inherited_from_representative</span></span><span class="zh">不再发问，照抄同源文件的结论 → <span class="code">inherited_from_representative</span></span></p>
+    </div>
   </div>
 
   <h2 class="wkh2"><span class="en">At a glance</span><span class="zh">一览</span></h2>
