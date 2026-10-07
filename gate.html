@@ -516,8 +516,8 @@
       <p class="wkey">AI Data+</p>
       <h1><span class="en">When a person has to look</span><span class="zh">什么时候需要人看</span></h1>
       <p class="wklede">
-        <span class="en">Can this submission be passed on to downstream? After the machine sorts a treaty’s files, the gate asks that one question about the result — and the three colours are the three answers. Green: it can. Amber: a double check is needed first. Red: the result is not trusted, so find out why.</span>
-        <span class="zh">这份提交能不能往下送给下游？机器分拣完一份合约的文件后，闸门就对这个结果只问这一个问题，三种颜色就是三个答案：绿灯，可以往下送；黄灯，要先复核；红灯，不信任这次结果，先查清原因。</span>
+        <span class="en">Can this submission be passed on to downstream? After the machine sorts a treaty’s files, the gate asks that one question about the result, and the three colours are the three answers. The review app shows the colour and works it out again after every answer; each round’s <span class="code">submissions.csv</span> hands it to downstream.</span>
+        <span class="zh">这份提交能不能往下送给下游？机器分拣完一份合约的文件后，闸门就对这个结果只问这一个问题，三种颜色就是三个答案。复核工具显示颜色，每收到一条答复就重算一遍；每一轮的 <span class="code">submissions.csv</span> 把颜色交给下游。</span>
       </p>
     </div>
   </header>
@@ -564,7 +564,7 @@
 
   <section class="block">
     <h2 class="wkh2"><span class="en">Stop the pack</span><span class="zh">整份材料包停下</span></h2>
-    <p class="wksub"><span class="en">These four mean the result is not trusted: find out why before anything is passed on. Click a row for the technical name.</span><span class="zh">这四条一旦触发，即不信任这次结果：往下送之前，先查清原因。点开一行可看技术名称。</span></p>
+    <p class="wksub"><span class="en">Click a row for the rule name and the exact test.</span><span class="zh">点开一行，可看规则名与具体判定条件。</span></p>
 
     <details class="rule" style="--c:var(--halt)">
       <summary>
@@ -597,7 +597,7 @@
           <dt><span class="en">Rule</span><span class="zh">规则</span></dt>
           <dd><span class="code">G2_nothing_kept</span></dd>
           <dt><span class="en">Trigger</span><span class="zh">触发</span></dt>
-          <dd><span class="en">No inventory row has role CORE.</span><span class="zh">没有任何一行的 role 为 CORE。</span></dd>
+          <dd><span class="en">No row is CORE.</span><span class="zh">没有任何一行是 CORE。</span></dd>
         </dl>
       </div>
     </details>
@@ -606,7 +606,7 @@
       <summary>
         <div>
           <div class="rname"><span class="en">The machine could not read anything</span><span class="zh">一个字也读不出来</span></div>
-          <div class="rplain"><span class="en">Every page is blank to the machine, and scanning the pictures did not help either. Scanned pages that were read off images do count as read.</span><span class="zh">没有一页读得出内容，页面图片的识别也一无所获。经图片识别读出的扫描件，算作已读。</span></div>
+          <div class="rplain"><span class="en">Not one file could be read: not by the rules, and not off its page images by the vision model. A scan the vision model read counts as read.</span><span class="zh">没有一份文件读得出来：规则读不出，视觉模型从页面图片也读不出。经视觉模型读出的扫描件，算作已读。</span></div>
         </div>
         <span class="who-looks"><span class="en">whole TNO</span><span class="zh">整份 TNO</span></span>
       </summary>
@@ -615,9 +615,7 @@
           <dt><span class="en">Rule</span><span class="zh">规则</span></dt>
           <dd><span class="code">G3_core_unreadable</span></dd>
           <dt><span class="en">Trigger</span><span class="zh">触发</span></dt>
-          <dd><span class="en">Every row is text_state EMPTY and none of those hashes appears in ocr.json as transcribed.</span><span class="zh">每一行 text_state 都是 EMPTY，且哈希都不在 ocr.json 的已转写名单里。</span></dd>
-          <dt><span class="en">No longer used</span><span class="zh">已停用</span></dt>
-          <dd><span class="en">A second branch once said “half or more of kept files unreadable → red”. It made 8 of 20 scored treaties red in the 2026-08-27 baseline, and none of them held a miss. Retired. The unreadable count is still stored.</span><span class="zh">曾有第二条：核心中一半以上读不出 → 红灯。2026-08-27 基线评分的 20 份合约里，8 份因此变红，却无一真的漏了文件，遂停用。读不出的计数仍旧保留。</span></dd>
+          <dd><span class="en">Every row is unread: the rules read no text of it, no reading of its page images brought back a page's words, and no native text file of it holds words.</span><span class="zh">每一行都是未读：规则读不出正文，页面图片的识别没有读回任何一页的文字，原生文本文件里也没有文字。</span></dd>
         </dl>
       </div>
     </details>
@@ -635,7 +633,7 @@
           <dt><span class="en">Rule</span><span class="zh">规则</span></dt>
           <dd><span class="code">G4_mostly_undecided</span></dd>
           <dt><span class="en">Trigger</span><span class="zh">触发</span></dt>
-          <dd><span class="en">UNDECIDED rows that give no reason × 2 &gt; total rows. A row that says where the ladder stalled — outside the submission folders (<span class="code">R14_outside_boundary</span>), or in a notes folder the machine could not read (<span class="code">R7_notes_folder_unreadable</span>) — is still pending, but it is <em>it never decided on some files</em> work and does not count here (2026-09-22).</span><span class="zh">没有说明原因的 UNDECIDED 行数 × 2 &gt; 总行数。写明了阶梯停在何处的行——在提交文件夹之外（<span class="code">R14_outside_boundary</span>），或在机器读不出正文的备注文件夹里（<span class="code">R7_notes_folder_unreadable</span>）——仍是待定，但属于<em>有些文件没有下判断</em>那一条的工作，不计入这里（2026-09-22 起）。</span></dd>
+          <dd><span class="en">UNDECIDED rows nobody has settled × 2 &gt; total rows, leaving out the rows that say where the ladder stalled: outside the submission folders (<span class="code">R14_outside_boundary</span>), in a notes folder the machine could not read (<span class="code">R7_notes_folder_unreadable</span>), an archive nothing came out of (<span class="code">R1_container_unopened</span>). Those are still pending, and they are <em>it never decided on some files</em> work.</span><span class="zh">没人定下来的 UNDECIDED 行数 × 2 &gt; 总行数；写明阶梯停在何处的行不计入：在提交文件夹之外（<span class="code">R14_outside_boundary</span>）、在机器读不出正文的备注文件夹里（<span class="code">R7_notes_folder_unreadable</span>）、什么都没取出来的压缩包（<span class="code">R1_container_unopened</span>）。这些行仍待定，属于<em>有些文件没有下判断</em>那一条的工作。</span></dd>
           <dt><span class="en">A review clears it</span><span class="zh">复核可消除</span></dt>
           <dd><span class="en">Yes. A file somebody has placed is no longer one nobody took a position on, so it drops out of this count.</span><span class="zh">可以。有人归过位的文件，不再算“没人表态”，也就不再计入这个数字。</span></dd>
         </dl>
@@ -645,7 +643,6 @@
 
   <section class="block">
     <h2 class="wkh2"><span class="en">Look at these files</span><span class="zh">复查这些文件</span></h2>
-    <p class="wksub"><span class="en">The pack is not stopped — but somebody looks before it goes on. Most of these rules name the files to work through; two of them name no file, because what needs the second look is the treaty itself.</span><span class="zh">材料包不必停下，但要先有人过目，再往下送。多数规则会列出要看的文件；其中两条不列文件，因为要复核的是这份合约本身。</span></p>
 
     <details class="rule" style="--c:var(--wait)">
       <summary>
@@ -660,9 +657,9 @@
           <dt><span class="en">Rule</span><span class="zh">规则</span></dt>
           <dd><span class="code">G5_contested_discard</span></dd>
           <dt><span class="en">Which discards</span><span class="zh">哪些丢弃要看</span></dt>
-          <dd><span class="en">Only unique files in a recognised submission folder. Always contested: version-pair / UW-derivative name shapes. Contested unless the name itself fired: internal-signal, withdrawn-marker (body-only hits). Envelope mail and the containers it came in, picture files, comparison tags, newsletters, OS junk, notes-folder and broker variants are never contested.</span><span class="zh">仅限已识别的提交文件夹内的唯一文件。一律要看：版本对、核保衍生件这两类文件名形态。内部信号、撤回标记两条，仅命中正文时要看，文件名本身命中则不看。信封邮件及其所在的压缩包、图片文件、对比标记、通讯、系统垃圾、notes 文件夹及经纪人变体，一律不看。</span></dd>
+          <dd><span class="en">Only unique files in a submission folder. Always: <span class="code">R6_version_pair</span>, <span class="code">R6_uw_derivative</span>. Only when the text fired and the name did not: <span class="code">R7_internal_signal</span>, <span class="code">R2_withdrawn_marker</span>. Never: emails and printed emails, archives, images, comparison tags and names, newsletters, files the computer wrote, the notes folder, broker copies.</span><span class="zh">仅限提交文件夹里的唯一文件。一律要看：<span class="code">R6_version_pair</span>、<span class="code">R6_uw_derivative</span>。仅凭正文命中、文件名没命中时要看：<span class="code">R7_internal_signal</span>、<span class="code">R2_withdrawn_marker</span>。一律不看：邮件与打印的邮件、压缩包、图片、对比标签与对比命名、简报、电脑生成的文件、备注文件夹、经纪人版本。</span></dd>
           <dt><span class="en">Unknown reason</span><span class="zh">未知理由</span></dt>
-          <dd><span class="en">A discard citing a reason the gate has never seen <em>halts the build</em>. It does not fail open.</span><span class="zh">丢弃理由若是关卡从未见过的，<em>构建直接停止</em>，绝不悄悄放过。</span></dd>
+          <dd><span class="en">A discard citing a rule nobody has classified <em>stops the run</em> before the label table is written. It does not fail open.</span><span class="zh">丢弃理由若是从未归类过的规则，运行在写出标签表之前<em>直接停下</em>，绝不悄悄放过。</span></dd>
           <dt><span class="en">A review clears it</span><span class="zh">复核可消除</span></dt>
           <dd><span class="en">No. A submission somebody went through end to end still comes out amber if it holds one contested discard. This is the rule the whole gate rests on — every real miss found so far had this shape — and a review is not evidence about it.</span><span class="zh">不可。即便整份提交有人从头看到尾，只要还有一份存疑的丢弃，仍是黄灯。这条规则是整个闸门的立足点——目前发现的真漏掉，每一例都是这个形状——复核并不能替它作证。</span></dd>
         </dl>
@@ -682,7 +679,7 @@
           <dt><span class="en">Rule</span><span class="zh">规则</span></dt>
           <dd><span class="code">G6_pending</span></dd>
           <dt><span class="en">Trigger</span><span class="zh">触发</span></dt>
-          <dd><span class="en">Any row with role UNDECIDED, including a market-reference that belongs to another treaty (that one also fires G9). The detail says how many sit outside the submission folders, and in which folders, so the list can be worked by the folder.</span><span class="zh">任何 role 为 UNDECIDED 的行，包括市场编号属于另一份合约的（那条同时触发 G9）。说明里写着有多少行在提交文件夹之外、各在哪个文件夹，名单可以按文件夹来处理。</span></dd>
+          <dd><span class="en">Any UNDECIDED row nobody has settled, including one whose market reference belongs to another treaty (that one also fires G9). The detail counts the files outside the submission folders, folder by folder, the files in notes folders the machine could not read, and the archives nothing came out of, so the list can be worked by the folder.</span><span class="zh">任何没人定下来的 UNDECIDED 行，包括市场编号属于另一份合约的（那条同时触发 G9）。说明里分别计数：提交文件夹之外的文件（逐个文件夹列出）、机器读不出正文的备注文件夹里的文件、什么都没取出来的压缩包；名单可以按文件夹来处理。</span></dd>
           <dt><span class="en">A review clears it</span><span class="zh">复核可消除</span></dt>
           <dd><span class="en">Yes — this is the rule a review usually clears. A file somebody settled is no longer pending. A flagged row is not settled, and neither is one two reviewers answered opposite ways.</span><span class="zh">可以，而且复核通常消除的就是这一条：有人定下来的文件不再待定。被标记疑问的行不算已定，两个人给出相反答复的行也不算。</span></dd>
         </dl>
@@ -741,7 +738,7 @@
           <dd><span class="code">G10_no_strong_core</span></dd>
           <dt><span class="en">Strong core means</span><span class="zh">何谓强核心</span></dt>
           <dd><span class="code">core_structural_category</span>, <span class="code">core_umr_in_family</span>, <span class="code">R10_mrc_declared</span>, <span class="code">R10b_app_series_declared</span>.
-            <span class="en">A byte-for-byte duplicate inherits the original’s reason. <span class="code">core_in_submission_folder</span> — a file kept on the folder alone — is core and not strong.</span><span class="zh">字节级重复件继承原件的理由。<span class="code">core_in_submission_folder</span>——仅凭文件夹留下的文件——算核心，不算强理由。</span></dd>
+            <span class="en">A byte-for-byte duplicate inherits the original’s reason. <span class="code">core_in_submission_folder</span> (a file kept on the folder alone) and <span class="code">core_line_email</span> (an email kept on its name) are core and not strong.</span><span class="zh">字节级重复件继承原件的理由。<span class="code">core_in_submission_folder</span>（仅凭文件夹留下的文件）与 <span class="code">core_line_email</span>（凭名字留下的邮件）算核心，不算强理由。</span></dd>
         </dl>
       </div>
     </details>
@@ -759,7 +756,7 @@
           <dt><span class="en">Rule</span><span class="zh">规则</span></dt>
           <dd><span class="code">G11_second_read_flagged</span></dd>
           <dt><span class="en">Trigger</span><span class="zh">触发</span></dt>
-          <dd><span class="en">recheck.json verdict RC_submission on a unique non-CORE file. Other second-read answers (not a submission / cannot tell / no answer) do not change the colour. No second read is normal; G11 then cannot fire.</span><span class="zh">recheck.json 对一份唯一的非 CORE 文件给出 RC_submission。其余二次阅读结果（不是提交文件 / 看不出 / 无答案）不改变颜色。没有二次阅读是常态，此时 G11 不会触发。</span></dd>
+          <dd><span class="en">The second read's verdict <span class="code">RC_submission</span> on a unique file that is not CORE, read off the label table's <span class="code">llm_verdict</span>. Its other answers (not a submission / cannot tell / no answer) do not change the colour. No second read is normal; G11 then cannot fire.</span><span class="zh">标签表 <span class="code">llm_verdict</span> 中，二次阅读对一份唯一的非 CORE 文件给出 <span class="code">RC_submission</span>。其余答复（不是提交文件 / 看不出 / 无答案）不改变颜色。没有二次阅读是常态，此时 G11 不会触发。</span></dd>
         </dl>
       </div>
     </details>
@@ -773,7 +770,7 @@
       <h3><span class="en">What a review changes</span><span class="zh">复核会改变什么</span></h3>
       <ol>
         <li><span class="en">It clears the two rules about files nobody placed — <em>the machine sat on the fence</em> and <em>it never decided on some files</em>. A reviewer places them, so the reason is gone.</span><span class="zh">它只消除两条与“没人归位的文件”有关的规则：<em>大半文件没有表态</em>、<em>有些文件没有下判断</em>。复核的人把这些文件归了位，理由自然不在了。</span></li>
-        <li><span class="en">It clears nothing else. A submission somebody went through end to end is still amber if one file was thrown away on a weak reason, if a file carries another treaty’s market reference, if the folders are unfamiliar, or if everything kept rests on inference.</span><span class="zh">其余一概不消除。即便整份提交有人从头看到尾，只要有一份文件是凭弱理由扔掉的、或哪份文件带着另一份合约的市场编号、或文件夹不是认得的那一套、或留下的核心全凭推断，仍是黄灯。</span></li>
+        <li><span class="en">It clears nothing else. A submission somebody went through end to end is still amber if one file was thrown away on a weak reason, if a file carries another treaty’s market reference, if the folders are unfamiliar, if everything kept rests on inference, or if a second read flagged a dropped file.</span><span class="zh">其余一概不消除。即便整份提交有人从头看到尾，只要有一份文件是凭弱理由扔掉的、或哪份文件带着另一份合约的市场编号、或文件夹不是认得的那一套、或留下的核心全凭推断、或二次阅读认出了被扔掉的文件，仍是黄灯。</span></li>
         <li><span class="en">Nothing recorded, nothing changed. A submission nobody has reviewed comes out exactly as it did before anyone could — which is why green is still reachable in production, where there is no review step at all.</span><span class="zh">没有记录，就什么都不变。没人复核过的提交，判定结果与从前完全一致——所以在根本没有复核环节的生产流程里，绿灯照样拿得到。</span></li>
       </ol>
       <p class="note">
@@ -787,11 +784,11 @@
       <ol>
         <li><span class="en">An answer on each file, from a named person. Marking a row as one you could not settle is not settling it — that is how somebody says so.</span><span class="zh">对每份文件都有答复，且署名到人。把一行标为“定不了”并不算定下来——那正是在说这件事。</span></li>
         <li><span class="en">A review done before the review app existed counts too, on the authority of a register that names who went through which submission, and when.</span><span class="zh">在复核工具出现之前做过的复核同样算数，依据是一份登记表：谁看过哪份提交、什么时候看的。</span></li>
-        <li><span class="en">The work having been compared is never read as somebody signing it off. A file landing in a folder must not turn a submission green; a person’s name has to be in the register.</span><span class="zh">光有一份比对结果，绝不等于有人签核过。一份文件落进某个文件夹，不能就此把提交变成绿灯；人的名字得落在登记表上。</span></li>
+        <li><span class="en">Nothing but a row of the register counts as a sign-off. A file landing in a folder must not turn a submission green; a person’s name has to be in the register.</span><span class="zh">只有登记表上的一行才算签核。一份文件落进某个文件夹，不能就此把提交变成绿灯；人的名字得落在登记表上。</span></li>
       </ol>
       <p class="note">
-        <span class="en">If the treaty is sorted again and its documents move, the review no longer covers them: the build stops rather than grade on stale answers. A rule change that only relabels a file does not stale it — the person read the document, not the label.</span>
-        <span class="zh">若合约重新分拣、文件本身发生变动，原先的复核就覆盖不到它们：构建会停下，而不是拿过时的答复去判定。仅仅是规则改动、只换了标签，则不算过时——人读的是文件本身，不是机器贴的标签。</span>
+        <span class="en">If the treaty is sorted again and its files, or the machine's answer on any of them, change, a confirmation no longer covers the submission: the files it settled by going past them are open again, and it counts as neither reviewed nor approved. An answer typed on a file stays with that file's bytes.</span>
+        <span class="zh">若合约重新分拣，文件或机器对其中任何一份的结论有变，原先的确认就不再覆盖这份提交：靠确认一并放过的文件重新待定，确认本身既不算已复核，也不算已批准。对某份文件亲手给出的答复，跟着文件的字节走。</span>
       </p>
     </div>
   </section>
@@ -830,8 +827,8 @@
 </nav>
 <!-- /wiki next -->
   <footer class="wkfoot">
-    <span class="en">Source of truth: <span class="code">triage/gate.py</span> · <a href="lifecycle.html">Step by step</a> · Written 2026-09-04, updated 2026-09-11</span>
-    <span class="zh">准绳：<span class="code">triage/gate.py</span> · <a href="lifecycle.html">逐步流程</a> · 写于 2026-09-04，2026-09-11 更新</span>
+    <span class="en">Source of truth: <span class="code">flywheel/validate/lib/colour.py</span> · <a href="lifecycle.html">Step by step</a> · Written 2026-09-04 · Updated 2026-10-06</span>
+    <span class="zh">准绳：<span class="code">flywheel/validate/lib/colour.py</span> · <a href="lifecycle.html">逐步流程</a> · 写于 2026-09-04 · 更新于 2026-10-06</span>
   </footer>
 </div>
 
