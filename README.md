@@ -15,7 +15,7 @@ why the pages are the way they are.
 | `index.html` | **Overview** — the landing page. One submission, scrolled from the pack that arrives to the data the underwriter reads. Ends with the contents of this wiki. |
 | `flow.html` | **How it works** — the whole programme in four pictures, then the process stage by stage. Three views (at a glance / module overview / full detail), printable. |
 | `lifecycle.html` | **Step by step** — the seven steps of one submission: who runs each, who signs it off, and every outcome a step can have. |
-| `rules.html` | **The rules** — how the machine decides what each file is: every step and the six answers at a glance, the ladder as a decision tree, the four things a rule can read and what each is blind to, and the underwriter's type written beside the answer. |
+| `rules.html` | **The rules** — how the machine decides what each file is: every step and the six answers at a glance, the ladder as a decision tree, the four things a rule can read and what each is blind to, and the underwriter's type, which step 6 reads. |
 | `gate.html` | **RAG Gate** — red / amber / green, and every rule behind the colour, in plain words beside its rule name in `flywheel/validate/lib/colour.py` (the code repository). |
 
 ## The developer portal
