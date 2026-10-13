@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
-<meta name="description" content="How the machine decides what each file in a submission is: every step at a glance, then the ladder as a decision tree.">
+<meta name="description" content="How the machine decides what each file in a submission is: every step at a glance, then each step as a question.">
 <title>AI Data+ · The rules</title>
 <script>try{if(localStorage.getItem("aidp.lang")==="zh"){document.documentElement.setAttribute("data-lang","zh");document.documentElement.setAttribute("lang","zh-Hans");}}catch(e){}</script>
 <style>
@@ -571,14 +571,14 @@
       <p class="wkey">AI Data+</p>
       <h1><span class="en">How each file is sorted</span><span class="zh">每份文件怎么分拣</span></h1>
       <p class="wklede">
-        <span class="en">Every file in a submission gets one of six answers, and only CORE goes downstream. One ladder of rules gives the answer: the first step that fires decides, a file no step claims goes to a person, and nothing is deleted.</span>
-        <span class="zh">提交里的每份文件，都得到六种结论之一，只有 CORE 往下游送。结论由一条规则阶梯给出：首条命中的规则即为结论；没有规则认领的文件交给人；任何文件都不删除。</span>
+        <span class="en">Every file in a submission gets one of six answers. Only CORE files go on to the Facts Agent, which extracts the data. The steps are checked in order, and the first one that matches decides. If none matches, a person decides. No file is ever deleted.</span>
+        <span class="zh">提交里的每份文件都会得到六种结论之一。只有 CORE 文件交给数据提取智能体（Facts Agent）提取数据。规则按顺序逐步检查，第一步命中就定结论；一步都没命中，交给人判断。任何文件都不删除。</span>
       </p>
     </div>
   </header>
 
   <h2 class="wkh2" id="glance"><span class="en">At a glance</span><span class="zh">一览</span></h2>
-  <p class="wksub"><span class="en">Eleven steps, six answers.</span><span class="zh">十一步，六种结论。</span></p>
+  <p class="wksub"><span class="en">Steps 0 to 7 are checked in order, and the first that matches gives the answer. The two rows marked + run afterwards, over every answer.</span><span class="zh">第 0 到 7 步按顺序检查，第一步命中就定结论。标 + 的两行，在所有结论定完之后再过一遍。</span></p>
 
   <div class="mx-scroll">
     <table class="mx glance">
@@ -586,48 +586,48 @@
         <tr>
           <th class="step"></th>
           <th class="what"><span class="en">The step</span><span class="zh">步骤</span></th>
-          <th class="m"><span class="en">Folder</span><span class="zh">位置</span></th>
+          <th class="m"><span class="en">Folder</span><span class="zh">文件夹</span></th>
           <th class="m"><span class="en">Name</span><span class="zh">文件名</span></th>
-          <th class="m"><span class="en">Type</span><span class="zh">格式</span></th>
+          <th class="m"><span class="en">Format</span><span class="zh">格式</span></th>
           <th class="m"><span class="en">Content</span><span class="zh">内容</span></th>
-          <th class="m"><span class="en">Others</span><span class="zh">其他文件</span></th>
+          <th class="m"><span class="en">Other files</span><span class="zh">其他文件</span></th>
           <th><span class="en">Answer</span><span class="zh">结论</span></th>
         </tr>
       </thead>
       <tbody>
         <tr>
           <td class="step">0</td>
-          <td class="what"><span class="en">Files the computer wrote</span><span class="zh">电脑生成的文件</span></td>
+          <td class="what"><span class="en">System files</span><span class="zh">系统自动生成的文件</span></td>
           <td class="m"><i class="n">·</i></td><td class="m"><i>●</i></td><td class="m"><i class="n">·</i></td><td class="m"><i class="n">·</i></td><td class="m"><i class="n">·</i></td>
           <td><span class="verd">SECONDARY</span></td>
         </tr>
         <tr>
           <td class="step">1</td>
-          <td class="what"><span class="en">The sender said to ignore it</span><span class="zh">发件方说了别用</span></td>
+          <td class="what"><span class="en">The sender says to ignore it</span><span class="zh">发件方说了别用</span></td>
           <td class="m"><i class="n">·</i></td><td class="m"><i>●</i></td><td class="m"><i class="n">·</i></td><td class="m"><i>●</i></td><td class="m"><i class="n">·</i></td>
           <td><span class="verd">WITHDRAWN</span></td>
         </tr>
         <tr>
           <td class="step">2</td>
-          <td class="what"><span class="en">The cedant said it sent this file</span><span class="zh">分出公司列明送来的文件</span></td>
+          <td class="what"><span class="en">The cedant lists it as sent</span><span class="zh">分出公司列明已送的文件</span></td>
           <td class="m"><i class="n">·</i></td><td class="m"><i>●</i></td><td class="m"><i class="n">·</i></td><td class="m"><i class="n">·</i></td><td class="m"><i>●</i></td>
           <td><span class="verd core">CORE</span></td>
         </tr>
         <tr>
           <td class="step">3</td>
-          <td class="what"><span class="en">A comparison or study made from the files</span><span class="zh">拿送来的文件做的对比或分析</span></td>
+          <td class="what"><span class="en">A comparison or study made from other files</span><span class="zh">用别的文件做出来的对比或分析</span></td>
           <td class="m"><i class="n">·</i></td><td class="m"><i>●</i></td><td class="m"><i class="n">·</i></td><td class="m"><i class="n">·</i></td><td class="m"><i class="n">·</i></td>
           <td><span class="verd">DERIVED</span></td>
         </tr>
         <tr>
           <td class="step">4</td>
-          <td class="what"><span class="en">An email whose own name carries the written or signed line, in a submission folder</span><span class="zh">提交文件夹里、文件名写明承保份额的邮件</span></td>
-          <td class="m"><i class="c">○</i></td><td class="m"><i>●</i></td><td class="m"><i class="c">○</i></td><td class="m"><i class="c">○</i></td><td class="m"><i class="c">○</i></td>
+          <td class="what"><span class="en">An email in a submission folder that states the written or signed line, or the FOT</span><span class="zh">提交文件夹里、写明承保份额或 FOT 的邮件</span></td>
+          <td class="m"><i class="c">○</i></td><td class="m"><i>●</i></td><td class="m"><i class="c">○</i></td><td class="m"><i>●</i></td><td class="m"><i class="c">○</i></td>
           <td><span class="verd core">CORE</span></td>
         </tr>
         <tr>
           <td class="step">4</td>
-          <td class="what"><span class="en">An archive nothing came out of</span><span class="zh">什么都没取出来的压缩包</span></td>
+          <td class="what"><span class="en">An archive that was not unpacked</span><span class="zh">没能解开的压缩包</span></td>
           <td class="m"><i class="n">·</i></td><td class="m"><i class="n">·</i></td><td class="m"><i>●</i></td><td class="m"><i class="n">·</i></td><td class="m"><i class="n">·</i></td>
           <td><span class="verd">UNDECIDED</span></td>
         </tr>
@@ -639,46 +639,46 @@
         </tr>
         <tr>
           <td class="step">5</td>
-          <td class="what"><span class="en">An internal document</span><span class="zh">内部文件</span></td>
+          <td class="what"><span class="en">TPRe's own document</span><span class="zh">太平再自己的文件</span></td>
           <td class="m"><i class="n">·</i></td><td class="m"><i>●</i></td><td class="m"><i class="n">·</i></td><td class="m"><i>●</i></td><td class="m"><i class="n">·</i></td>
           <td><span class="verd">INTERNAL</span></td>
         </tr>
         <tr>
           <td class="step">6</td>
-          <td class="what"><span class="en">In a submission folder: a contract or submission document by its own name or title, or a file whose own words make it neither</span><span class="zh">提交文件夹里：凭自身名称或标题认作合约或提交材料的文件，或两者都不是的文件</span></td>
+          <td class="what"><span class="en">From the cedant, in a submission folder</span><span class="zh">分出公司送来、放在提交文件夹里的文件</span></td>
           <td class="m"><i>●</i></td><td class="m"><i>●</i></td><td class="m"><i class="n">·</i></td><td class="m"><i>●</i></td><td class="m"><i class="c">○</i></td>
           <td><span class="verd core">CORE</span></td>
         </tr>
         <tr>
           <td class="step">7</td>
-          <td class="what"><span class="en">In a notes, approval or pricing folder, and readable</span><span class="zh">备注、审批或定价文件夹里，且读得出文字</span></td>
+          <td class="what"><span class="en">In a notes, approval or pricing folder, with text that can be read</span><span class="zh">在备注、审批或定价文件夹里，且读得出文字</span></td>
           <td class="m"><i>●</i></td><td class="m"><i class="n">·</i></td><td class="m"><i class="n">·</i></td><td class="m"><i class="c">○</i></td><td class="m"><i class="n">·</i></td>
           <td><span class="verd">INTERNAL</span></td>
         </tr>
         <tr>
           <td class="step">—</td>
-          <td class="what"><span class="en">Nothing fired; the row says where the ladder stalled</span><span class="zh">没有规则命中；行上写明阶梯停在何处</span></td>
+          <td class="what"><span class="en">No step matched; a person decides</span><span class="zh">一步都没命中，交给人判断</span></td>
           <td class="m"><i class="n">·</i></td><td class="m"><i class="n">·</i></td><td class="m"><i class="n">·</i></td><td class="m"><i class="n">·</i></td><td class="m"><i class="n">·</i></td>
           <td><span class="verd">UNDECIDED</span></td>
         </tr>
         <tr>
           <td class="step">+</td>
-          <td class="what"><span class="en">A cleaner copy is already kept</span><span class="zh">已留下更干净的一版</span></td>
+          <td class="what"><span class="en">The <span class="code">_broker</span> copy of a file that is already CORE</span><span class="zh">已是 CORE 的文件的 <span class="code">_broker</span> 版本</span></td>
           <td class="m"><i class="n">·</i></td><td class="m"><i>●</i></td><td class="m"><i class="n">·</i></td><td class="m"><i class="n">·</i></td><td class="m"><i>●</i></td>
           <td><span class="verd">SECONDARY</span></td>
         </tr>
         <tr>
           <td class="step">+</td>
-          <td class="what"><span class="en">The same bytes as another file</span><span class="zh">与另一份文件字节相同</span></td>
+          <td class="what"><span class="en">An exact copy of another file</span><span class="zh">与另一份文件完全相同的副本</span></td>
           <td class="m"><i class="n">·</i></td><td class="m"><i class="n">·</i></td><td class="m"><i class="n">·</i></td><td class="m"><i class="n">·</i></td><td class="m"><i>●</i></td>
-          <td><span class="verd"><span class="en">copies its twin</span><span class="zh">照抄同源文件</span></span></td>
+          <td><span class="verd"><span class="en">the original's answer</span><span class="zh">沿用原件的结论</span></span></td>
         </tr>
       </tbody>
     </table>
   </div>
   <p class="legend">
     <span><i>●</i><span class="en">the rule decides on this</span><span class="zh">规则据此下结论</span></span>
-    <span><i class="c">○</i><span class="en">checked as a condition, decides nothing on its own</span><span class="zh">只作条件检查，本身不下结论</span></span>
+    <span><i class="c">○</i><span class="en">only a condition; cannot decide on its own</span><span class="zh">只是前提条件，单凭它定不了</span></span>
   </p>
 
   <div class="mx-scroll">
@@ -690,24 +690,24 @@
         </tr>
       </thead>
       <tbody>
-        <tr><td class="a"><span class="verd core">CORE</span></td><td><span class="en">Part of the submission. The only answer that goes downstream, in the pack.</span><span class="zh">提交材料本身。唯一往下游送的结论，进材料包。</span></td></tr>
-        <tr><td class="a"><span class="verd">SECONDARY</span></td><td><span class="en">Comes with the submission without being part of it: emails, archives, images, newsletters, files the computer wrote, a broker's copy of a file already kept.</span><span class="zh">随提交而来、本身不属于提交材料：邮件、压缩包、图片、简报、电脑生成的文件、已留下文件的经纪人版本。</span></td></tr>
-        <tr><td class="a"><span class="verd">DERIVED</span></td><td><span class="en">Made from the files: a comparison between versions, a profitability study.</span><span class="zh">拿送来的文件另做的：版本之间的对比、盈利能力分析。</span></td></tr>
+        <tr><td class="a"><span class="verd core">CORE</span></td><td><span class="en">Part of the submission. The only answer passed on to the Facts Agent.</span><span class="zh">提交材料本身。只有这一种交给数据提取智能体。</span></td></tr>
+        <tr><td class="a"><span class="verd">SECONDARY</span></td><td><span class="en">Arrives with the submission but is not part of it: emails, archives, images, newsletters, system files, a broker's copy of a file already kept.</span><span class="zh">随提交一起来，但不属于提交材料：邮件、压缩包、图片、简报、系统文件、已留文件的经纪人版本。</span></td></tr>
+        <tr><td class="a"><span class="verd">DERIVED</span></td><td><span class="en">Made from other files: a comparison between versions, a profitability study.</span><span class="zh">用别的文件做出来的：版本对比、盈利能力分析。</span></td></tr>
         <tr><td class="a"><span class="verd">INTERNAL</span></td><td><span class="en">TPRe's own working material: pricing, notes, approvals.</span><span class="zh">太平再自己的工作材料：定价、备注、审批。</span></td></tr>
         <tr><td class="a"><span class="verd">WITHDRAWN</span></td><td><span class="en">The sender said not to use it.</span><span class="zh">发件方说了别用。</span></td></tr>
-        <tr><td class="a"><span class="verd">UNDECIDED</span></td><td><span class="en">No rule could place it, so a person does.</span><span class="zh">没有规则归得了位，交给人。</span></td></tr>
+        <tr><td class="a"><span class="verd">UNDECIDED</span></td><td><span class="en">No rule decided it, so a person does.</span><span class="zh">规则定不了，交给人判断。</span></td></tr>
       </tbody>
     </table>
   </div>
 
-  <h2 class="wkh2" id="decision-tree"><span class="en">The ladder as a decision tree</span><span class="zh">阶梯，画成决策树</span></h2>
-  <p class="wksub"><span class="en">Top to bottom, one question at a time. The first “yes” is the answer; every “no” falls to the next question.</span><span class="zh">自上而下，一次一问。第一个“是”即为结论，每个“否”落到下一问。</span></p>
+  <h2 class="wkh2" id="decision-tree"><span class="en">Each step as a question</span><span class="zh">逐步判断</span></h2>
+  <p class="wksub"><span class="en">Start at the top. “Yes” gives the answer; “no” goes to the next question.</span><span class="zh">从上往下问：答“是”就定结论，答“否”就问下一题。</span></p>
 
   <div class="tree" role="list">
     <div class="tstep" role="listitem">
       <div class="tq"><span class="tnum" aria-hidden="true">0</span>
-        <div class="tqt"><span class="en">Did the computer write it?</span><span class="zh">是电脑生成的文件？</span></div>
-        <div class="tqs"><span class="en"><span class="code">Thumbs.db</span>, <span class="code">desktop.ini</span>, <span class="code">.DS_Store</span>, a Word <span class="code">~$</span> owner file — exact names only</span><span class="zh"><span class="code">Thumbs.db</span>、<span class="code">desktop.ini</span>、<span class="code">.DS_Store</span>、Word 的 <span class="code">~$</span> 占位文件——只认完整文件名</span></div>
+        <div class="tqt"><span class="en">Is it a system file?</span><span class="zh">是系统自动生成的文件？</span></div>
+        <div class="tqs"><span class="en">only these: <span class="code">Thumbs.db</span>, <span class="code">desktop.ini</span>, <span class="code">.DS_Store</span>, and Word's temporary files whose names start <span class="code">~$</span></span><span class="zh">只认这几种：<span class="code">Thumbs.db</span>、<span class="code">desktop.ini</span>、<span class="code">.DS_Store</span>，以及文件名以 <span class="code">~$</span> 开头的 Word 临时文件</span></div>
       </div>
       <div class="tyes"><span class="tlbl"><span class="en">yes</span><span class="zh">是</span></span>
         <span class="verd">SECONDARY</span><span class="tcodes"><span class="code">R16_os_artefact</span></span>
@@ -718,7 +718,7 @@
     <div class="tstep" role="listitem">
       <div class="tq"><span class="tnum" aria-hidden="true">1</span>
         <div class="tqt"><span class="en">Does the sender say to ignore it?</span><span class="zh">发件方说了别用？</span></div>
-        <div class="tqs"><span class="en">“please ignore”, “superseded”, “void”, 作废, 请忽略 — a whole word in the name, or in the opening text</span><span class="zh">“please ignore”“superseded”“void”、作废、请忽略——文件名里整词出现，或写在开头正文里</span></div>
+        <div class="tqs"><span class="en">In the name: please ignore, incorrect, superseded, void, disregard, 作废 or 请忽略. In the first 500 characters of the text, only: please ignore, disregard, 作废 or 请忽略. An English word counts only as a whole word: void, not avoidance</span><span class="zh">文件名里出现 please ignore、incorrect、superseded、void、disregard、作废、请忽略；正文前 500 个字符里只认 please ignore、disregard、作废、请忽略。英文要整词出现才算：void 算，avoidance 不算</span></div>
       </div>
       <div class="tyes"><span class="tlbl"><span class="en">yes</span><span class="zh">是</span></span>
         <span class="verd">WITHDRAWN</span><span class="tcodes"><span class="code">R2_withdrawn_marker</span></span>
@@ -728,8 +728,8 @@
 
     <div class="tstep" role="listitem">
       <div class="tq"><span class="tnum" aria-hidden="true">2</span>
-        <div class="tqt"><span class="en">Did the cedant list it as sent?</span><span class="zh">分出公司列明送来的文件？</span></div>
-        <div class="tqs"><span class="en">named in a document's “information made available to and seen by” section, or one of a numbered appendix series</span><span class="zh">出现在某份文件的 “information made available to and seen by” 一节，或成套编号附件之一</span></div>
+        <div class="tqt"><span class="en">Does the cedant list it as sent?</span><span class="zh">分出公司列明送了这份文件？</span></div>
+        <div class="tqs"><span class="en">another document lists it under “information made available to and seen by”, or it is one of a numbered series <span class="code">APP 01</span>, <span class="code">APP 02</span>, … (three or more)</span><span class="zh">别的文件在 “information made available to and seen by” 一节列出了它；或它属于 <span class="code">APP 01</span>、<span class="code">APP 02</span>…… 这样的编号附件（至少三份）</span></div>
       </div>
       <div class="tyes"><span class="tlbl"><span class="en">yes</span><span class="zh">是</span></span>
         <span class="verd core">CORE</span><span class="tcodes"><span class="code">R10_mrc_declared</span><span class="code">R10b_app_series_declared</span></span>
@@ -739,8 +739,8 @@
 
     <div class="tstep" role="listitem">
       <div class="tq"><span class="tnum" aria-hidden="true">3</span>
-        <div class="tqt"><span class="en">Was it made from the files?</span><span class="zh">是拿送来的文件另做的？</span></div>
-        <div class="tqs"><span class="en">a comparison tag, a profitability study, “2024 Final - 2025 FOTs”, “final vs draft”, a name starting Compare</span><span class="zh">对比标签、盈利能力分析、“2024 Final - 2025 FOTs”、“final vs draft”、以 Compare 开头的名字</span></div>
+        <div class="tqt"><span class="en">Was it made from other files?</span><span class="zh">是用别的文件做出来的？</span></div>
+        <div class="tqs"><span class="en">a tag such as <span class="code">[compare report]</span>, “profitability study”, two versions in one name (“2024 Final - 2025 FOTs”, “final vs draft”), or a name starting Compare</span><span class="zh">名字里有 <span class="code">[compare report]</span> 这类标签、“profitability study”、一个名字里两个版本（“2024 Final - 2025 FOTs”“final vs draft”），或以 Compare 开头</span></div>
       </div>
       <div class="tyes"><span class="tlbl"><span class="en">yes</span><span class="zh">是</span></span>
         <span class="verd">DERIVED</span><span class="tcodes"><span class="code">R6_comparison_tag</span><span class="code">R6_uw_derivative</span><span class="code">R6_version_pair</span><span class="code">R6_vs_pair</span><span class="code">R6_compare_name</span></span>
@@ -750,17 +750,17 @@
 
     <div class="tstep" role="listitem">
       <div class="tq"><span class="tnum" aria-hidden="true">4</span>
-        <div class="tqt"><span class="en">Is it an email, an archive, an image or a newsletter?</span><span class="zh">是邮件、压缩包、图片或简报？</span></div>
-        <div class="tqs"><span class="en">what is inside an email, a <span class="code">.zip</span> or a <span class="code">.7z</span> is taken out and judged on its own, from the top</span><span class="zh">邮件、<span class="code">.zip</span>、<span class="code">.7z</span> 里的文件另行取出，从顶端单独判定</span></div>
+        <div class="tqt"><span class="en">Is it an email (or a printed one), an archive, an image or a newsletter?</span><span class="zh">是邮件（含打印成 PDF 的）、压缩包、图片或简报？</span></div>
+        <div class="tqs"><span class="en">files inside an email, a <span class="code">.zip</span> or a <span class="code">.7z</span> are taken out and go through these steps on their own, from step 0</span><span class="zh">邮件、<span class="code">.zip</span>、<span class="code">.7z</span> 里的文件会取出来，从第 0 步起单独过一遍</span></div>
       </div>
       <div class="tyes"><span class="tlbl"><span class="en">yes</span><span class="zh">是</span></span>
         <div class="tq tq2">
-          <div class="tqt"><span class="en">An email whose own name carries the written or signed line, inside <span class="code">Slip &amp; End't</span> / <span class="code">U W Information</span>?</span><span class="zh">在 <span class="code">Slip &amp; End't</span> / <span class="code">U W Information</span> 里、文件名写明承保份额的邮件？</span></div>
-          <div class="tqs"><span class="en"><span class="code">WL</span>, <span class="code">SL</span>, “written line” or “signed line” as a word in the email's own name; whoever wrote it</span><span class="zh">邮件的文件名里整词出现 <span class="code">WL</span>、<span class="code">SL</span>、“written line”或“signed line”；谁写的都算</span></div>
-          <div class="tout"><span class="tlbl"><span class="en">yes</span><span class="zh">是</span></span><span class="verd core">CORE</span><span class="tcodes"><span class="code">core_line_email</span></span></div>
-          <div class="tqt"><span class="en">An archive nothing came out of?</span><span class="zh">什么都没取出来的压缩包？</span></div>
-          <div class="tqs"><span class="en">a password, a compression the reader cannot decode, damage, or over 60 MB</span><span class="zh">有密码、压缩方式解不了、文件损坏，或超过 60 MB</span></div>
-          <div class="tout"><span class="tlbl"><span class="en">yes</span><span class="zh">是</span></span><span class="verd">UNDECIDED</span><span class="tcodes"><span class="code">R1_container_unopened</span></span><span class="tnote"><span class="en">a person opens it; no later question is asked</span><span class="zh">交给人打开，后面各问不再问</span></span></div>
+          <div class="tqt"><span class="en">An email in <span class="code">Slip &amp; End't</span> / <span class="code">U W Information</span> that states the written or signed line, or the FOT?</span><span class="zh">在 <span class="code">Slip &amp; End't</span> / <span class="code">U W Information</span> 里、写明承保份额或 FOT 的邮件？</span></div>
+          <div class="tqs"><span class="en">In its name: <span class="code">WL</span>, <span class="code">SL</span>, written line, signed line, FOT, firm order, structure, modelling. In its subject or newest message: a line with its share (“Signed line: 2.5%”, “10% WL”), FOT, firm order, proposed structure. A line someone is asking for does not count. Whoever wrote it. If the treaty has neither folder, every email is checked</span><span class="zh">文件名里有 <span class="code">WL</span>、<span class="code">SL</span>、written line、signed line、FOT、firm order、structure、modelling；或主题、最新一封正文里写着带比例的份额（“Signed line: 2.5%”“10% WL”），或 FOT、firm order、proposed structure。只是在询问份额的不算。谁写的都算。合约里两个文件夹都没有的，所有邮件都查</span></div>
+          <div class="tout"><span class="tlbl"><span class="en">yes</span><span class="zh">是</span></span><span class="verd core">CORE</span><span class="tcodes"><span class="code">core_line_email</span><span class="code">core_terms_email</span></span></div>
+          <div class="tqt"><span class="en">An archive that was not unpacked?</span><span class="zh">没能解开的压缩包？</span></div>
+          <div class="tqs"><span class="en">password-protected, a compression method that is not supported, damaged, or over 60 MB</span><span class="zh">有密码、压缩方式不支持、文件损坏，或超过 60 MB</span></div>
+          <div class="tout"><span class="tlbl"><span class="en">yes</span><span class="zh">是</span></span><span class="verd">UNDECIDED</span><span class="tcodes"><span class="code">R1_container_unopened</span></span><span class="tnote"><span class="en">a person opens it; the later steps are skipped</span><span class="zh">交给人打开，后面的步骤都跳过</span></span></div>
           <div class="tout"><span class="tlbl"><span class="en">neither</span><span class="zh">都不是</span></span><span class="verd">SECONDARY</span><span class="tcodes"><span class="code">R1_email</span><span class="code">R1_email_print</span><span class="code">R1_container</span><span class="code">R1_image</span><span class="code">R15_newsletter</span></span></div>
         </div>
       </div>
@@ -769,8 +769,8 @@
 
     <div class="tstep" role="listitem">
       <div class="tq"><span class="tnum" aria-hidden="true">5</span>
-        <div class="tqt"><span class="en">Is it ours?</span><span class="zh">是我们自己的文件？</span></div>
-        <div class="tqs"><span class="en">pricing tool, RBC, meeting note, 核保审批, 承保指引 — in the name, or in the opening text</span><span class="zh">定价工具、RBC、会议记录、核保审批、承保指引——在文件名里，或在开头正文里</span></div>
+        <div class="tqt"><span class="en">Is it one of TPRe's own documents?</span><span class="zh">是太平再自己的文件？</span></div>
+        <div class="tqs"><span class="en">pricing tool, RBC, meeting note, 核保审批 or 承保指引 in the name or at the start of the text</span><span class="zh">文件名或正文开头出现 pricing tool、RBC、meeting note、核保审批、承保指引</span></div>
       </div>
       <div class="tyes"><span class="tlbl"><span class="en">yes</span><span class="zh">是</span></span>
         <span class="verd">INTERNAL</span><span class="tcodes"><span class="code">R7_internal_signal</span></span>
@@ -780,15 +780,15 @@
 
     <div class="tstep" role="listitem">
       <div class="tq"><span class="tnum" aria-hidden="true">6</span>
-        <div class="tqt"><span class="en">From the cedant, and inside <span class="code">Slip &amp; End't</span> / <span class="code">U W Information</span>?</span><span class="zh">来自分出公司，且在 <span class="code">Slip &amp; End't</span> / <span class="code">U W Information</span> 里？</span></div>
-        <div class="tqs"><span class="en">“from the cedant” is read off the folder, the name and the text; any spelling of the folders on disk, and a byte-identical copy there counts. A treaty with neither folder skips this question, and can keep only on the next one</span><span class="zh">“来自分出公司”看文件夹、文件名和正文；文件夹的拼写变体都算，字节相同的副本在里面也算。两个文件夹都没有的合约跳过这一问，只能凭下一问留下</span></div>
+        <div class="tqt"><span class="en">From the cedant, and in <span class="code">Slip &amp; End't</span> / <span class="code">U W Information</span>?</span><span class="zh">分出公司送来的，且在 <span class="code">Slip &amp; End't</span> / <span class="code">U W Information</span> 里？</span></div>
+        <div class="tqs"><span class="en">Who sent it is read from the folder, the name and the text. The folder names match in any spelling, and an exact copy in one of the folders counts as inside. If the treaty has neither folder, the folder test is skipped and only the next question can keep the file</span><span class="zh">是不是分出公司送来的，看文件夹、文件名和正文。文件夹名拼法不同也算；完全相同的副本在文件夹里，也算在里面。合约里两个文件夹都没有的，跳过文件夹这一项，只能靠下一问留下</span></div>
       </div>
       <div class="tyes"><span class="tlbl"><span class="en">yes</span><span class="zh">是</span></span>
         <div class="tq tq2">
-          <div class="tqt"><span class="en">Does its own name or title make it a contract or a submission document, or does it carry this treaty's market reference?</span><span class="zh">自身名称或标题表明它是合约或提交材料，或带有本合约的市场编号？</span></div>
-          <div class="tqs"><span class="en">contract: slip, endorsement, wording, signing page, line confirmation · submission: narrative, premium and statistics, exposure, losses, financials and rating, special acceptances · the title is the top of its text, or a workbook's sheet names, read where the name says nothing</span><span class="zh">合约：条款单、批单、合约条文、签署页、份额确认 · 提交材料：业务说明、保费与统计、风险敞口、赔付、财务与评级、特别承保 · 名称说明不了时，看正文顶部的标题或工作簿的工作表名</span></div>
+          <div class="tqt"><span class="en">Does its name or title show it is a contract or a submission document, or does it carry this treaty's market reference?</span><span class="zh">文件名或标题表明它是合约或提交材料？或带有本合约的市场编号？</span></div>
+          <div class="tqs"><span class="en">Contract: slip, endorsement, wording, signing page, line confirmation. Submission: narrative, premium and statistics, exposure, losses, financials and rating, special acceptances. If the name says nothing, the title at the top of the text or a workbook's sheet names are read. The words are in the <a href="#uw-type">type table</a> below</span><span class="zh">合约：条款单、批单、合约条文、签署页、份额确认。提交材料：业务说明、保费与统计、风险敞口、赔付、财务与评级、特别承保。文件名说明不了时，看正文顶部的标题或工作簿的工作表名。具体用词见下方<a href="#uw-type">类型表</a></span></div>
           <div class="tout"><span class="tlbl"><span class="en">yes</span><span class="zh">是</span></span><span class="verd core">CORE</span><span class="tcodes"><span class="code">core_structural_category</span><span class="code">core_umr_in_family</span></span></div>
-          <div class="tout"><span class="tlbl"><span class="en">no</span><span class="zh">否</span></span><span class="verd core">CORE</span><span class="tcodes"><span class="code">core_in_submission_folder</span></span><span class="tnote"><span class="en">the folder is the whole evidence</span><span class="zh">文件夹就是全部证据</span></span></div>
+          <div class="tout"><span class="tlbl"><span class="en">no</span><span class="zh">否</span></span><span class="verd core">CORE</span><span class="tcodes"><span class="code">core_in_submission_folder</span></span><span class="tnote"><span class="en">kept on the folder alone; with neither folder, the file goes on to step 7</span><span class="zh">仅凭所在文件夹留下；合约没有这两个文件夹的，往下走第 7 步</span></span></div>
         </div>
       </div>
     </div>
@@ -797,11 +797,11 @@
     <div class="tstep" role="listitem">
       <div class="tq"><span class="tnum" aria-hidden="true">7</span>
         <div class="tqt"><span class="en">In a notes, approval or pricing folder?</span><span class="zh">在备注、审批或定价文件夹里？</span></div>
-        <div class="tqs"><span class="en">a folder whose name carries underwriter's note, UW note, UC approval, approval, analysis, P&amp;A or pricing; the folder, not the file name</span><span class="zh">文件夹名含 underwriter's note、UW note、UC approval、approval、analysis、P&amp;A 或 pricing；看文件夹，不看文件名</span></div>
+        <div class="tqs"><span class="en">The folder name contains underwriter's note, UW note, UC approval, approval, analysis, P&amp;A or pricing. The file name is not read here</span><span class="zh">文件夹名含 underwriter's note、UW note、UC approval、approval、analysis、P&amp;A 或 pricing。这一步不看文件名</span></div>
       </div>
       <div class="tyes"><span class="tlbl"><span class="en">yes</span><span class="zh">是</span></span>
         <div class="tq tq2">
-          <div class="tqt"><span class="en">Could the text be read?</span><span class="zh">读得出正文？</span></div>
+          <div class="tqt"><span class="en">Can its text be read?</span><span class="zh">读得出文字？</span></div>
           <div class="tout"><span class="tlbl"><span class="en">yes</span><span class="zh">是</span></span><span class="verd">INTERNAL</span><span class="tcodes"><span class="code">R7_notes_folder_no_contrary_signal</span></span></div>
           <div class="tout"><span class="tlbl"><span class="en">no</span><span class="zh">否</span></span><span class="verd">UNDECIDED</span><span class="tcodes"><span class="code">R7_notes_folder_unreadable</span></span><span class="tnote"><span class="en">a person opens it</span><span class="zh">交给人打开</span></span></div>
         </div>
@@ -811,15 +811,15 @@
 
     <div class="tstep" role="listitem">
       <div class="tq"><span class="tnum" aria-hidden="true">—</span>
-        <div class="tqt"><span class="en">Nothing fired</span><span class="zh">没有规则命中</span></div>
-        <div class="tqs"><span class="en">it goes to a person, and the row says where the ladder stalled</span><span class="zh">交给人归位，行上写明阶梯停在何处</span></div>
+        <div class="tqt"><span class="en">No step matched</span><span class="zh">一步都没命中</span></div>
+        <div class="tqs"><span class="en">a person decides; <span class="code">inventory.csv</span> records why</span><span class="zh">交给人判断；<span class="code">inventory.csv</span> 里记下原因</span></div>
       </div>
-      <div class="tyes"><span class="tlbl"><span class="en">so</span><span class="zh">即</span></span>
+      <div class="tyes"><span class="tlbl"><span class="en">so</span><span class="zh">于是</span></span>
         <span class="verd">UNDECIDED</span>
         <ul class="tlist">
-          <li><span class="en">outside the two submission folders — the folder is named</span><span class="zh">在两个提交文件夹之外——注明所在文件夹</span><span class="code">R14_outside_boundary</span></li>
-          <li><span class="en">carrying another treaty's market reference</span><span class="zh">带着别份合约的市场编号</span><span class="code">R3_umr_mismatch_review</span></li>
-          <li><span class="en">nothing at all</span><span class="zh">什么都没命中</span></li>
+          <li><span class="en">outside the two submission folders (its folder is recorded)</span><span class="zh">在两个提交文件夹之外（记下所在文件夹）</span><span class="code">R14_outside_boundary</span></li>
+          <li><span class="en">has another treaty's market reference</span><span class="zh">带着别的合约的市场编号</span><span class="code">R3_umr_mismatch_review</span></li>
+          <li><span class="en">neither: no reason recorded</span><span class="zh">都不是：不记原因</span></li>
         </ul>
       </div>
     </div>
@@ -827,49 +827,49 @@
 
   <div class="tafter">
     <div class="plain">
-      <h3><span class="en">Then, over the answers: a cleaner copy is already kept</span><span class="zh">然后再过一轮：已留下更干净的一版</span></h3>
-      <p><span class="en">A CORE file with <span class="code">_broker</span> in its name, when a non-broker copy is CORE → <span class="verd">SECONDARY</span> <span class="code">R_broker_variant</span></span><span class="zh">名字带 <span class="code">_broker</span> 的 CORE 文件，若非经纪人版本已是 CORE → <span class="verd">SECONDARY</span> <span class="code">R_broker_variant</span></span></p>
-      <p><span class="en">It reads only the answer, never why it was given, so it can overturn even a cedant declaration.</span><span class="zh">只认当前结论、不问由来，连分出公司的声明也能推翻。</span></p>
+      <h3><span class="en">+ Then: broker copies</span><span class="zh">+ 之后：经纪人版本</span></h3>
+      <p><span class="en">A CORE file with <span class="code">_broker</span> in its name, when the same file without <span class="code">_broker</span> is also CORE → <span class="verd">SECONDARY</span> <span class="code">R_broker_variant</span></span><span class="zh">名字带 <span class="code">_broker</span> 的 CORE 文件，若不带 <span class="code">_broker</span> 的同一文件也是 CORE → <span class="verd">SECONDARY</span> <span class="code">R_broker_variant</span></span></p>
+      <p><span class="en">This applies however the file became CORE, even when the cedant listed it (step 2).</span><span class="zh">不管文件因何成为 CORE 都照此处理，分出公司列明的（第 2 步）也一样。</span></p>
     </div>
     <div class="plain">
-      <h3><span class="en">And: the same bytes as another file</span><span class="zh">再一轮：与另一份文件字节相同</span></h3>
-      <p><span class="en">No question is asked; it takes its twin's answer → <span class="code">inherited_from_representative</span></span><span class="zh">不再发问，照抄同源文件的结论 → <span class="code">inherited_from_representative</span></span></p>
-      <p><span class="en">The copy stays in the inventory, and the same bytes never come out CORE in one folder and SECONDARY in another.</span><span class="zh">副本照样留在清单里；同一批字节，不会在一处是 CORE、在另一处是 SECONDARY。</span></p>
+      <h3><span class="en">+ Last: exact copies</span><span class="zh">+ 最后：完全相同的副本</span></h3>
+      <p><span class="en">An exact copy of another file is not checked again; it takes the original's answer → <span class="code">inherited_from_representative</span></span><span class="zh">与另一份文件完全相同的副本不再检查，直接沿用原件的结论 → <span class="code">inherited_from_representative</span></span></p>
+      <p><span class="en">The copy is still listed in <span class="code">inventory.csv</span>. Identical files always get the same answer, whatever folder they are in.</span><span class="zh">副本照样列在 <span class="code">inventory.csv</span> 里。完全相同的文件，不管在哪个文件夹，结论都一样。</span></p>
     </div>
   </div>
 
-  <h2 class="wkh2" id="reads"><span class="en">The four things it can read</span><span class="zh">能读的只有四样</span></h2>
-  <p class="wksub"><span class="en">The name does most of the deciding, and causes most of the mistakes.</span><span class="zh">判断多半落在文件名上，错判也多半出在这里。</span></p>
+  <h2 class="wkh2" id="reads"><span class="en">What the rules read</span><span class="zh">规则读什么</span></h2>
+  <p class="wksub"><span class="en">Most decisions rest on the file name, and so do most mistakes.</span><span class="zh">多数判断靠文件名，多数错判也出在文件名上。</span></p>
 
   <div class="looks">
     <article class="look">
-      <h3><span class="en">Folder</span><span class="zh">位置</span></h3>
-      <p><span class="en">Where the file sits in the export: a submission folder, a notes folder, an approvals folder.</span><span class="zh">文件在导出目录中的位置：提交材料、备注、审批。</span></p>
-      <p class="blind"><b><span class="en">Blind to:</span><span class="zh">看不见：</span></b><span class="en"> a document filed in the wrong place. A folder can keep a file out, and only the two submission folders can let one in — under a reason that says so.</span><span class="zh">放错位置的文件。文件夹能挡；只有两个提交文件夹能放行，且结论会写明是文件夹放行的。</span></p>
+      <h3><span class="en">Folder</span><span class="zh">文件夹</span></h3>
+      <p><span class="en">Which folder of the export the file is in: a submission folder, a notes folder, an approvals folder.</span><span class="zh">文件在导出目录的哪个文件夹里：提交材料、备注、审批。</span></p>
+      <p class="blind"><b><span class="en">Limit:</span><span class="zh">局限：</span></b><span class="en"> a file saved in the wrong folder can get the wrong answer. The folder alone makes a file CORE only in the two submission folders, and the reason then says so: <span class="code">core_in_submission_folder</span>.</span><span class="zh">文件放错了文件夹，就可能判错。单凭文件夹定 CORE，只限两个提交文件夹，理由会写明 <span class="code">core_in_submission_folder</span>。</span></p>
     </article>
     <article class="look">
       <h3><span class="en">File name</span><span class="zh">文件名</span></h3>
-      <p><span class="en">The filename text, and for most rules the only thing they read. Read as its author wrote it: the export's id prefix is not part of the name, and a name the export split at a “/” is put back together first.</span><span class="zh">文件名本身，也是多数规则唯一读的东西。读的是作者起的名字：导出系统加的编号前缀不算名字，被导出系统在“/”处拆成两级的名字先拼回去。</span></p>
-      <p class="blind"><b><span class="en">Blind to:</span><span class="zh">看不见：</span></b><span class="en"> a name that says nothing, or says the wrong thing. Every known miss started here.</span><span class="zh">什么都没说、或说错了的名字。已知漏判都始于此。</span></p>
+      <p><span class="en">Most rules read only this. The ID prefix the export adds is removed first, and a name the export split at a “/” is joined back.</span><span class="zh">多数规则只读文件名。先去掉导出系统加的编号前缀；名字含“/”、被导出系统拆成两级的，先拼回原名。</span></p>
+      <p class="blind"><b><span class="en">Limit:</span><span class="zh">局限：</span></b><span class="en"> if the name says nothing, or says the wrong thing, the answer can be wrong. Every known miss began with the name.</span><span class="zh">文件名什么都没说或说错了，就可能判错。已知漏判都是从文件名开始的。</span></p>
     </article>
     <article class="look">
-      <h3><span class="en">File type</span><span class="zh">格式</span></h3>
-      <p><span class="en">The extension. This one is never misread.</span><span class="zh">扩展名。这一样不会看错。</span></p>
-      <p class="blind"><b><span class="en">Blind to:</span><span class="zh">看不见：</span></b><span class="en"> what is inside. A PDF is a slip, a printed email or a photograph, and the extension cannot say which.</span><span class="zh">文件里究竟是什么。同为 PDF，可能是条款单，可能是打印的邮件，也可能只是一张照片。</span></p>
+      <h3><span class="en">Format</span><span class="zh">格式</span></h3>
+      <p><span class="en">The extension. Never misread.</span><span class="zh">扩展名。不会看错。</span></p>
+      <p class="blind"><b><span class="en">Limit:</span><span class="zh">局限：</span></b><span class="en"> the extension does not say what is inside. A PDF can be a slip, a printed email or a photo.</span><span class="zh">扩展名说明不了文件里是什么。同为 PDF，可能是条款单、打印的邮件，也可能只是一张照片。</span></p>
     </article>
     <article class="look">
       <h3><span class="en">Content</span><span class="zh">内容</span></h3>
-      <p><span class="en">The text the machine extracted. Four tests read only the opening: the withdrawal words, the email headers and the internal words in the first 500 to 800 characters, and the kind of document in the title within the first 500, or a workbook's sheet names. The market reference and the cedant's list of what it sent are looked for past the opening too.</span><span class="zh">机器读出的文字。四项只看开头：作废用语、邮件头、内部用语看开头 500 至 800 字符，文件类别看开头 500 字符内的标题，或工作簿的工作表名。市场编号、分出公司的送件清单，开头之后也找。</span></p>
-      <p class="blind"><b><span class="en">Blind to:</span><span class="zh">看不见：</span></b><span class="en"> a scan. The vision model's transcription of a scan reaches the pack and the review app, never these rules.</span><span class="zh">扫描件。视觉模型对扫描件的转写进材料包、进复核工具，不进这些规则。</span></p>
+      <p><span class="en">The text the machine extracted. Some tests read only the start: the withdrawal words, the email headers and the internal words in the first 500 to 800 characters; the title that gives the type in the first 500, or a workbook's sheet names. An email is read in its subject and its newest message, or all of it for a forward or a whole thread. The market reference and the cedant's list of what it sent are searched in the whole text.</span><span class="zh">机器读出的文字。有几项只看开头：作废用语、邮件头、内部用语看前 500 至 800 个字符；定类型的标题看前 500 个字符，或工作簿的工作表名。邮件看主题和最新一封；转发或整串打印的邮件看全文。市场编号和分出公司的送件列表，全文都找。</span></p>
+      <p class="blind"><b><span class="en">Limit:</span><span class="zh">局限：</span></b><span class="en"> a scan has no text for the rules to read. The vision model's transcription of a scan goes to the Facts Agent and the review app, but no rule reads it.</span><span class="zh">扫描件没有文字可读。视觉模型转写的文字会交给数据提取智能体，也进复核工具，但规则不读。</span></p>
     </article>
     <article class="look rest">
-      <h3><span class="en">And a fifth: the rest of the treaty</span><span class="zh">还有第五样：同一份合约里的其他文件</span></h3>
-      <p><span class="en">Questions a single file cannot answer: did another document list it as sent, is it one of a numbered appendix series, which market reference is this treaty's, is a cleaner copy already kept, were these bytes seen before, are the submission folders in use, does a copy of it sit in one.</span><span class="zh">有些问题单看一份文件答不上来：别的文件是否列明送了它、附件是否成套编号、哪个市场编号是本合约的、是否已留下更干净的一版、这批字节此前是否见过、提交文件夹是否在用、是否有一份副本放在里面。</span></p>
+      <h3><span class="en">Other files in the same treaty</span><span class="zh">同一合约的其他文件</span></h3>
+      <p><span class="en">Some questions need the other files: did another document list it as sent, is it part of a numbered APP series, which market reference is this treaty's, is the same file without <span class="code">_broker</span> CORE, is it an exact copy of another file, are the submission folders in use, is a copy of it in one.</span><span class="zh">有些问题要看别的文件才答得出：别的文件有没有列明送了它、它是否属于成套编号附件、哪个市场编号是本合约的、不带 <span class="code">_broker</span> 的同一文件是否是 CORE、它是不是别的文件的完全副本、合约是否用了提交文件夹、有没有副本放在提交文件夹里。</span></p>
     </article>
   </div>
 
-  <h2 class="wkh2" id="uw-type"><span class="en">Beside the answer: what the file is to an underwriter</span><span class="zh">结论之外：文件对核保人是什么</span></h2>
-  <p class="wksub"><span class="en">Five labels written into the inventory beside the answer. Step 6 reads the type a file's own name and title give, never its folder or its format: a contract or a submission document is kept on what it is. No rule reads the five labels.</span><span class="zh">清单里，结论旁另写五个标签。第 6 步读文件自身名称和标题给出的类型，不看文件夹和格式：合约或提交材料凭类型就留下。没有规则读这五个标签。</span></p>
+  <h2 class="wkh2" id="uw-type"><span class="en">The underwriter's type</span><span class="zh">核保类型</span></h2>
+  <p class="wksub"><span class="en">Every file also gets a type, written beside its answer in <span class="code">inventory.csv</span> in five columns. The columns are for people; no rule reads them. Step 6 works out the same type, but from the name and the title only, never the folder or the format.</span><span class="zh">每份文件还会得到一个类型，在 <span class="code">inventory.csv</span> 里写在结论旁边，共五栏。这五栏给人看，规则不读。第 6 步也定同样的类型，但只看文件名和标题，不看文件夹和格式。</span></p>
 
   <div class="mx-scroll">
     <table class="mx uw">
@@ -877,7 +877,7 @@
         <tr>
           <th><span class="en">Group</span><span class="zh">大类</span></th>
           <th><span class="en">Type</span><span class="zh">类型</span></th>
-          <th><span class="en">Recognised by</span><span class="zh">识别依据</span></th>
+          <th><span class="en">How it is recognised</span><span class="zh">怎么认出来</span></th>
         </tr>
       </thead>
       <tbody>
@@ -947,7 +947,7 @@
         </tr>
         <tr>
           <td class="c"><span class="en">Comparisons, admin (KYC, NDA, newsletters, reciprocal business), archives, images</span><span class="zh">对比、行政（KYC、NDA、简报、互惠业务）、压缩包、图片</span><span class="cd">comparison · kyc_licence · newsletter · reciprocal_business · archive · image · not_a_document · unknown</span></td>
-          <td><span class="en">compare, “final vs draft”, “redline to expiring”, profitability study; KYC, NDA, licence, confidentiality, newsletter; a Reciprocal Business folder; .zip, .7z, .rar; image files; files the computer wrote. A file nothing types is unknown.</span><span class="zh">compare、“final vs draft”、“redline to expiring”、profitability study；KYC、NDA、licence、confidentiality、newsletter；Reciprocal Business 文件夹；.zip、.7z、.rar；图片文件；电脑生成的文件。什么都定不了的，记为 unknown。</span></td>
+          <td><span class="en">compare, “final vs draft”, “redline to expiring”, profitability study; KYC, NDA, licence, confidentiality, newsletter; a Reciprocal Business folder; .zip, .7z, .rar; image files; system files. A file nothing types is unknown.</span><span class="zh">compare、“final vs draft”、“redline to expiring”、profitability study；KYC、NDA、licence、confidentiality、newsletter；Reciprocal Business 文件夹；.zip、.7z、.rar；图片文件；系统自动生成的文件。什么都定不了的，记为 unknown。</span></td>
         </tr>
       </tbody>
     </table>
@@ -955,22 +955,22 @@
 
   <div class="tafter">
     <div class="plain">
-      <h3><span class="en">Read in this order</span><span class="zh">按这个顺序读</span></h3>
-      <p><span class="en">The name. Where the name says nothing, or only half, the text: the title at the top of the document, a workbook's sheet names. Then the folder: <span class="code">Slip &amp; End't</span> is the contract, <span class="code">U W Information</span> the submission. Then the format: a workbook nothing else typed is premium and statistics. An email by its subject, never its body. Step 6 reads the name and the text, never the folder or the format.</span><span class="zh">先看文件名。文件名什么都没说、或只说了一半，再看正文：文件开头的标题、工作簿的工作表名。再看文件夹：<span class="code">Slip &amp; End't</span> 是合约，<span class="code">U W Information</span> 是提交材料。最后看格式：别处都定不了类型的工作簿，算保费与统计。邮件只看主题，不看正文。第 6 步只读文件名和正文，不看文件夹和格式。</span></p>
-      <p><span class="en">The folder also says whose and when: in a notes folder a slip is our working copy, and in <span class="code">Loss information</span>, <span class="code">Results</span>, <span class="code">Special Acceptances</span> or <span class="code">PNC</span> a file came after binding.</span><span class="zh">文件夹还说明是谁的、何时来的：备注文件夹里的条款单，是我方的工作副本；<span class="code">Loss information</span>、<span class="code">Results</span>、<span class="code">Special Acceptances</span>、<span class="code">PNC</span> 里的文件，是成交之后来的。</span></p>
+      <h3><span class="en">How the type is worked out</span><span class="zh">类型怎么定</span></h3>
+      <p><span class="en">First the name. If the name says nothing or too little, the text: the title at the top of the document, or a workbook's sheet names. Then the folder: <span class="code">Slip &amp; End't</span> means contract, <span class="code">U W Information</span> means submission. Last the format: a workbook nothing else typed is premium and statistics. An email is typed by its subject, never its body. Step 6 uses only the name and the text.</span><span class="zh">先看文件名。文件名没说或说得不够，再看正文：文件开头的标题，或工作簿的工作表名。再看文件夹：<span class="code">Slip &amp; End't</span> 是合约，<span class="code">U W Information</span> 是提交材料。最后看格式：别处都定不了的工作簿，算保费与统计。邮件只看主题，不看正文。第 6 步只用文件名和正文。</span></p>
+      <p><span class="en">The folder also says whose and when: in a notes folder a slip is our working copy, and a file in <span class="code">Loss information</span>, <span class="code">Results</span>, <span class="code">Special Acceptances</span> or <span class="code">PNC</span> came after binding.</span><span class="zh">文件夹还说明是谁的、什么时候来的：备注文件夹里的条款单是我方工作副本；<span class="code">Loss information</span>、<span class="code">Results</span>、<span class="code">Special Acceptances</span>、<span class="code">PNC</span> 里的文件是成交之后来的。</span></p>
     </div>
     <div class="plain">
-      <h3><span class="en">The other three labels</span><span class="zh">另外三个标签</span></h3>
-      <p><span class="code">uw_signed</span> <span class="en">— yes, where the name says S+R, signed, countersigned, signiert or executed.</span><span class="zh">—— 文件名写着 S+R、signed、countersigned、signiert 或 executed，即为 yes。</span></p>
-      <p><span class="code">uw_version</span> <span class="en">— draft, redline or final, where the name says which.</span><span class="zh">—— 文件名写明 draft、redline 或 final 的，照记。</span></p>
-      <p><span class="code">uw_basis</span> <span class="en">— what gave the type: the name, the text, the folder or the format.</span><span class="zh">—— 类型由什么得出：文件名、正文、文件夹或格式。</span></p>
+      <h3><span class="en">The other three columns</span><span class="zh">另外三栏</span></h3>
+      <p><span class="code">uw_signed</span><span class="en">: yes if the name says S+R, signed, countersigned, signiert or executed.</span><span class="zh">：文件名写着 S+R、signed、countersigned、signiert 或 executed，记 yes。</span></p>
+      <p><span class="code">uw_version</span><span class="en">: draft, redline or final, if the name says which.</span><span class="zh">：文件名写明 draft、redline 或 final 的，照记。</span></p>
+      <p><span class="code">uw_basis</span><span class="en">: what gave the type: the name, the text, the folder or the format.</span><span class="zh">：类型从哪来：文件名、正文、文件夹或格式。</span></p>
     </div>
   </div>
 
   <div class="note">
-    <h3><span class="en">Not on this page</span><span class="zh">不在这一页的事</span></h3>
-    <p><span class="en">These rules decide what each <em>file</em> is. Whether the <em>submission</em> can go downstream without a person is a separate judgement, made afterwards on the result as a whole — that is the <a href="gate.html">RAG Gate</a>.</span><span class="zh">这些规则决定每<em>份文件</em>是什么。整<em>份提交</em>能否不经人工直接往下走，是此后就整体结果另作的判断，即 <a href="gate.html">RAG 闸门</a>。</span></p>
-    <p><span class="en">A mistake is never quietly corrected downstream; it surfaces as a disagreement in the review app. And the count of documents it is known to miss is a floor, not a measurement: the selections it was scored against were themselves made starting from its output.</span><span class="zh">出错不会在下游被悄悄改掉，只会作为“分歧”出现在复核工具里。已知漏判数是下限，不是测量值：用来对照的人工选取，本身就是从机器的输出出发做的。</span></p>
+    <h3><span class="en">What these rules do not decide</span><span class="zh">这些规则不管的事</span></h3>
+    <p><span class="en">These rules decide what each <em>file</em> is. Whether the whole <em>submission</em> can go on without a person checking it is decided afterwards, by the <a href="gate.html">RAG Gate</a>.</span><span class="zh">这些规则只判断每<em>份文件</em>是什么。整<em>份提交</em>能不能不经人看就往下送，之后由 <a href="gate.html">RAG 闸门</a>判断。</span></p>
+    <p><span class="en">A wrong answer is never fixed silently downstream; it shows up in the review app as a disagreement. The known number of misses is a minimum, not a measurement: the people who checked the answers started from the machine's output.</span><span class="zh">错判不会在下游被悄悄改掉，只会在复核工具里显示为“分歧”。已知漏判数只是下限，不是实测：人工核对本身就是从机器的结果出发的。</span></p>
   </div>
 
   <!-- wiki next -->
@@ -1002,8 +1002,8 @@
 </nav>
 <!-- /wiki next -->
   <footer class="wkfoot">
-    <span class="en">Source of truth: <span class="code">agent/triage/tpre_triage.py</span> · <a href="gate.html">RAG Gate</a> · Written 2026-09-10 · Updated 2026-10-08</span>
-    <span class="zh">准绳：<span class="code">agent/triage/tpre_triage.py</span> · <a href="gate.html">RAG 闸门</a> · 写于 2026-09-10 · 更新于 2026-10-08</span>
+    <span class="en">Source of truth: <span class="code">agent/triage/tpre_triage.py</span> · <a href="gate.html">RAG Gate</a> · Written 2026-09-10 · Updated 2026-10-13</span>
+    <span class="zh">以代码为准：<span class="code">agent/triage/tpre_triage.py</span> · <a href="gate.html">RAG 闸门</a> · 写于 2026-09-10 · 更新于 2026-10-13</span>
   </footer>
 </div>
 
