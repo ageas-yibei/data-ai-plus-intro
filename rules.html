@@ -578,7 +578,7 @@
   </header>
 
   <h2 class="wkh2" id="glance"><span class="en">At a glance</span><span class="zh">一览</span></h2>
-  <p class="wksub"><span class="en">Steps 0 to 7 are checked in order, and the first that matches gives the answer. The two rows marked + run afterwards, over every answer.</span><span class="zh">第 0 到 7 步按顺序检查，第一步命中就定结论。标 + 的两行，在所有结论定完之后再过一遍。</span></p>
+  <p class="wksub"><span class="en">Steps 0 to 7 are checked in order, and the first that matches gives the answer. If none matches, the rows marked — are checked in order; the last of them leaves the file to a person. The two rows marked + run afterwards, over every answer.</span><span class="zh">第 0 到 7 步按顺序检查，第一步命中就定结论。一步都没命中，再按顺序查标 — 的几行，最后一行交给人判断。标 + 的两行，在所有结论定完之后再过一遍。</span></p>
 
   <div class="mx-scroll">
     <table class="mx glance">
@@ -650,6 +650,12 @@
           <td><span class="verd core">CORE</span></td>
         </tr>
         <tr>
+          <td class="step">6</td>
+          <td class="what"><span class="en">A KYC, NDA or licence document that only its folder would keep</span><span class="zh">只凭所在文件夹才会留下的 KYC、NDA、licence 类文件</span></td>
+          <td class="m"><i class="c">○</i></td><td class="m"><i>●</i></td><td class="m"><i class="c">○</i></td><td class="m"><i class="n">·</i></td><td class="m"><i class="n">·</i></td>
+          <td><span class="verd">SECONDARY</span></td>
+        </tr>
+        <tr>
           <td class="step">7</td>
           <td class="what"><span class="en">In a notes, approval or pricing folder, with text that can be read</span><span class="zh">在备注、审批或定价文件夹里，且读得出文字</span></td>
           <td class="m"><i>●</i></td><td class="m"><i class="n">·</i></td><td class="m"><i class="n">·</i></td><td class="m"><i class="c">○</i></td><td class="m"><i class="n">·</i></td>
@@ -657,7 +663,31 @@
         </tr>
         <tr>
           <td class="step">—</td>
-          <td class="what"><span class="en">No step matched; a person decides</span><span class="zh">一步都没命中，交给人判断</span></td>
+          <td class="what"><span class="en">It carries another treaty's market reference; a person decides</span><span class="zh">带着别的合约的市场编号，交给人判断</span></td>
+          <td class="m"><i class="n">·</i></td><td class="m"><i class="n">·</i></td><td class="m"><i class="n">·</i></td><td class="m"><i>●</i></td><td class="m"><i>●</i></td>
+          <td><span class="verd">UNDECIDED</span></td>
+        </tr>
+        <tr>
+          <td class="step">—</td>
+          <td class="what"><span class="en">A KYC, NDA or licence document</span><span class="zh">KYC、NDA、licence 类文件</span></td>
+          <td class="m"><i class="n">·</i></td><td class="m"><i>●</i></td><td class="m"><i class="c">○</i></td><td class="m"><i class="n">·</i></td><td class="m"><i class="n">·</i></td>
+          <td><span class="verd">SECONDARY</span></td>
+        </tr>
+        <tr>
+          <td class="step">—</td>
+          <td class="what"><span class="en">In a notes folder with no text read, and its name makes it TPRe's own</span><span class="zh">在备注文件夹里、读不出文字，但文件名表明是太平再自己的</span></td>
+          <td class="m"><i class="c">○</i></td><td class="m"><i>●</i></td><td class="m"><i class="n">·</i></td><td class="m"><i class="c">○</i></td><td class="m"><i class="n">·</i></td>
+          <td><span class="verd">INTERNAL</span></td>
+        </tr>
+        <tr>
+          <td class="step">—</td>
+          <td class="what"><span class="en">Outside the submission folders, a report that came after binding</span><span class="zh">在提交文件夹之外、成交之后来的报告</span></td>
+          <td class="m"><i>●</i></td><td class="m"><i>●</i></td><td class="m"><i class="n">·</i></td><td class="m"><i>●</i></td><td class="m"><i class="c">○</i></td>
+          <td><span class="verd">SECONDARY</span></td>
+        </tr>
+        <tr>
+          <td class="step">—</td>
+          <td class="what"><span class="en">Nothing matched; a person decides</span><span class="zh">都没命中，交给人判断</span></td>
           <td class="m"><i class="n">·</i></td><td class="m"><i class="n">·</i></td><td class="m"><i class="n">·</i></td><td class="m"><i class="n">·</i></td><td class="m"><i class="n">·</i></td>
           <td><span class="verd">UNDECIDED</span></td>
         </tr>
@@ -691,9 +721,9 @@
       </thead>
       <tbody>
         <tr><td class="a"><span class="verd core">CORE</span></td><td><span class="en">Part of the submission. The only answer passed on to the Facts Agent.</span><span class="zh">提交材料本身。只有这一种交给数据提取智能体。</span></td></tr>
-        <tr><td class="a"><span class="verd">SECONDARY</span></td><td><span class="en">Arrives with the submission but is not part of it: emails, archives, images, newsletters, system files, a broker's copy of a file already kept.</span><span class="zh">随提交一起来，但不属于提交材料：邮件、压缩包、图片、简报、系统文件、已留文件的经纪人版本。</span></td></tr>
+        <tr><td class="a"><span class="verd">SECONDARY</span></td><td><span class="en">Arrives with the submission but is not part of it: emails, archives, images, newsletters, system files, KYC, NDA and licence documents, reports that came after binding, a broker's copy of a file already kept.</span><span class="zh">随提交一起来，但不属于提交材料：邮件、压缩包、图片、简报、系统文件、KYC、NDA、licence 类文件、成交之后来的报告、已留文件的经纪人版本。</span></td></tr>
         <tr><td class="a"><span class="verd">DERIVED</span></td><td><span class="en">Made from other files: a comparison between versions, a profitability study.</span><span class="zh">用别的文件做出来的：版本对比、盈利能力分析。</span></td></tr>
-        <tr><td class="a"><span class="verd">INTERNAL</span></td><td><span class="en">TPRe's own working material: pricing, notes, approvals.</span><span class="zh">太平再自己的工作材料：定价、备注、审批。</span></td></tr>
+        <tr><td class="a"><span class="verd">INTERNAL</span></td><td><span class="en">TPRe's own working material: pricing, notes, approvals, treaty statistics.</span><span class="zh">太平再自己的工作材料：定价、备注、审批、合约统计。</span></td></tr>
         <tr><td class="a"><span class="verd">WITHDRAWN</span></td><td><span class="en">The sender said not to use it.</span><span class="zh">发件方说了别用。</span></td></tr>
         <tr><td class="a"><span class="verd">UNDECIDED</span></td><td><span class="en">No rule decided it, so a person does.</span><span class="zh">规则定不了，交给人判断。</span></td></tr>
       </tbody>
@@ -756,7 +786,7 @@
       <div class="tyes"><span class="tlbl"><span class="en">yes</span><span class="zh">是</span></span>
         <div class="tq tq2">
           <div class="tqt"><span class="en">An email in <span class="code">Slip &amp; End't</span> / <span class="code">U W Information</span> that states the written or signed line, or the FOT?</span><span class="zh">在 <span class="code">Slip &amp; End't</span> / <span class="code">U W Information</span> 里、写明承保份额或 FOT 的邮件？</span></div>
-          <div class="tqs"><span class="en">In its name: <span class="code">WL</span>, <span class="code">SL</span>, written line, signed line, FOT, firm order, structure, modelling. In its subject or newest message: a line with its share (“Signed line: 2.5%”, “10% WL”), FOT, firm order, proposed structure. A line someone is asking for does not count. Whoever wrote it. If the treaty has neither folder, every email is checked</span><span class="zh">文件名里有 <span class="code">WL</span>、<span class="code">SL</span>、written line、signed line、FOT、firm order、structure、modelling；或主题、最新一封正文里写着带比例的份额（“Signed line: 2.5%”“10% WL”），或 FOT、firm order、proposed structure。只是在询问份额的不算。谁写的都算。合约里两个文件夹都没有的，所有邮件都查</span></div>
+          <div class="tqs"><span class="en">In its name: <span class="code">WL</span>, <span class="code">SL</span>, written line, signed line, FOT, firm order, structure, modelling. In its subject or newest message: a line with its share (“Signed line: 2.5%”, “10% WL”), FOT, firm order, proposed structure. A reply's subject (<span class="code">RE:</span>, <span class="code">回复:</span>) counts only for the line. A line someone is asking for does not count. Whoever wrote it. If the treaty has neither folder, every email is checked</span><span class="zh">文件名里有 <span class="code">WL</span>、<span class="code">SL</span>、written line、signed line、FOT、firm order、structure、modelling；或主题、最新一封正文里写着带比例的份额（“Signed line: 2.5%”“10% WL”），或 FOT、firm order、proposed structure。回复邮件的主题（<span class="code">RE:</span>、<span class="code">回复:</span>）只看份额。只是在询问份额的不算。谁写的都算。合约里两个文件夹都没有的，所有邮件都查</span></div>
           <div class="tout"><span class="tlbl"><span class="en">yes</span><span class="zh">是</span></span><span class="verd core">CORE</span><span class="tcodes"><span class="code">core_line_email</span><span class="code">core_terms_email</span></span></div>
           <div class="tqt"><span class="en">An archive that was not unpacked?</span><span class="zh">没能解开的压缩包？</span></div>
           <div class="tqs"><span class="en">password-protected, a compression method that is not supported, damaged, or over 60 MB</span><span class="zh">有密码、压缩方式不支持、文件损坏，或超过 60 MB</span></div>
@@ -788,7 +818,10 @@
           <div class="tqt"><span class="en">Does its name or title show it is a contract or a submission document, or does it carry this treaty's market reference?</span><span class="zh">文件名或标题表明它是合约或提交材料？或带有本合约的市场编号？</span></div>
           <div class="tqs"><span class="en">Contract: slip, endorsement, wording, signing page, line confirmation. Submission: narrative, premium and statistics, exposure, losses, financials and rating, special acceptances. If the name says nothing, the title at the top of the text or a workbook's sheet names are read. The words are in the <a href="#uw-type">type table</a> below</span><span class="zh">合约：条款单、批单、合约条文、签署页、份额确认。提交材料：业务说明、保费与统计、风险敞口、赔付、财务与评级、特别承保。文件名说明不了时，看正文顶部的标题或工作簿的工作表名。具体用词见下方<a href="#uw-type">类型表</a></span></div>
           <div class="tout"><span class="tlbl"><span class="en">yes</span><span class="zh">是</span></span><span class="verd core">CORE</span><span class="tcodes"><span class="code">core_structural_category</span><span class="code">core_umr_in_family</span></span></div>
-          <div class="tout"><span class="tlbl"><span class="en">no</span><span class="zh">否</span></span><span class="verd core">CORE</span><span class="tcodes"><span class="code">core_in_submission_folder</span></span><span class="tnote"><span class="en">kept on the folder alone; with neither folder, the file goes on to step 7</span><span class="zh">仅凭所在文件夹留下；合约没有这两个文件夹的，往下走第 7 步</span></span></div>
+          <div class="tqt"><span class="en">Is it a KYC, NDA or licence document, by its own name?</span><span class="zh">按文件名是 KYC、NDA、licence 类文件？</span></div>
+          <div class="tqs"><span class="en">KYC, NDA, non-disclosure, confidentiality or licence as a word of its own, where the name names no other kind: <span class="code">Confidentiality Clause</span> is a wording, and <span class="code">Licensed ...</span> does not count. Never a workbook</span><span class="zh">文件名里 KYC、NDA、non-disclosure、confidentiality 或 licence 单独成词，且没点明别的类型：<span class="code">Confidentiality Clause</span> 算条款，<span class="code">Licensed ...</span> 不算。工作簿不算</span></div>
+          <div class="tout"><span class="tlbl"><span class="en">yes</span><span class="zh">是</span></span><span class="verd">SECONDARY</span><span class="tcodes"><span class="code">R18_kyc_licence</span></span></div>
+          <div class="tout"><span class="tlbl"><span class="en">neither</span><span class="zh">都不是</span></span><span class="verd core">CORE</span><span class="tcodes"><span class="code">core_in_submission_folder</span></span><span class="tnote"><span class="en">kept on the folder alone; with neither folder, the file goes on to step 7</span><span class="zh">仅凭所在文件夹留下；合约没有这两个文件夹的，往下走第 7 步</span></span></div>
         </div>
       </div>
     </div>
@@ -803,7 +836,7 @@
         <div class="tq tq2">
           <div class="tqt"><span class="en">Can its text be read?</span><span class="zh">读得出文字？</span></div>
           <div class="tout"><span class="tlbl"><span class="en">yes</span><span class="zh">是</span></span><span class="verd">INTERNAL</span><span class="tcodes"><span class="code">R7_notes_folder_no_contrary_signal</span></span></div>
-          <div class="tout"><span class="tlbl"><span class="en">no</span><span class="zh">否</span></span><span class="verd">UNDECIDED</span><span class="tcodes"><span class="code">R7_notes_folder_unreadable</span></span><span class="tnote"><span class="en">a person opens it</span><span class="zh">交给人打开</span></span></div>
+          <div class="tout"><span class="tlbl"><span class="en">no</span><span class="zh">否</span></span><span class="tnote"><span class="en">goes on to the last step below, which reads its name</span><span class="zh">往下走最后一步，看文件名</span></span></div>
         </div>
       </div>
     </div>
@@ -812,15 +845,25 @@
     <div class="tstep" role="listitem">
       <div class="tq"><span class="tnum" aria-hidden="true">—</span>
         <div class="tqt"><span class="en">No step matched</span><span class="zh">一步都没命中</span></div>
-        <div class="tqs"><span class="en">a person decides; <span class="code">inventory.csv</span> records why</span><span class="zh">交给人判断；<span class="code">inventory.csv</span> 里记下原因</span></div>
+        <div class="tqs"><span class="en">these are asked in order; <span class="code">inventory.csv</span> records the reason</span><span class="zh">按顺序问下面几题；<span class="code">inventory.csv</span> 里记下原因</span></div>
       </div>
       <div class="tyes"><span class="tlbl"><span class="en">so</span><span class="zh">于是</span></span>
-        <span class="verd">UNDECIDED</span>
-        <ul class="tlist">
-          <li><span class="en">outside the two submission folders (its folder is recorded)</span><span class="zh">在两个提交文件夹之外（记下所在文件夹）</span><span class="code">R14_outside_boundary</span></li>
-          <li><span class="en">has another treaty's market reference</span><span class="zh">带着别的合约的市场编号</span><span class="code">R3_umr_mismatch_review</span></li>
-          <li><span class="en">neither: no reason recorded</span><span class="zh">都不是：不记原因</span></li>
-        </ul>
+        <div class="tq tq2">
+          <div class="tqt"><span class="en">Does it carry another treaty's market reference?</span><span class="zh">带着别的合约的市场编号？</span></div>
+          <div class="tout"><span class="tlbl"><span class="en">yes</span><span class="zh">是</span></span><span class="verd">UNDECIDED</span><span class="tcodes"><span class="code">R3_umr_mismatch_review</span></span><span class="tnote"><span class="en">a person decides</span><span class="zh">交给人判断</span></span></div>
+          <div class="tqt"><span class="en">Is it a KYC, NDA or licence document, by its own name?</span><span class="zh">按文件名是 KYC、NDA、licence 类文件？</span></div>
+          <div class="tqs"><span class="en">read as at step 6, wherever the file is</span><span class="zh">认法同第 6 步，不管文件在哪</span></div>
+          <div class="tout"><span class="tlbl"><span class="en">yes</span><span class="zh">是</span></span><span class="verd">SECONDARY</span><span class="tcodes"><span class="code">R18_kyc_licence</span></span></div>
+          <div class="tqt"><span class="en">Is it in a notes, approval or pricing folder?</span><span class="zh">在备注、审批或定价文件夹里？</span></div>
+          <div class="tqs"><span class="en">its text could not be read, or step 7 would have decided. The name alone is read, by the words of the Ours row in the <a href="#uw-type">type table</a>: treaty statistics, a UW note, pricing</span><span class="zh">读不出文字（读得出的，第 7 步已定）。这时只看文件名，按<a href="#uw-type">类型表</a>“我方”一行的用词：合约统计、核保笔记、定价</span></div>
+          <div class="tout"><span class="tlbl"><span class="en">ours by name</span><span class="zh">文件名表明是我方的</span></span><span class="verd">INTERNAL</span><span class="tcodes"><span class="code">R7_notes_folder_named</span></span></div>
+          <div class="tout"><span class="tlbl"><span class="en">otherwise</span><span class="zh">否则</span></span><span class="verd">UNDECIDED</span><span class="tcodes"><span class="code">R7_notes_folder_unreadable</span></span><span class="tnote"><span class="en">a person opens it</span><span class="zh">交给人打开</span></span></div>
+          <div class="tqt"><span class="en">Is it outside <span class="code">Slip &amp; End't</span> / <span class="code">U W Information</span>?</span><span class="zh">在 <span class="code">Slip &amp; End't</span> / <span class="code">U W Information</span> 之外？</span></div>
+          <div class="tqs"><span class="en">only where the treaty has those folders. A report that came after binding: a notice of cancellation by its own name, in any folder; or a loss, premium or exposure report in a folder whose name starts <span class="code">Loss information</span>, <span class="code">Treaty Update</span>, <span class="code">QS Reporting</span>, <span class="code">Results</span>, <span class="code">PNOC</span> or <span class="code">PNC</span>, and not under <span class="code">Special Acceptances</span>. Its name names the report; where the name names no part, its title or sheet names do. A name that also names a contract document does not count</span><span class="zh">只在合约有这两个文件夹时才问。成交之后来的报告：文件名表明是注销通知的，在哪个文件夹都算；赔付、保费或风险敞口报告，要在名字以 <span class="code">Loss information</span>、<span class="code">Treaty Update</span>、<span class="code">QS Reporting</span>、<span class="code">Results</span>、<span class="code">PNOC</span> 或 <span class="code">PNC</span> 开头的文件夹里，且不在 <span class="code">Special Acceptances</span> 之下。由文件名说明是哪种报告；文件名说明不了时，看标题或工作表名。名字同时点明合约文件的不算</span></div>
+          <div class="tout"><span class="tlbl"><span class="en">a report after binding</span><span class="zh">成交后的报告</span></span><span class="verd">SECONDARY</span><span class="tcodes"><span class="code">R17_post_binding_report</span></span></div>
+          <div class="tout"><span class="tlbl"><span class="en">otherwise</span><span class="zh">否则</span></span><span class="verd">UNDECIDED</span><span class="tcodes"><span class="code">R14_outside_boundary</span></span><span class="tnote"><span class="en">its folder is recorded; a person decides</span><span class="zh">记下所在文件夹，交给人判断</span></span></div>
+          <div class="tout"><span class="tlbl"><span class="en">none of these</span><span class="zh">都不是</span></span><span class="verd">UNDECIDED</span><span class="tnote"><span class="en">no reason recorded; a person decides</span><span class="zh">不记原因，交给人判断</span></span></div>
+        </div>
       </div>
     </div>
   </div>
