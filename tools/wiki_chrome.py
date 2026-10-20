@@ -391,6 +391,10 @@ NEXT_CARDS = [
      "Can a submission be passed on? Red, amber, green — and every rule behind the colour.",
      "一份提交能不能往下送？红、黄、绿，"
      "以及决定颜色的每一条规则。"),
+    ("performance.html", "Performance", "规则表现",
+     "How each version of the rules scores against the documents a person chose by hand.",
+     "每一版分拣规则，"
+     "对照人工挑出的文件得了多少分。"),
 ]
 
 # href, English label, Chinese label
@@ -400,12 +404,14 @@ NAV_LINKS = [
     ("lifecycle.html", "Step by step", "\u9010\u6b65\u6d41\u7a0b"),
 ]
 
-# The two pages that are about one thing - what the Submission Agent decides,
-# and how much attention its result needs - sit under its name rather than
-# beside the pages about the programme. English, Chinese, then the contents.
+# The pages that are about one thing - what the Submission Agent decides, how
+# much attention its result needs, and how well its rules score - sit under its
+# name rather than beside the pages about the programme. English, Chinese, then
+# the contents.
 MENU = ("Submission Agent", "\u6587\u4ef6\u5206\u62e3\u667a\u80fd\u4f53", [
-    ("rules.html", "The rules", "\u5206\u62e3\u89c4\u5219"),
-    ("gate.html",  "RAG Gate",  "RAG \u95f8\u95e8"),
+    ("rules.html",       "The rules",   "\u5206\u62e3\u89c4\u5219"),
+    ("gate.html",        "RAG Gate",    "RAG \u95f8\u95e8"),
+    ("performance.html", "Performance", "\u89c4\u5219\u8868\u73b0"),
 ])
 DEV = ("developer.html", "Developer portal", "\u5f00\u53d1\u8005\u95e8\u6237")
 
@@ -573,6 +579,7 @@ PAGES = {
     "lifecycle.html": "lifecycle.html",
     "rules.html":     "rules.html",
     "gate.html":      "gate.html",
+    "performance.html": "performance.html",
     "developer.html": "developer.html",
     "manual.html":    "developer.html",
     "llm-api.html":   "developer.html",
@@ -580,7 +587,7 @@ PAGES = {
 
 # The Overview is the reference, so it carries no kit; the developer portal is
 # its own room and is left alone.
-KIT_PAGES = ["flow.html", "lifecycle.html", "rules.html", "gate.html"]
+KIT_PAGES = ["flow.html", "lifecycle.html", "rules.html", "gate.html", "performance.html"]
 
 if __name__ == "__main__":
     for name, current in PAGES.items():

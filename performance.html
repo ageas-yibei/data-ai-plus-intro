@@ -1,0 +1,1164 @@
+<!DOCTYPE html>
+<html lang="en" data-lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
+<meta name="description" content="How each version of the triage rules scores against the core documents a person chose by hand.">
+<title>AI Data+ · Performance</title>
+<script>try{if(localStorage.getItem("aidp.lang")==="zh"){document.documentElement.setAttribute("data-lang","zh");document.documentElement.setAttribute("lang","zh-Hans");}}catch(e){}</script>
+<style>
+  /* ---- page-private styles. Everything shared lives in the page kit below,
+         which is loaded after this block and therefore wins on :root.
+         Colour on this page says one thing: which round a line is. The three
+         are the bar's blue and the kit's orange-ink and purple, which pass the
+         colour-blind checks as a set and clear 3:1 on white. ---- */
+  :root{
+    --r1:var(--blue); --r2:var(--orange-ink); --r3:var(--purple);
+  }
+  *{box-sizing:border-box}
+  html[data-lang="en"] .zh{display:none}
+  html[data-lang="zh"] .en{display:none}
+  body{margin:0;background:var(--paper);color:var(--copy);font-family:var(--body);
+       font-size:var(--t-body);line-height:1.55;-webkit-font-smoothing:antialiased}
+  a{color:var(--orange-ink);text-decoration:none}
+  a:hover{text-decoration:underline}
+
+  /* the container is the nav's column, so every page on this site starts its text
+     at the same place; --wkw then holds the reading measure inside it */
+  .wrap{max-width:1200px;margin:0 auto;
+        padding-left:var(--pad-x);padding-right:var(--pad-x);padding-bottom:88px}
+  .wrap > *{max-width:var(--wkw)}
+  .wrap [id]{scroll-margin-top:calc(var(--wk-nav-h) + 18px)}
+
+  .code{font-family:var(--mono);font-size:12px;background:var(--sky);color:var(--navy);
+        padding:2px 6px;border-radius:var(--r-ctl)}
+  .hash{font-family:var(--mono);font-size:12.5px;letter-spacing:.01em}
+
+  /* ---- the rules on main: one tile per measure ---- */
+  .tiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin:0}
+  .tile{padding:18px 20px 18px;background:var(--card);border:1px solid var(--line);
+        border-radius:var(--r-card);box-shadow:var(--sh-1);display:flex;flex-direction:column}
+  .tile h3{font-family:var(--disp);font-weight:800;font-size:var(--t-h3);margin:0;
+           letter-spacing:-.02em;color:var(--navy)}
+  /* two lines held for the question, so the rows line up across the three tiles */
+  .tile .q{margin:3px 0 12px;min-height:2.9em;font-size:13.5px;line-height:1.45;color:var(--copy);
+           text-wrap:pretty}
+  html[lang^="zh"] .tile .q{min-height:0}
+  .tile ul{margin:0;padding:0;list-style:none}
+  .tile li{display:grid;grid-template-columns:62px auto 1fr;align-items:baseline;gap:10px;
+           padding:7px 0;border-top:1px solid var(--line)}
+  .tile li .r{font-family:var(--mono);font-size:11px;letter-spacing:.04em;color:var(--mute)}
+  .tile li b{font-family:var(--disp);font-weight:800;font-size:22px;letter-spacing:-.02em;
+             color:var(--navy);font-variant-numeric:tabular-nums}
+  .tile li .of{font-family:var(--mono);font-size:11px;color:var(--mute);text-align:right;
+               font-variant-numeric:tabular-nums}
+  .tile .tn{margin:auto 0 0;padding-top:10px;font-size:12.5px;line-height:1.45;color:var(--copy)}
+
+  /* ---- a measure: its chart, then its figures ---- */
+  .viz{margin:0;padding:16px 18px 14px;background:var(--card);border:1px solid var(--line);
+       border-radius:var(--r-card);box-shadow:var(--sh-1)}
+  .viz-legend{display:flex;gap:6px 18px;flex-wrap:wrap;margin:0 0 6px;font-size:13px;color:var(--copy)}
+  .viz-legend span{display:inline-flex;align-items:center;gap:7px}
+  .viz-legend i{display:inline-block;width:16px;height:2px;border-radius:2px;background:var(--k)}
+  .viz-scroll{overflow-x:auto;overflow-y:hidden;margin:0 -4px;padding:0 4px}
+  .viz-box{position:relative;min-width:600px;outline:none;border-radius:8px}
+  .viz-box:focus-visible{outline:2px solid var(--orange);outline-offset:2px}
+  .viz svg{display:block;width:100%;height:auto;overflow:visible}
+  .viz svg text{font-family:var(--mono)}
+  .viz figcaption{margin:8px 0 0;font-size:12.5px;line-height:1.5;color:var(--mute)}
+  .viz-tip{position:absolute;top:8px;z-index:5;min-width:190px;padding:9px 11px 8px;
+           background:var(--card);border:1px solid var(--line);border-radius:10px;
+           box-shadow:var(--sh-2);pointer-events:none;font-size:12.5px;line-height:1.35}
+  .viz-tip[hidden]{display:none}
+  .viz-tip .h{font-family:var(--mono);font-size:11px;color:var(--mute);margin:0 0 6px}
+  .viz-tip .h b{color:var(--navy);font-weight:700}
+  .viz-tip .row{display:flex;align-items:baseline;gap:8px;padding:2px 0}
+  .viz-tip .row i{flex:0 0 auto;align-self:center;width:12px;height:2px;border-radius:2px;background:var(--k)}
+  .viz-tip .row b{color:var(--navy);font-variant-numeric:tabular-nums;min-width:46px}
+  .viz-tip .row span{color:var(--copy)}
+  .viz-tip .row em{margin-left:auto;padding-left:10px;font-style:normal;font-family:var(--mono);
+                   font-size:11px;color:var(--mute)}
+  .viz-tip .w{padding:0 0 3px 20px;font-size:11.5px;color:var(--mute)}
+
+  /* ---- where the answers differ: one bar per version and round ---- */
+  .dviz{--miss:var(--halt); --open:var(--mute); --extra:var(--amber)}
+  .dviz .viz-legend{flex-direction:column;gap:4px;margin-bottom:12px}
+  .dviz .viz-legend i{width:12px;height:12px;border-radius:3px}
+  .dviz .viz-legend b{color:var(--navy);font-weight:600}
+  .dviz .viz-legend span span{display:inline}
+  .dgrid{display:grid;grid-template-columns:92px repeat(3,minmax(0,1fr));column-gap:18px;
+         align-items:center;min-width:640px}
+  .dgrid .dh{font-family:var(--mono);font-size:11px;color:var(--navy);font-weight:700;padding:0 0 6px}
+  .dgrid .dh span{font-weight:400;color:var(--mute)}
+  .dgrid .dv{font-family:var(--mono);font-size:11.5px;color:var(--copy);line-height:1.2;padding:5px 0}
+  .dgrid .dv small{display:block;font-size:10px;color:var(--mute)}
+  .dgrid .dv.cur{color:var(--navy);font-weight:700}
+  /* the track is the 0-40% scale; the cell keeps room after it for the label */
+  .dcell{position:relative;height:30px}
+  .dtrack{position:absolute;left:0;top:0;bottom:0;right:46px;border-right:1px solid var(--line);
+          background:linear-gradient(to right,var(--line) 1px,transparent 1px) 0 0/25% 100% repeat-x}
+  .dbar{position:absolute;left:0;top:7px;display:flex;gap:2px;height:16px}
+  .dbar i{display:block;height:100%;background:var(--c);min-width:2px}
+  .dbar i:last-child{border-radius:0 4px 4px 0}
+  .dbar i:hover{filter:brightness(1.12)}
+  .dtrack b{position:absolute;top:7px;line-height:16px;font-family:var(--mono);font-size:11px;
+            font-weight:600;color:var(--copy);font-variant-numeric:tabular-nums;white-space:nowrap}
+  .dcell.nr{display:flex;align-items:center;font-size:12px;color:var(--mute)}
+  .dgrid .dt{position:relative;height:18px;margin-right:46px;font-family:var(--mono);font-size:10px;
+             color:var(--mute)}
+  .dgrid .dt span{position:absolute;top:4px;transform:translateX(-50%)}
+  .dgrid .dt span:first-child{transform:none}
+  table.dif{min-width:720px}
+  table.dif th.g{text-align:center;border-left:1px solid var(--line)}
+  table.dif thead tr + tr th{text-align:right}
+  table.dif td.n{text-align:right;font-variant-numeric:tabular-nums}
+  table.dif td.gs,table.dif td.nr{border-left:1px solid var(--line)}
+
+  details.figs{margin:10px 0 0}
+  details.figs summary{cursor:pointer;display:inline-flex;align-items:center;gap:8px;
+        font-family:var(--disp);font-weight:600;font-size:13.5px;color:var(--orange-ink);
+        padding:4px 2px;list-style:none}
+  details.figs summary::-webkit-details-marker{display:none}
+  details.figs summary::before{content:"";width:6px;height:6px;margin-top:-2px;
+        border-right:1.6px solid currentColor;border-bottom:1.6px solid currentColor;
+        transform:rotate(-45deg);transition:transform .18s}
+  details.figs[open] summary::before{margin-top:-4px;transform:rotate(45deg)}
+  details.figs .mx-scroll{margin-top:8px}
+
+  /* ---- the tables ---- */
+  .mx-scroll{overflow-x:auto;margin:0;padding-bottom:4px;background:var(--card);
+             border:1px solid var(--line);border-radius:var(--r-card);box-shadow:var(--sh-1)}
+  table.mx{width:100%;border-collapse:collapse;font-size:14px}
+  table.mx th,table.mx td{padding:9px 12px;border-bottom:1px solid var(--line);text-align:left;
+                          vertical-align:top}
+  table.mx thead th{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;
+                    text-transform:uppercase;color:var(--mute);font-weight:600;
+                    border-bottom:1px solid var(--line-2);white-space:nowrap}
+  table.mx tbody tr:last-child td,table.mx tbody tr:last-child th{border-bottom:0}
+  table.mx tbody tr:hover{background:var(--sky-2)}
+  table.mx tbody th{font-weight:400}
+
+  table.fig{min-width:560px}
+  table.fig td{white-space:nowrap}
+  table.fig td b{display:inline-block;min-width:52px;font-weight:700;color:var(--navy);
+                 font-variant-numeric:tabular-nums}
+  table.fig .of{margin-left:6px;font-family:var(--mono);font-size:11px;color:var(--mute);
+                font-variant-numeric:tabular-nums}
+  table.fig .with{display:block;margin-top:2px;font-size:11.5px;color:var(--mute)}
+  table.fig td.nr{color:var(--mute);font-size:13px}
+  table.fig .vn{display:block;color:var(--navy);font-weight:600}
+  table.fig .vd{display:block;font-family:var(--mono);font-size:10.5px;color:var(--mute);margin-top:1px}
+  table.fig tr.cur{background:var(--sky-2)}
+
+  table.ver{min-width:620px}
+  table.ver td.v{width:1%;white-space:nowrap;color:var(--navy);font-weight:600}
+  table.ver td.d{width:1%;white-space:nowrap;font-family:var(--mono);font-size:12px;color:var(--copy)}
+  table.ver td.d small{display:block;font-size:10.5px;color:var(--mute)}
+  table.ver td{line-height:1.5}
+  table.ver tr.sub td{font-size:13px;color:var(--copy)}
+
+  table.rds{min-width:620px}
+  table.rds td.n{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums;width:1%}
+  table.rds thead th.n{text-align:right}
+  table.rds td.r{width:1%;white-space:nowrap;font-family:var(--mono);font-size:12.5px;
+                 color:var(--navy);font-weight:600}
+  table.rds td{line-height:1.5}
+
+  table.miss{min-width:520px}
+  table.miss td.r{width:1%;white-space:nowrap;font-family:var(--mono);font-size:12.5px;
+                  color:var(--navy);font-weight:600}
+  table.miss td.n{width:1%;text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums;
+                  font-weight:700;color:var(--navy)}
+  table.miss td{line-height:1.5}
+  table.miss ul{margin:0;padding:0 0 0 16px}
+  table.miss li{margin:0 0 3px}
+
+  /* the closing note: set apart by its ground, not by a band */
+  .note{margin:44px 0 0;padding:20px 24px 22px;background:var(--sky);
+        border:1px solid var(--line);border-radius:var(--r-card);box-shadow:var(--sh-1)}
+  .note h3{font-family:var(--disp);font-weight:700;font-size:var(--t-h3);margin:0 0 10px;
+           letter-spacing:-.02em;color:var(--navy)}
+  .note ul{margin:0;padding:0 0 0 18px}
+  .note li{margin:0 0 8px;color:var(--copy);font-size:14.5px;line-height:1.6;text-wrap:pretty}
+  .note li:last-child{margin-bottom:0}
+
+  .wkfoot .code{font-size:11px;padding:1px 5px}
+
+  /* ---- Chinese: looser lines, no negative tracking ---- */
+  html[lang^="zh"] .tile .q,html[lang^="zh"] .tile .tn,html[lang^="zh"] .note li,
+  html[lang^="zh"] table.mx td,html[lang^="zh"] .viz figcaption{line-height:1.75;letter-spacing:.01em}
+  html[lang^="zh"] .tile h3,html[lang^="zh"] .note h3{letter-spacing:0;line-height:1.3}
+  html[lang^="zh"] table.mx thead th{letter-spacing:.02em}
+
+  @media (prefers-reduced-motion:reduce){details.figs summary::before{transition:none}}
+  @media (max-width:980px){
+    .wrap{padding-left:22px;padding-right:22px}
+    .tiles{grid-template-columns:1fr}
+  }
+  @media print{
+    body{background:#fff;color:#000}
+    .wrap{max-width:none;padding:0}
+    .tile,.viz,.mx-scroll,.note{box-shadow:none;break-inside:avoid;page-break-inside:avoid}
+    .viz-tip{display:none}
+    .note{background:#fff}
+  }
+</style>
+<noscript><style>.viz{display:none}</style></noscript>
+</head>
+<body>
+<!-- wiki chrome · identical in every page of this site: edit one, edit all -->
+<style id="wk-chrome">
+  /* ---- project wiki chrome (shared across every page of this site) ---- */
+  :root{
+    --ink:#14243A; --navy:#1C3557; --slate:#5B6B7F; --mute:#8D9BAB;
+    --paper:#F5F7FA; --card:#FFFFFF; --line:#DCE3EA;
+    --orange:#E0632A; --purple:#7B2D8E; --green:#3F8F5F; --amber:#C98A1E; --halt:#B44538;
+    --person:#C4674A; --blue:#4A7DBD;
+    --disp:"Aptos Display","Segoe UI Variable Display","Segoe UI","Noto Sans SC","PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+    --body:"Aptos","Segoe UI Variable Text","Segoe UI","Noto Sans SC","PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+    --mono:ui-monospace,"Cascadia Mono","Segoe UI Mono",Consolas,monospace;
+    --wk-nav-h:46px;
+    --r-ctl:6px; --r-card:10px; --r-lg:14px;
+  }
+  .wknav *,.wkc *,.wklang *{box-sizing:border-box}
+  .wk-zh{display:none}
+  html[data-lang="zh"] .wk-zh,html[lang^="zh"] .wk-zh,body[data-lang="zh"] .wk-zh{display:inline}
+  html[data-lang="zh"] .wk-en,html[lang^="zh"] .wk-en,body[data-lang="zh"] .wk-en{display:none}
+
+  .wkskip{position:absolute;left:16px;top:-56px;z-index:400;padding:8px 14px;
+          background:var(--navy);color:#fff;text-decoration:none;border-radius:var(--r-ctl);
+          font-family:var(--disp);font-weight:600;font-size:13px}
+  .wkskip:focus{top:8px;color:#fff;outline:2px solid var(--orange);outline-offset:2px}
+
+  .wknav{position:sticky;top:0;z-index:200;background:rgba(255,255,255,.90);
+         -webkit-backdrop-filter:saturate(1.5) blur(10px);backdrop-filter:saturate(1.5) blur(10px);
+         border-bottom:1px solid rgba(20,36,58,.10);
+         font-family:var(--disp)}
+  .wknav-in{max-width:1200px;margin:0 auto;padding:0 40px;height:var(--wk-nav-h);display:flex;align-items:center;
+            gap:14px;overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none}
+  .wknav-in::-webkit-scrollbar{display:none}
+  .wkmark{flex:0 0 auto;display:inline-flex;align-items:baseline;gap:8px;text-decoration:none;white-space:nowrap}
+  .wkmark b{font-size:14px;font-weight:700;letter-spacing:-.012em;color:var(--ink)}
+  .wkmark b i{font-style:normal;color:var(--orange)}
+  .wkmark span{font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:#9AA6B4;font-weight:600}
+  .wkrule{flex:0 0 auto;width:1px;height:17px;background:rgba(20,36,58,.14)}
+  .wklinks{flex:1 1 auto;display:flex;align-items:center;gap:1px;white-space:nowrap}
+  .wknav a{position:relative;padding:7px 10px;border-radius:5px;font-size:13px;font-weight:600;
+           color:var(--slate);text-decoration:none;white-space:nowrap;transition:color .15s,background .15s}
+  .wknav .wklinks a:hover,.wknav .wkdev:hover{background:rgba(20,36,58,.055);color:var(--ink)}
+  .wknav a:focus-visible{outline:2px solid var(--orange);outline-offset:1px}
+  .wknav a[aria-current="page"]{color:var(--ink)}
+  .wknav a[aria-current="page"]::after{content:"";position:absolute;left:10px;right:10px;bottom:0;
+           height:2px;border-radius:2px;background:var(--orange)}
+
+  /* a group of pages under one name. The button rides in the strip; the panel
+     hangs off .wknav rather than the strip, because the strip scrolls sideways
+     and clips what overflows it - so the panel's left is set from the button,
+     in JS. A browser with no JavaScript gets the plain links (.wkmenu-fb). */
+  .wkmenu{flex:0 0 auto;display:inline-flex;align-items:center;position:static}
+  .wkmenu-fb{display:none}
+  .wknav .wkmenu-btn{position:relative;display:inline-flex;align-items:center;gap:6px;
+           font:inherit;font-family:var(--disp);font-size:13px;font-weight:600;
+           padding:7px 10px;border:0;border-radius:5px;background:transparent;color:var(--slate);
+           white-space:nowrap;cursor:pointer;transition:color .15s,background .15s}
+  .wknav .wkmenu-btn:hover,.wknav .wkmenu-btn[aria-expanded="true"]{background:rgba(20,36,58,.055);color:var(--ink)}
+  .wknav .wkmenu-btn:focus-visible{outline:2px solid var(--orange);outline-offset:1px}
+  .wknav .wkmenu-btn.wk-cur{color:var(--ink)}
+  .wknav .wkmenu-btn.wk-cur::after{content:"";position:absolute;left:10px;right:10px;bottom:0;
+           height:2px;border-radius:2px;background:var(--orange)}
+  .wkcar{width:6px;height:6px;margin-top:-2px;opacity:.7;
+         border-right:1.6px solid currentColor;border-bottom:1.6px solid currentColor;
+         transform:rotate(45deg);transition:transform .18s}
+  .wkmenu-btn[aria-expanded="true"] .wkcar{margin-top:1px;transform:rotate(-135deg)}
+
+  .wkmenu-p{position:absolute;top:calc(100% + 5px);left:0;z-index:210;min-width:190px;padding:6px;
+            background:var(--card);border:1px solid var(--line);border-radius:10px;
+            box-shadow:0 14px 34px rgba(20,36,58,.14),0 2px 5px rgba(20,36,58,.06);
+            opacity:0;transform:translateY(-4px);transition:opacity .14s,transform .14s}
+  .wkmenu-p.wk-open{opacity:1;transform:none}
+  .wkmenu-p[hidden]{display:none}
+  .wknav .wkmenu-p a{display:block;padding:8px 11px;border-radius:6px;font-size:13px;
+           font-weight:600;color:var(--ink);white-space:nowrap}
+  .wknav .wkmenu-p a:hover{background:#EEF2F6;color:var(--ink)}
+  .wknav .wkmenu-p a[aria-current="page"]{background:rgba(224,99,42,.09)}
+  .wknav .wkmenu-p a[aria-current="page"]::after{display:none}
+  @media (prefers-reduced-motion:reduce){.wkmenu-p,.wkcar{transition:none}}
+
+  .wkdev{flex:0 0 auto;display:inline-flex;align-items:center;gap:6px}
+  .wkdev::before{content:"";position:absolute;left:-8px;top:9px;bottom:9px;width:1px;background:rgba(20,36,58,.14)}
+
+  .wklang{flex:0 0 auto;display:flex;height:28px;overflow:hidden;margin-left:4px;
+          background:var(--card);border:1px solid var(--line);border-radius:var(--r-ctl)}
+  .wklang button{font:inherit;font-family:var(--disp);font-weight:600;font-size:11.5px;
+                 padding:0 10px;border:0;background:transparent;color:var(--slate);cursor:pointer}
+  .wklang button + button{border-left:1px solid var(--line)}
+  .wklang button:hover{background:#EEF2F6;color:var(--navy)}
+  .wklang button[aria-selected="true"]{background:var(--navy);color:#fff}
+  .wklang button[aria-selected="true"]:hover{background:var(--navy);color:#fff}
+  .wklang button:focus-visible{outline:2px solid var(--orange);outline-offset:-2px}
+
+  @media (max-width:980px){.wknav-in{padding:0 22px}}
+  @media (max-width:780px){.wkmark span{display:none}}
+  @media print{.wknav,.wkskip,.wklang{display:none}}
+</style>
+
+<a class="wkskip" href="#main"><span class="wk-en">Skip to content</span><span class="wk-zh">跳到正文</span></a>
+<nav class="wknav" aria-label="Project wiki">
+  <div class="wknav-in">
+    <a class="wkmark" href="index.html">
+      <b>AI Data<i>+</i></b><span class="wk-en">project wiki</span><span class="wk-zh">项目手册</span>
+    </a>
+    <span class="wkrule" aria-hidden="true"></span>
+    <div class="wklinks">
+      <a href="index.html"><span class="wk-en">Overview</span><span class="wk-zh">总览</span></a>
+      <a href="flow.html"><span class="wk-en">How it works</span><span class="wk-zh">整体流程</span></a>
+      <a href="lifecycle.html"><span class="wk-en">Step by step</span><span class="wk-zh">逐步流程</span></a>
+      <span class="wkmenu"><button class="wkmenu-btn wk-cur" aria-current="true" type="button" id="wkmenu-b" aria-expanded="false" aria-controls="wkmenu-p"><span class="wk-en">Submission Agent</span><span class="wk-zh">文件分拣智能体</span><span class="wkcar" aria-hidden="true"></span></button>
+        <div class="wkmenu-p" id="wkmenu-p" hidden>
+          <a href="rules.html"><span class="wk-en">The rules</span><span class="wk-zh">分拣规则</span></a>
+          <a href="gate.html"><span class="wk-en">RAG Gate</span><span class="wk-zh">RAG 闸门</span></a>
+          <a href="performance.html" aria-current="page"><span class="wk-en">Performance</span><span class="wk-zh">规则表现</span></a>
+        </div></span>
+      <span class="wkmenu-fb"><a href="rules.html"><span class="wk-en">The rules</span><span class="wk-zh">分拣规则</span></a><a href="gate.html"><span class="wk-en">RAG Gate</span><span class="wk-zh">RAG 闸门</span></a><a href="performance.html" aria-current="page"><span class="wk-en">Performance</span><span class="wk-zh">规则表现</span></a></span>
+      <noscript><style>.wkmenu{display:none}.wkmenu-fb{display:contents}</style></noscript>
+    </div>
+    <a class="wkdev" href="developer.html"><span class="wk-en">Developer portal</span><span class="wk-zh">开发者门户</span></a>
+    <div class="wklang" role="group" aria-label="Language">
+      <button type="button" data-v="en" aria-selected="true">EN</button>
+      <button type="button" data-v="zh" aria-selected="false">中文</button>
+    </div>
+  </div>
+</nav>
+
+<script>
+"use strict";
+(function(){
+  function read(){
+    try{ return localStorage.getItem("aidp.lang")==="zh" ? "zh" : "en"; }
+    catch(e){ return "en"; }
+  }
+  function paint(v){
+    document.querySelectorAll(".wklang button").forEach(function(b){
+      b.setAttribute("aria-selected", b.getAttribute("data-v")===v ? "true" : "false");
+    });
+  }
+  function apply(v, silent){
+    var r=document.documentElement;
+    r.setAttribute("data-lang", v);
+    r.setAttribute("lang", v==="zh" ? "zh-Hans" : "en");
+    if(document.body) document.body.setAttribute("data-lang", v);
+    try{ localStorage.setItem("aidp.lang", v); }catch(e){}
+    paint(v);
+    if(!silent){
+      try{ document.dispatchEvent(new CustomEvent("aidp:lang", {detail:v})); }
+      catch(e){}
+    }
+  }
+  window.aidpSetLang = function(v){ apply(v==="zh"?"zh":"en", false); };
+  apply(read(), true);
+  document.addEventListener("click", function(e){
+    var b=e.target && e.target.closest && e.target.closest(".wklang button");
+    if(!b) return;
+    apply(b.getAttribute("data-v"), false);
+  });
+  document.addEventListener("aidp:lang", function(e){
+    if(e && e.detail) paint(e.detail==="zh"?"zh":"en");
+  });
+})();
+(function(){
+  var btn = document.getElementById("wkmenu-b"),
+      panel = document.getElementById("wkmenu-p"),
+      strip = document.querySelector(".wknav-in"),
+      nav = document.querySelector(".wknav");
+  if(!btn || !panel || !nav) return;
+
+  function items(){ return Array.prototype.slice.call(panel.querySelectorAll("a")); }
+
+  // The panel hangs off the bar, not off the strip the button sits in, so its
+  // left is the button's - measured on open, because the strip can be scrolled.
+  function place(){
+    if(panel.hidden) return;
+    var b = btn.getBoundingClientRect(), n = nav.getBoundingClientRect(),
+        max = n.width - panel.offsetWidth - 8,
+        x = b.left - n.left;
+    if(x > max) x = max;
+    if(x < 8) x = 8;
+    panel.style.left = Math.round(x) + "px";
+  }
+  // on a narrow screen the strip scrolls sideways, and the button can be off
+  // its own edge: a panel under a button nobody can see reads as a stray card.
+  function reveal(){
+    if(!strip) return;
+    var b = btn.getBoundingClientRect(), s = strip.getBoundingClientRect();
+    if(b.right > s.right) strip.scrollLeft += b.right - s.right + 10;
+    else if(b.left < s.left) strip.scrollLeft -= s.left - b.left + 10;
+  }
+  function open_(toFirst){
+    if(panel.hidden){
+      panel.hidden = false;
+      btn.setAttribute("aria-expanded", "true");
+      reveal();
+      place();
+      void panel.offsetWidth;
+      panel.classList.add("wk-open");
+    }
+    if(toFirst){ var it = items(); if(it[0]) it[0].focus(); }
+  }
+  function close_(toBtn){
+    if(panel.hidden) return;
+    panel.classList.remove("wk-open");
+    panel.hidden = true;
+    btn.setAttribute("aria-expanded", "false");
+    if(toBtn) btn.focus();
+  }
+
+  btn.addEventListener("click", function(){ panel.hidden ? open_(false) : close_(false); });
+  // in the CAPTURE phase: pages stop their own clicks from reaching the document
+  // (a tooltip chip, a card), and an open panel must close under those too
+  document.addEventListener("click", function(e){
+    var t = e.target;
+    if(!t || !t.closest) return;
+    if(t.closest("#wkmenu-p") || t.closest("#wkmenu-b")) return;
+    close_(false);
+  }, true);
+  // focus that leaves the pair closes it: Tab from the button, Shift+Tab off the
+  // first link. Handled here rather than on the Tab key, which fires BEFORE the
+  // browser has moved focus and would tear the panel down under it.
+  nav.addEventListener("focusout", function(e){
+    var to = e.relatedTarget;
+    if(!to) return;                       // focus left the window: leave it be
+    if(to === btn || panel.contains(to)) return;
+    close_(false);
+  });
+  document.addEventListener("keydown", function(e){
+    var k = e.key;
+    if(k === "Escape" || k === "Esc"){
+      // while the panel is open Escape is the menu's; closed, it is the page's
+      if(!panel.hidden){
+        e.preventDefault();
+        if(e.stopImmediatePropagation) e.stopImmediatePropagation();
+        close_(true);
+      }
+      return;
+    }
+    var onBtn = document.activeElement === btn,
+        inPanel = !panel.hidden && panel.contains(document.activeElement);
+    if(onBtn && (k === "ArrowDown" || k === "Down")){ e.preventDefault(); open_(true); return; }
+    if(!inPanel) return;
+    var it = items(), at = it.indexOf(document.activeElement), to = -1;
+    if(k === "ArrowDown" || k === "Down") to = (at + 1) % it.length;
+    else if(k === "ArrowUp" || k === "Up") to = (at - 1 + it.length) % it.length;
+    else if(k === "Home") to = 0;
+    else if(k === "End") to = it.length - 1;
+    if(to > -1){ e.preventDefault(); it[to].focus(); }
+  });
+  window.addEventListener("resize", place);
+  if(strip) strip.addEventListener("scroll", place);
+  document.addEventListener("aidp:lang", place);   // every label in the bar changes width
+})();
+</script>
+<!-- /wiki chrome -->
+<!-- wiki page kit · identical in every page that carries it: edit one, edit all -->
+<style id="wk-kit">
+  /* ---- AI Data+ page kit: the Overview's look, shared by the pages behind it ---- */
+  :root{
+    /* palette · the Overview's, to the byte */
+    --navy:#13294B; --copy:#3A4A63; --mute:#8A97AA; --line:#D3DEEA; --sky:#EAF2F8;
+    /* line-2 is the border a card takes when it lifts; sky-2 a row under the pointer */
+    --line-2:#C3D0DD; --mute-2:#C8D3E0; --sky-2:#F6F9FC;
+    /* every -ink is the readable version of its colour: 4.5:1 on white AND on its own
+       wash, so a label may sit on either without a second decision */
+    --orange:#E8752A; --orange-2:#F1A26C; --orange-3:#FCE9DC; --orange-ink:#A34A14;
+    --purple:#6B2C91; --purple-2:#EFE6F5; --purple-ink:#6B2C91;
+    --green:#2E9E6B;  --green-2:#E3F4EB;  --green-ink:#1F7A45;
+    --blue-ink:#355F91;
+    --amber:#C9922B;  --amber-2:#FBF0DA; --amber-ink:#8A6410;
+    --halt:#C8443A;   --halt-2:#F8E3E1;  --halt-ink:#A8382F;
+    --paper:#FFFFFF;  --card:#FFFFFF;
+    /* surfaces · one card, one lift, everywhere */
+    --sh-1:0 1px 2px rgba(19,41,75,.05);
+    --sh-2:0 12px 30px rgba(19,41,75,.08);
+    --sh-3:0 18px 44px rgba(19,41,75,.14);
+    --r-ctl:6px; --r-card:14px; --r-lg:18px;
+    /* type scale · one ladder, every page */
+    --t-h1:clamp(32px,4.2vw,54px);
+    --t-h2:clamp(21px,2.1vw,27px);
+    --t-h3:19px;
+    --t-body:15.5px;
+    --t-lede:17px;
+    --wkw:860px;              /* the reading column; a chart page overrides it */
+    --pad-x:40px;
+  }
+  :focus-visible{outline:2px solid var(--orange);outline-offset:2px}
+
+  /* the ground: two soft washes and a dot grid, exactly as the Overview draws them */
+  .wkbg{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
+  .wkbg i{position:absolute;width:64vmax;height:64vmax;border-radius:50%;
+          filter:blur(100px);opacity:.34;animation:wkdrift 22s ease-in-out infinite}
+  .wkbg i:nth-child(1){left:-24vmax;top:-18vmax;background:var(--orange-3)}
+  .wkbg i:nth-child(2){right:-28vmax;bottom:-26vmax;background:var(--sky);animation-delay:-11s}
+  .wkbg:after{content:"";position:absolute;inset:0;opacity:.05;
+          background-image:radial-gradient(#13294B .9px,transparent 1px);background-size:30px 30px}
+  @keyframes wkdrift{0%,100%{margin-left:0;margin-top:0}50%{margin-left:3vw;margin-top:2vh}}
+  @media (prefers-reduced-motion:reduce){.wkbg i{animation:none}}
+  @media print{.wkbg{display:none}}
+
+  /* the page head: eyebrow, title, lede, and whatever controls the page owns */
+  .wkhead{display:flex;align-items:flex-end;justify-content:space-between;gap:16px 32px;
+          flex-wrap:wrap;padding:34px 0 20px;margin:0 0 24px;border-bottom:1px solid var(--line)}
+  .wkhead-t{flex:1 1 420px;min-width:0}
+  .wkhead-a{flex:0 0 auto;display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding-bottom:4px}
+  .wkey{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.14em;
+        color:var(--purple);margin:0 0 11px}
+  .wkhead h1{font-family:var(--disp);font-weight:800;color:var(--navy);font-size:var(--t-h1);
+             line-height:1.02;letter-spacing:-.032em;margin:0;text-wrap:balance}
+  .wklede{font-size:var(--t-lede);line-height:1.55;color:var(--copy);margin:14px 0 0;
+          max-width:58ch;text-wrap:pretty}
+  /* a page whose own toolbar sits right below the title draws no rule under it */
+  .wkhead.wk-bare{border-bottom:0;padding-bottom:10px;margin-bottom:12px}
+
+  /* section heads, one size on every page */
+  .wkh2{font-family:var(--disp);font-weight:800;font-size:var(--t-h2);letter-spacing:-.022em;
+        color:var(--navy);margin:44px 0 6px;text-wrap:balance}
+  .wkh3{font-family:var(--disp);font-weight:700;font-size:var(--t-h3);letter-spacing:-.02em;
+        color:var(--navy);margin:0}
+  .wksub{font-size:15px;line-height:1.5;color:var(--copy);margin:0 0 16px;max-width:58ch;
+         text-wrap:pretty}
+
+  /* one card, one lift. A page adds its own edge or band on top of these. */
+  .wkcard{background:var(--card);border:1px solid var(--line);border-radius:var(--r-card);
+          box-shadow:var(--sh-1)}
+  .wkcard-lift{transition:transform .18s cubic-bezier(.2,.7,.2,1),box-shadow .18s,border-color .18s}
+  .wkcard-lift:hover{transform:translateY(-2px);border-color:var(--line-2);box-shadow:var(--sh-2)}
+  @media (prefers-reduced-motion:reduce){.wkcard-lift{transition:none}
+    .wkcard-lift:hover{transform:none}}
+
+  /* keep reading: the Overview's contents cards, minus the page you are on */
+  .wknext{margin:60px 0 0;padding:28px 0 0;border-top:1px solid var(--line)}
+  .wknext-h{font-family:var(--disp);font-weight:800;font-size:var(--t-h2);letter-spacing:-.022em;
+            color:var(--navy);margin:0 0 6px}
+  .wknext-s{font-size:15px;line-height:1.5;color:var(--copy);margin:0 0 20px;max-width:52ch}
+  .wknext-g{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;
+            max-width:var(--wkw);margin:0}
+  .wknext-c{position:relative;display:block;padding:18px 20px 20px;background:var(--card);
+            border:1px solid var(--line);border-radius:var(--r-card);box-shadow:var(--sh-1);
+            text-decoration:none;color:inherit;
+            transition:transform .18s cubic-bezier(.2,.7,.2,1),box-shadow .18s,border-color .18s}
+  .wknext-c:hover{transform:translateY(-2px);border-color:var(--line-2);box-shadow:var(--sh-2)}
+  .wknext-c b{display:block;font-family:var(--disp);font-weight:700;font-size:18px;line-height:1.2;
+              letter-spacing:-.02em;color:var(--navy);margin:0 0 6px;padding-right:20px}
+  .wknext-d{display:block;font-size:13.5px;line-height:1.5;color:var(--copy);text-wrap:pretty}
+  .wknext-go{position:absolute;right:18px;top:16px;font-size:15px;color:var(--mute-2);
+             transition:color .18s,transform .18s}
+  .wknext-c:hover .wknext-go{color:var(--orange);transform:translateX(2px)}
+  @media (prefers-reduced-motion:reduce){.wknext-c,.wknext-go{transition:none}}
+  @media print{.wknext{display:none}}
+
+  /* the last line on every page, said the same way */
+  .wkfoot{margin:36px 0 0;padding:14px 0 0;border-top:1px solid var(--line);
+          font-family:var(--mono);font-size:11px;letter-spacing:.03em;color:var(--mute);
+          display:flex;gap:18px;flex-wrap:wrap}
+  .wkfoot a{color:var(--orange-ink);text-decoration:none}
+  .wkfoot a:hover{text-decoration:underline}
+
+  html[lang^="zh"] .wkhead h1{font-size:clamp(28px,3.6vw,46px);line-height:1.2;letter-spacing:.01em}
+  html[lang^="zh"] .wkey{letter-spacing:.08em}
+  html[lang^="zh"] .wklede,html[lang^="zh"] .wknext-s,html[lang^="zh"] .wknext-d{line-height:1.75}
+  html[lang^="zh"] .wknext-h{letter-spacing:0;line-height:1.35}
+
+  @media (max-width:980px){
+    .wkhead{padding-top:26px}
+    .wknext-g{grid-template-columns:1fr}
+  }
+</style>
+<div class="wkbg" aria-hidden="true"><i></i><i></i></div>
+<!-- /wiki page kit -->
+<div class="wrap">
+
+  <header class="wkhead" id="main">
+    <div class="wkhead-t">
+      <p class="wkey">AI Data+</p>
+      <h1><span class="en">How each version of the rules scores</span><span class="zh">每一版规则的成绩</span></h1>
+      <p class="wklede">
+        <span class="en">Each version of the triage rules is run over up to three rounds of submissions whose core documents a person chose by hand, and scored against that person’s answers. Every figure counts documents: one file’s content within one submission, however many copies of it the export holds.</span>
+        <span class="zh">每一版分拣规则最多在三轮提交上跑一遍，再与人工逐份挑出的核心文件比对。所有数字都按文件计：同一份提交里内容相同的文件，导出里不论有几个副本，都只算一份。</span>
+      </p>
+    </div>
+  </header>
+
+  <h2 class="wkh2" id="now"><span class="en">The current rules</span><span class="zh">现行规则</span></h2>
+  <p class="wksub"><span class="en">The figures of <span class="hash">7e6db6b</span>, run-13 of 2026-10-14. The rules on main since then, run as run-14 and run-15, moved no document’s role in any round, so their figures are the same.</span><span class="zh">以下是 <span class="hash">7e6db6b</span> 的成绩，2026-10-14 的 run-13。此后 main 上的规则跑过 run-14、run-15，各轮都没有任何文件的结论变动，成绩不变。</span></p>
+  <div class="tiles">
+    <article class="tile">
+      <h3><span class="en">Recall</span><span class="zh">召回率</span></h3>
+      <p class="q"><span class="en">Did the rules find the core file?</span><span class="zh">核心文件找到了吗？</span></p>
+      <ul>
+        <li><span class="r">MVP20</span><b>100%</b><span class="of">365 / 365</span></li>
+        <li><span class="r">MVP3</span><b>96.8%</b><span class="of">60 / 62</span></li>
+        <li><span class="r">TEST15</span><b>95.8%</b><span class="of">181 / 189</span></li>
+      </ul>
+    </article>
+    <article class="tile">
+      <h3><span class="en">Precision</span><span class="zh">精确率</span></h3>
+      <p class="q"><span class="en">Is what the rules keep needed?</span><span class="zh">留下的都用得上吗？</span></p>
+      <ul>
+        <li><span class="r">MVP20</span><b>95.1%</b><span class="of">331 / 348</span></li>
+        <li><span class="r">MVP3</span><b>92.1%</b><span class="of">58 / 63</span></li>
+        <li><span class="r">TEST15</span><b>72.4%</b><span class="of">181 / 250</span></li>
+      </ul>
+      <p class="tn"><span class="en">MVP20 and MVP3 without the emails kept for the line or the firm order terms; with them, 83.3% and 78.9%.</span><span class="zh">MVP20、MVP3 不计为承保份额或 FOT 而留下的邮件；算上这些邮件，分别为 83.3% 和 78.9%。</span></p>
+    </article>
+    <article class="tile">
+      <h3><span class="en">Accuracy</span><span class="zh">准确率</span></h3>
+      <p class="q"><span class="en">How often do the rules agree with the person?</span><span class="zh">和人的答案一致的有多少？</span></p>
+      <ul>
+        <li><span class="r">MVP20</span><b>89.5%</b><span class="of">723 / 808</span></li>
+        <li><span class="r">MVP3</span><b>86.8%</b><span class="of">138 / 159</span></li>
+        <li><span class="r">TEST15</span><b>76.6%</b><span class="of">324 / 423</span></li>
+      </ul>
+    </article>
+  </div>
+
+  <h2 class="wkh2" id="recall"><span class="en">Recall: did the rules find the core file?</span><span class="zh">召回率：核心文件找到了吗？</span></h2>
+  <p class="wksub"><span class="en">Of the documents a person kept, the share the rules keep too. Below 100%, a document the person needed does not reach downstream. This is the figure that matters most.</span><span class="zh">人留下的文件里，规则也留下的占比。不到 100%，就有人需要的文件到不了下游。这是最要紧的一个数。</span></p>
+  <figure class="viz" data-for="recall">
+    <div class="viz-legend"></div>
+    <div class="viz-scroll"><div class="viz-box" tabindex="0"></div></div>
+    <figcaption><span class="en">Every MVP20 miss from v5 to <span class="hash">7b4ec16</span> is an email naming the written or signed line, which the project owner’s corrections of 2026-09-30 count as kept. MVP3 was not run from v5 to <span class="hash">7b4ec16</span>. The axis starts at 60%.</span><span class="zh">v5 到 <span class="hash">7b4ec16</span> 在 MVP20 漏掉的，全是写明承保份额、经项目负责人 2026-09-30 更正算作留下的邮件。v5 到 <span class="hash">7b4ec16</span> 没有跑 MVP3。纵轴从 60% 起。</span></figcaption>
+  </figure>
+  <details class="figs">
+    <summary><span class="en">The figures, version by version</span><span class="zh">逐版数字</span></summary>
+    <div class="mx-scroll">
+      <table class="mx fig" data-metric="recall">
+        <thead>
+          <tr><th><span class="en">Version</span><span class="zh">版本</span></th><th>MVP20</th><th>MVP3</th><th>TEST15</th></tr>
+        </thead>
+        <tbody>
+          <tr data-v="first" data-en="first run" data-zh="首次运行" data-date="08-17/21"><th scope="row"><span class="vn"><span class="en">first run</span><span class="zh">首次运行</span></span><span class="vd">2026-08-17/21</span></th><td data-n="361" data-d="365"><b>98.9%</b><span class="of">361 / 365</span></td><td data-n="58" data-d="62"><b>93.5%</b><span class="of">58 / 62</span></td><td data-n="180" data-d="189"><b>95.2%</b><span class="of">180 / 189</span></td></tr>
+          <tr data-v="13a2bc4" data-en="v5" data-zh="v5" data-date="08-28"><th scope="row"><span class="vn">v5 <span class="hash">13a2bc4</span></span><span class="vd">2026-08-28</span></th><td data-n="332" data-d="365"><b>91.0%</b><span class="of">332 / 365</span></td><td class="nr" data-n=""><span class="en">not run</span><span class="zh">未跑</span></td><td data-n="167" data-d="189"><b>88.4%</b><span class="of">167 / 189</span></td></tr>
+          <tr data-v="98a0573" data-en="98a0573" data-zh="98a0573" data-date="09-01"><th scope="row"><span class="vn"><span class="hash">98a0573</span></span><span class="vd">2026-09-01</span></th><td data-n="332" data-d="365"><b>91.0%</b><span class="of">332 / 365</span></td><td class="nr" data-n=""><span class="en">not run</span><span class="zh">未跑</span></td><td data-n="167" data-d="189"><b>88.4%</b><span class="of">167 / 189</span></td></tr>
+          <tr data-v="7b4ec16" data-en="7b4ec16" data-zh="7b4ec16" data-date="09-30"><th scope="row"><span class="vn"><span class="hash">7b4ec16</span></span><span class="vd">2026-09-30</span></th><td data-n="331" data-d="365"><b>90.7%</b><span class="of">331 / 365</span></td><td class="nr" data-n=""><span class="en">not run</span><span class="zh">未跑</span></td><td data-n="166" data-d="189"><b>87.8%</b><span class="of">166 / 189</span></td></tr>
+          <tr data-v="d09e319" data-en="d09e319" data-zh="d09e319" data-date="10-02"><th scope="row"><span class="vn"><span class="hash">d09e319</span></span><span class="vd">2026-10-02</span></th><td data-n="365" data-d="365"><b>100%</b><span class="of">365 / 365</span></td><td data-n="60" data-d="62"><b>96.8%</b><span class="of">60 / 62</span></td><td data-n="175" data-d="189"><b>92.6%</b><span class="of">175 / 189</span></td></tr>
+          <tr data-v="b9140d4" data-en="b9140d4" data-zh="b9140d4" data-date="10-14"><th scope="row"><span class="vn"><span class="hash">b9140d4</span></span><span class="vd">2026-10-14 · run-12</span></th><td data-n="365" data-d="365"><b>100%</b><span class="of">365 / 365</span></td><td data-n="60" data-d="62"><b>96.8%</b><span class="of">60 / 62</span></td><td data-n="181" data-d="189"><b>95.8%</b><span class="of">181 / 189</span></td></tr>
+          <tr data-v="7e6db6b" data-en="7e6db6b" data-zh="7e6db6b" data-date="10-14" class="cur"><th scope="row"><span class="vn"><span class="hash">7e6db6b</span></span><span class="vd">2026-10-14 · run-13</span></th><td data-n="365" data-d="365"><b>100%</b><span class="of">365 / 365</span></td><td data-n="60" data-d="62"><b>96.8%</b><span class="of">60 / 62</span></td><td data-n="181" data-d="189"><b>95.8%</b><span class="of">181 / 189</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </details>
+
+  <h2 class="wkh2" id="precision"><span class="en">Precision: is what the rules keep needed?</span><span class="zh">精确率：留下的都用得上吗？</span></h2>
+  <p class="wksub"><span class="en">Of the documents the rules keep, the share a person kept too. The rest are extra documents downstream receives: more to read, nothing lost.</span><span class="zh">规则留下的文件里，人也留下的占比。其余是下游多收到的文件：要多读，但不缺。</span></p>
+  <figure class="viz" data-for="precision">
+    <div class="viz-legend"></div>
+    <div class="viz-scroll"><div class="viz-box" tabindex="0"></div></div>
+    <figcaption><span class="en">From <span class="hash">d09e319</span> on, MVP20 and MVP3 leave out the emails the rules keep for the written or signed line, the firm order terms or the proposed structure (<span class="code">core_line_email</span>, <span class="code">core_terms_email</span>): the MVP20 analyst dropped every such email, 34 of which the project owner’s corrections of 2026-09-30 count as kept, and the MVP3 analyst kept 2 of the 13 the rules keep now. The figure with them is in the table. TEST15 counts them. MVP3 was not run from v5 to <span class="hash">7b4ec16</span>. The axis starts at 60%.</span><span class="zh">自 <span class="hash">d09e319</span> 起，MVP20、MVP3 不计规则因承保份额（written line、signed line）、FOT 或 proposed structure 而留下的邮件（<span class="code">core_line_email</span>、<span class="code">core_terms_email</span>）：MVP20 的分析师这类邮件一封没留，其中 34 封经项目负责人 2026-09-30 更正算作留下；MVP3 的分析师在规则现在留下的 13 封里留了 2 封。算上这些邮件的数字见表。TEST15 计入这些邮件。v5 到 <span class="hash">7b4ec16</span> 没有跑 MVP3。纵轴从 60% 起。</span></figcaption>
+  </figure>
+  <details class="figs">
+    <summary><span class="en">The figures, version by version</span><span class="zh">逐版数字</span></summary>
+    <div class="mx-scroll">
+      <table class="mx fig" data-metric="precision">
+        <thead>
+          <tr><th><span class="en">Version</span><span class="zh">版本</span></th><th>MVP20</th><th>MVP3</th><th>TEST15</th></tr>
+        </thead>
+        <tbody>
+          <tr data-v="first" data-en="first run" data-zh="首次运行" data-date="08-17/21"><th scope="row"><span class="vn"><span class="en">first run</span><span class="zh">首次运行</span></span><span class="vd">2026-08-17/21</span></th><td data-n="361" data-d="516"><b>70.0%</b><span class="of">361 / 516</span></td><td data-n="58" data-d="73"><b>79.5%</b><span class="of">58 / 73</span></td><td data-n="180" data-d="274"><b>65.7%</b><span class="of">180 / 274</span></td></tr>
+          <tr data-v="13a2bc4" data-en="v5" data-zh="v5" data-date="08-28"><th scope="row"><span class="vn">v5 <span class="hash">13a2bc4</span></span><span class="vd">2026-08-28</span></th><td data-n="332" data-d="371"><b>89.5%</b><span class="of">332 / 371</span></td><td class="nr" data-n=""><span class="en">not run</span><span class="zh">未跑</span></td><td data-n="167" data-d="219"><b>76.3%</b><span class="of">167 / 219</span></td></tr>
+          <tr data-v="98a0573" data-en="98a0573" data-zh="98a0573" data-date="09-01"><th scope="row"><span class="vn"><span class="hash">98a0573</span></span><span class="vd">2026-09-01</span></th><td data-n="332" data-d="371"><b>89.5%</b><span class="of">332 / 371</span></td><td class="nr" data-n=""><span class="en">not run</span><span class="zh">未跑</span></td><td data-n="167" data-d="218"><b>76.6%</b><span class="of">167 / 218</span></td></tr>
+          <tr data-v="7b4ec16" data-en="7b4ec16" data-zh="7b4ec16" data-date="09-30"><th scope="row"><span class="vn"><span class="hash">7b4ec16</span></span><span class="vd">2026-09-30</span></th><td data-n="331" data-d="356"><b>93.0%</b><span class="of">331 / 356</span></td><td class="nr" data-n=""><span class="en">not run</span><span class="zh">未跑</span></td><td data-n="166" data-d="222"><b>74.8%</b><span class="of">166 / 222</span></td></tr>
+          <tr data-v="d09e319" data-en="d09e319" data-zh="d09e319" data-date="10-02"><th scope="row"><span class="vn"><span class="hash">d09e319</span></span><span class="vd">2026-10-02</span></th><td data-n="331" data-d="356" data-n2="365" data-d2="390"><b>93.0%</b><span class="of">331 / 356</span><span class="with"><span class="en">with the emails</span><span class="zh">算上邮件</span> 93.6% · 365 / 390</span></td><td data-n="58" data-d="70" data-n2="60" data-d2="75"><b>82.9%</b><span class="of">58 / 70</span><span class="with"><span class="en">with the emails</span><span class="zh">算上邮件</span> 80.0% · 60 / 75</span></td><td data-n="175" data-d="233"><b>75.1%</b><span class="of">175 / 233</span></td></tr>
+          <tr data-v="b9140d4" data-en="b9140d4" data-zh="b9140d4" data-date="10-14"><th scope="row"><span class="vn"><span class="hash">b9140d4</span></span><span class="vd">2026-10-14 · run-12</span></th><td data-n="331" data-d="348" data-n2="365" data-d2="446"><b>95.1%</b><span class="of">331 / 348</span><span class="with"><span class="en">with the emails</span><span class="zh">算上邮件</span> 81.8% · 365 / 446</span></td><td data-n="58" data-d="63" data-n2="60" data-d2="76"><b>92.1%</b><span class="of">58 / 63</span><span class="with"><span class="en">with the emails</span><span class="zh">算上邮件</span> 78.9% · 60 / 76</span></td><td data-n="181" data-d="255"><b>71.0%</b><span class="of">181 / 255</span></td></tr>
+          <tr data-v="7e6db6b" data-en="7e6db6b" data-zh="7e6db6b" data-date="10-14" class="cur"><th scope="row"><span class="vn"><span class="hash">7e6db6b</span></span><span class="vd">2026-10-14 · run-13</span></th><td data-n="331" data-d="348" data-n2="365" data-d2="438"><b>95.1%</b><span class="of">331 / 348</span><span class="with"><span class="en">with the emails</span><span class="zh">算上邮件</span> 83.3% · 365 / 438</span></td><td data-n="58" data-d="63" data-n2="60" data-d2="76"><b>92.1%</b><span class="of">58 / 63</span><span class="with"><span class="en">with the emails</span><span class="zh">算上邮件</span> 78.9% · 60 / 76</span></td><td data-n="181" data-d="250"><b>72.4%</b><span class="of">181 / 250</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </details>
+
+  <h2 class="wkh2" id="accuracy"><span class="en">Accuracy: how often do the rules agree with the person?</span><span class="zh">准确率：和人的答案一致的有多少？</span></h2>
+  <p class="wksub"><span class="en">Of all the documents a person answered, keep or drop, the share the rules answer the same way. A document the rules leave undecided, for a person to decide, counts as a different answer.</span><span class="zh">人答过的所有文件里，不论留与不留，规则给出同样答案的占比。规则没下结论、留给人判断的文件，算作答案不同。</span></p>
+  <figure class="viz" data-for="accuracy">
+    <div class="viz-legend"></div>
+    <div class="viz-scroll"><div class="viz-box" tabindex="0"></div></div>
+    <figcaption><span class="en">Every document counts here, the emails kept for the line or the firm order terms included. MVP3 was not run from v5 to <span class="hash">7b4ec16</span>. The axis starts at 60%.</span><span class="zh">这里每份文件都计入，包括因承保份额或 FOT 而留下的邮件。v5 到 <span class="hash">7b4ec16</span> 没有跑 MVP3。纵轴从 60% 起。</span></figcaption>
+  </figure>
+  <details class="figs">
+    <summary><span class="en">The figures, version by version</span><span class="zh">逐版数字</span></summary>
+    <div class="mx-scroll">
+      <table class="mx fig" data-metric="accuracy">
+        <thead>
+          <tr><th><span class="en">Version</span><span class="zh">版本</span></th><th>MVP20</th><th>MVP3</th><th>TEST15</th></tr>
+        </thead>
+        <tbody>
+          <tr data-v="first" data-en="first run" data-zh="首次运行" data-date="08-17/21"><th scope="row"><span class="vn"><span class="en">first run</span><span class="zh">首次运行</span></span><span class="vd">2026-08-17/21</span></th><td data-n="567" data-d="808"><b>70.2%</b><span class="of">567 / 808</span></td><td data-n="133" data-d="159"><b>83.6%</b><span class="of">133 / 159</span></td><td data-n="268" data-d="423"><b>63.4%</b><span class="of">268 / 423</span></td></tr>
+          <tr data-v="13a2bc4" data-en="v5" data-zh="v5" data-date="08-28"><th scope="row"><span class="vn">v5 <span class="hash">13a2bc4</span></span><span class="vd">2026-08-28</span></th><td data-n="674" data-d="808"><b>83.4%</b><span class="of">674 / 808</span></td><td class="nr" data-n=""><span class="en">not run</span><span class="zh">未跑</span></td><td data-n="301" data-d="423"><b>71.2%</b><span class="of">301 / 423</span></td></tr>
+          <tr data-v="98a0573" data-en="98a0573" data-zh="98a0573" data-date="09-01"><th scope="row"><span class="vn"><span class="hash">98a0573</span></span><span class="vd">2026-09-01</span></th><td data-n="673" data-d="808"><b>83.3%</b><span class="of">673 / 808</span></td><td class="nr" data-n=""><span class="en">not run</span><span class="zh">未跑</span></td><td data-n="302" data-d="423"><b>71.4%</b><span class="of">302 / 423</span></td></tr>
+          <tr data-v="7b4ec16" data-en="7b4ec16" data-zh="7b4ec16" data-date="09-30"><th scope="row"><span class="vn"><span class="hash">7b4ec16</span></span><span class="vd">2026-09-30</span></th><td data-n="686" data-d="808"><b>84.9%</b><span class="of">686 / 808</span></td><td class="nr" data-n=""><span class="en">not run</span><span class="zh">未跑</span></td><td data-n="301" data-d="423"><b>71.2%</b><span class="of">301 / 423</span></td></tr>
+          <tr data-v="d09e319" data-en="d09e319" data-zh="d09e319" data-date="10-02"><th scope="row"><span class="vn"><span class="hash">d09e319</span></span><span class="vd">2026-10-02</span></th><td data-n="720" data-d="808"><b>89.1%</b><span class="of">720 / 808</span></td><td data-n="134" data-d="159"><b>84.3%</b><span class="of">134 / 159</span></td><td data-n="309" data-d="423"><b>73.0%</b><span class="of">309 / 423</span></td></tr>
+          <tr data-v="b9140d4" data-en="b9140d4" data-zh="b9140d4" data-date="10-14"><th scope="row"><span class="vn"><span class="hash">b9140d4</span></span><span class="vd">2026-10-14 · run-12</span></th><td data-n="677" data-d="808"><b>83.8%</b><span class="of">677 / 808</span></td><td data-n="137" data-d="159"><b>86.2%</b><span class="of">137 / 159</span></td><td data-n="304" data-d="423"><b>71.9%</b><span class="of">304 / 423</span></td></tr>
+          <tr data-v="7e6db6b" data-en="7e6db6b" data-zh="7e6db6b" data-date="10-14" class="cur"><th scope="row"><span class="vn"><span class="hash">7e6db6b</span></span><span class="vd">2026-10-14 · run-13</span></th><td data-n="723" data-d="808"><b>89.5%</b><span class="of">723 / 808</span></td><td data-n="138" data-d="159"><b>86.8%</b><span class="of">138 / 159</span></td><td data-n="324" data-d="423"><b>76.6%</b><span class="of">324 / 423</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </details>
+
+  <h2 class="wkh2" id="differ"><span class="en">Where the rules and the person differ</span><span class="zh">规则和人答得不一样的地方</span></h2>
+  <p class="wksub"><span class="en">Of the documents a person answered, the share the rules answered differently, split by which way.</span><span class="zh">人答过的文件里，规则答得不一样的占比，分漏掉、没下结论、多留三种。</span></p>
+  <figure class="viz dviz" data-for="differ">
+    <div class="viz-legend"></div>
+    <div class="viz-scroll"><div class="viz-box dbox"></div></div>
+    <figcaption><span class="en">Each bar runs from 0 to 40% of the documents answered in its round. Every document counts here, the emails kept for the line or the firm order terms included, so MVP20 and MVP3 show more kept extra here than under precision. MVP3 was not run from v5 to <span class="hash">7b4ec16</span>.</span><span class="zh">每条横条按本轮答过的文件计，刻度 0 到 40%。这里每份文件都计入，包括因承保份额或 FOT 而留下的邮件，所以 MVP20、MVP3 的多留比精确率里的多。v5 到 <span class="hash">7b4ec16</span> 没有跑 MVP3。</span></figcaption>
+  </figure>
+  <details class="figs">
+    <summary><span class="en">The figures, version by version</span><span class="zh">逐版数字</span></summary>
+    <div class="mx-scroll">
+      <table class="mx fig dif" data-metric="differ">
+        <thead>
+          <tr><th rowspan="2"><span class="en">Version</span><span class="zh">版本</span></th><th colspan="3" class="g" data-of="808">MVP20 <span class="of">/ 808</span></th><th colspan="3" class="g" data-of="159">MVP3 <span class="of">/ 159</span></th><th colspan="3" class="g" data-of="423">TEST15 <span class="of">/ 423</span></th></tr>
+          <tr><th class="n"><span class="en">missed</span><span class="zh">漏掉</span></th><th class="n"><span class="en">undecided</span><span class="zh">没下结论</span></th><th class="n"><span class="en">kept extra</span><span class="zh">多留</span></th><th class="n"><span class="en">missed</span><span class="zh">漏掉</span></th><th class="n"><span class="en">undecided</span><span class="zh">没下结论</span></th><th class="n"><span class="en">kept extra</span><span class="zh">多留</span></th><th class="n"><span class="en">missed</span><span class="zh">漏掉</span></th><th class="n"><span class="en">undecided</span><span class="zh">没下结论</span></th><th class="n"><span class="en">kept extra</span><span class="zh">多留</span></th></tr>
+        </thead>
+        <tbody>
+          <tr data-v="first" data-en="first run" data-zh="首次运行" data-date="08-17/21"><th scope="row"><span class="vn"><span class="en">first run</span><span class="zh">首次运行</span></span><span class="vd">2026-08-17/21</span></th><td class="n gs" data-n="4">4</td><td class="n" data-n="82">82</td><td class="n" data-n="155">155</td><td class="n gs" data-n="4">4</td><td class="n" data-n="7">7</td><td class="n" data-n="15">15</td><td class="n gs" data-n="8">8</td><td class="n" data-n="53">53</td><td class="n" data-n="94">94</td></tr>
+          <tr data-v="13a2bc4" data-en="v5" data-zh="v5" data-date="08-28"><th scope="row"><span class="vn">v5 <span class="hash">13a2bc4</span></span><span class="vd">2026-08-28</span></th><td class="n gs" data-n="33">33</td><td class="n" data-n="62">62</td><td class="n" data-n="39">39</td><td class="nr" colspan="3" data-n=""><span class="en">not run</span><span class="zh">未跑</span></td><td class="n gs" data-n="21">21</td><td class="n" data-n="49">49</td><td class="n" data-n="52">52</td></tr>
+          <tr data-v="98a0573" data-en="98a0573" data-zh="98a0573" data-date="09-01"><th scope="row"><span class="vn"><span class="hash">98a0573</span></span><span class="vd">2026-09-01</span></th><td class="n gs" data-n="33">33</td><td class="n" data-n="63">63</td><td class="n" data-n="39">39</td><td class="nr" colspan="3" data-n=""><span class="en">not run</span><span class="zh">未跑</span></td><td class="n gs" data-n="21">21</td><td class="n" data-n="49">49</td><td class="n" data-n="51">51</td></tr>
+          <tr data-v="7b4ec16" data-en="7b4ec16" data-zh="7b4ec16" data-date="09-30"><th scope="row"><span class="vn"><span class="hash">7b4ec16</span></span><span class="vd">2026-09-30</span></th><td class="n gs" data-n="34">34</td><td class="n" data-n="63">63</td><td class="n" data-n="25">25</td><td class="nr" colspan="3" data-n=""><span class="en">not run</span><span class="zh">未跑</span></td><td class="n gs" data-n="22">22</td><td class="n" data-n="44">44</td><td class="n" data-n="56">56</td></tr>
+          <tr data-v="d09e319" data-en="d09e319" data-zh="d09e319" data-date="10-02"><th scope="row"><span class="vn"><span class="hash">d09e319</span></span><span class="vd">2026-10-02</span></th><td class="n gs" data-n="0">0</td><td class="n" data-n="63">63</td><td class="n" data-n="25">25</td><td class="n gs" data-n="2">2</td><td class="n" data-n="8">8</td><td class="n" data-n="15">15</td><td class="n gs" data-n="13">13</td><td class="n" data-n="43">43</td><td class="n" data-n="58">58</td></tr>
+          <tr data-v="b9140d4" data-en="b9140d4" data-zh="b9140d4" data-date="10-14"><th scope="row"><span class="vn"><span class="hash">b9140d4</span></span><span class="vd">2026-10-14 · run-12</span></th><td class="n gs" data-n="0">0</td><td class="n" data-n="50">50</td><td class="n" data-n="81">81</td><td class="n gs" data-n="2">2</td><td class="n" data-n="4">4</td><td class="n" data-n="16">16</td><td class="n gs" data-n="7">7</td><td class="n" data-n="38">38</td><td class="n" data-n="74">74</td></tr>
+          <tr data-v="7e6db6b" data-en="7e6db6b" data-zh="7e6db6b" data-date="10-14" class="cur"><th scope="row"><span class="vn"><span class="hash">7e6db6b</span></span><span class="vd">2026-10-14 · run-13</span></th><td class="n gs" data-n="0">0</td><td class="n" data-n="12">12</td><td class="n" data-n="73">73</td><td class="n gs" data-n="2">2</td><td class="n" data-n="3">3</td><td class="n" data-n="16">16</td><td class="n gs" data-n="7">7</td><td class="n" data-n="23">23</td><td class="n" data-n="69">69</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </details>
+
+  <h2 class="wkh2" id="versions"><span class="en">The versions</span><span class="zh">各版规则</span></h2>
+    <div class="mx-scroll">
+    <table class="mx ver">
+      <thead>
+        <tr><th><span class="en">Version</span><span class="zh">版本</span></th><th><span class="en">Run</span><span class="zh">运行</span></th><th><span class="en">What changed</span><span class="zh">改了什么</span></th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="v"><span class="en">first run</span><span class="zh">首次运行</span></td><td class="d">2026-08-17/21</td><td></td></tr>
+        <tr><td class="v">v5 <span class="hash">13a2bc4</span></td><td class="d">2026-08-28</td><td><span class="en">Printed emails and newsletters set aside (SECONDARY); comparisons and version pairs recognised (DERIVED).</span><span class="zh">打印的邮件、简报归为 SECONDARY；对比文件、前后两版的版本对归为 DERIVED。</span></td></tr>
+        <tr><td class="v"><span class="hash">98a0573</span></td><td class="d">2026-09-01</td><td><span class="en">Files the operating system writes set aside (SECONDARY): <span class="code">Thumbs.db</span>, <span class="code">desktop.ini</span>, <span class="code">.DS_Store</span>, and a name starting <span class="code">~$</span>.</span><span class="zh">操作系统写下的文件归为 SECONDARY：<span class="code">Thumbs.db</span>、<span class="code">desktop.ini</span>、<span class="code">.DS_Store</span>，以及文件名以 <span class="code">~$</span> 开头的文件。</span></td></tr>
+        <tr><td class="v"><span class="hash">7b4ec16</span></td><td class="d">2026-09-30</td><td><span class="en">Names read without the number the export puts in front of them, and a name the export split at a <span class="code">/</span> read whole.</span><span class="zh">文件名去掉导出时加在前面的编号再读；导出时在 <span class="code">/</span> 处断开的文件名，合起来读。</span></td></tr>
+        <tr><td class="v"><span class="hash">d09e319</span></td><td class="d">2026-10-02<small><span class="en">2026-10-06, run-10 of <span class="hash">3269ac9</span>: same figures</span><span class="zh">2026-10-06 的 run-10（<span class="hash">3269ac9</span>）成绩相同</span></small></td><td><span class="en">Emails whose name holds <span class="code">WL</span>, <span class="code">SL</span>, written line or signed line kept; <span class="code">.7z</span> archives opened; <span class="code">Silp &amp; End't</span> a submission folder.</span><span class="zh">文件名里有 <span class="code">WL</span>、<span class="code">SL</span>、written line 或 signed line 的邮件留作核心；打得开 <span class="code">.7z</span> 压缩包；<span class="code">Silp &amp; End't</span> 算作提交文件夹。</span></td></tr>
+        <tr><td class="v"><span class="hash">b9140d4</span></td><td class="d">2026-10-14<small>run-12</small></td><td><span class="en">An email kept for the line or the firm order terms its own words carry; a PDF whose text came out unreadable read through its fonts’ character maps; step 6 reads the underwriter’s type.</span><span class="zh">邮件的文件名、主题或最新一封正文写明承保份额或 FOT，即留作核心；原先读不出文字的 PDF，改用字体的字符映射读出；第 6 步读核保类型。</span></td></tr>
+        <tr><td class="v"><span class="hash">7e6db6b</span></td><td class="d">2026-10-14<small>run-13</small></td><td><span class="en">Post-binding reports outside the submission folders set aside (SECONDARY); files in a notes folder whose name makes them TPRe’s own set aside (INTERNAL); KYC, NDA and licence documents set aside (SECONDARY); the firm order terms no longer read off a reply’s subject.</span><span class="zh">提交文件夹之外、成交之后来的报告归为 SECONDARY；备注文件夹里文件名表明是太平再自己的文件归为 INTERNAL；KYC、NDA、licence 类文件归为 SECONDARY；不再从回复邮件的主题里读 FOT。</span></td></tr>
+        <tr class="sub"><td class="v"></td><td class="d">2026-10-15<small>run-14 · <span class="hash">ed0f62a</span></small></td><td><span class="en">A reply’s subject recognised where a no-break space follows <span class="code">Subject:</span>, so the firm order terms are not read off it there either. No document’s role moved in any round.</span><span class="zh"><span class="code">Subject:</span> 后面跟不换行空格时，也认得出回复邮件的主题，同样不从中读 FOT。各轮没有任何文件的结论变动。</span></td></tr>
+        <tr class="sub"><td class="v"></td><td class="d">2026-10-20<small>run-15 · <span class="hash">fd64d68</span></small></td><td><span class="en">Each workbook’s text file holds each cell in its own column and each number as its format shows it; the rules do not read that file. No document’s role moved in any round.</span><span class="zh">工作簿的文本文件改为每格各在其列，数字按单元格格式显示的样子写出；规则不读这个文件。各轮没有任何文件的结论变动。</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 class="wkh2" id="rounds"><span class="en">The three rounds</span><span class="zh">三轮提交</span></h2>
+    <div class="mx-scroll">
+    <table class="mx rds">
+      <thead>
+        <tr><th><span class="en">Round</span><span class="zh">轮次</span></th><th class="n"><span class="en">Submissions</span><span class="zh">提交</span></th><th class="n"><span class="en">Documents answered</span><span class="zh">答过的文件</span></th><th class="n"><span class="en">Kept by the person</span><span class="zh">人留下的</span></th><th><span class="en">Who answered</span><span class="zh">谁答的</span></th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="r">MVP20</td><td class="n">20</td><td class="n">808</td><td class="n">365</td><td><span class="en">An analyst. The rules were tuned on this round.</span><span class="zh">一位分析师。规则就是对着这一轮调的。</span></td></tr>
+        <tr><td class="r">MVP3</td><td class="n">3</td><td class="n">159</td><td class="n">62</td><td><span class="en">An analyst. Held out since 2026-09-30: its score is read, and no rule is changed on it.</span><span class="zh">一位分析师。2026-09-30 起留作检验：只读成绩，不据此改规则。</span></td></tr>
+        <tr><td class="r">TEST15</td><td class="n">12</td><td class="n">423</td><td class="n">189</td><td><span class="en">A reviewer, on a sheet showing v5’s calls: 74 calls changed and the rest confirmed, the 48 documents v5 left undecided as dropped.</span><span class="zh">一位复核人，在列出 v5 结论的表上作答：改了 74 条，其余照准；v5 没下结论的 48 份，照准时记为不留。</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 class="wkh2" id="misses"><span class="en">What the rules still miss</span><span class="zh">规则还漏了什么</span></h2>
+  <p class="wksub"><span class="en">Every document a person kept that <span class="hash">7e6db6b</span> does not keep, dropped or left undecided. <span class="hash">b9140d4</span> does not keep the same ones.</span><span class="zh">人留下、<span class="hash">7e6db6b</span> 却没留的文件，不论是规则不留还是没下结论。<span class="hash">b9140d4</span> 没留的也是这一批。</span></p>
+  <div class="mx-scroll">
+    <table class="mx miss">
+      <thead>
+        <tr><th><span class="en">Round</span><span class="zh">轮次</span></th><th class="n"><span class="en">Not kept</span><span class="zh">没留下</span></th><th><span class="en">What they are</span><span class="zh">是什么</span></th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="r">MVP20</td><td class="n">0</td><td><span class="en">Nothing.</span><span class="zh">没有。</span></td></tr>
+        <tr><td class="r">MVP3</td><td class="n">2</td><td><span class="en">TPRe’s own treaty statistics and analysis, in one submission. The project owner decided on 2026-10-01 to leave TPRe’s own treaty statistics as the rules have them.</span><span class="zh">太平再自己的合约统计与分析，同一份提交里的两份。项目负责人 2026-10-01 决定：太平再自己的合约统计照规则现有的结论处理。</span></td></tr>
+        <tr><td class="r">TEST15</td><td class="n">8</td><td>
+          <ul>
+            <li><span class="en">4 TPRe UW notes in one submission, still for the project owner to decide.</span><span class="zh">同一份提交里的 4 份太平再核保备注，仍待项目负责人决定。</span></li>
+            <li><span class="en">1 printed internal email the reviewer kept, which <span class="hash">b9140d4</span>’s email rule does not keep.</span><span class="zh">1 封复核人留下的打印版内部邮件，<span class="hash">b9140d4</span> 的邮件规则不留。</span></li>
+            <li><span class="en">1 <span class="code">Special Acceptances</span> file left undecided.</span><span class="zh">1 份 <span class="code">Special Acceptances</span> 文件，规则没下结论。</span></li>
+            <li><span class="en">2 <span class="code">Thumbs.db</span> files the v5 sheet kept, which the rules drop as operating-system files.</span><span class="zh">2 个 v5 表上留下的 <span class="code">Thumbs.db</span>，规则作为操作系统生成的文件不留。</span></li>
+          </ul>
+        </td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <section class="note" aria-labelledby="count-h">
+    <h3 id="count-h"><span class="en">How a figure is counted</span><span class="zh">数字怎么算</span></h3>
+    <ul>
+      <li><span class="en">The rules’ answer is the role in the run’s output: CORE is kept; SECONDARY, INTERNAL, DERIVED and WITHDRAWN are dropped; UNDECIDED is no answer.</span><span class="zh">规则的答案就是运行结果里的结论：CORE 算留下；SECONDARY、INTERNAL、DERIVED、WITHDRAWN 算不留；UNDECIDED 算没有答案。</span></li>
+      <li><span class="en">Recall can only count documents a person saw. The MVP20 analyst worked from triage output and the TEST15 reviewer from v5’s sheet, so a document triage never surfaced is in no answer of theirs.</span><span class="zh">召回率只数得到人看过的文件。MVP20 的分析师对着分拣结果挑，TEST15 的复核人对着 v5 的表作答，分拣没列出来的文件不在这两轮的答案里。</span></li>
+      <li><span class="en">MVP20’s answers carry the project owner’s 34 corrections of 2026-09-30: an email naming the written or signed line is core. Every document v5, <span class="hash">98a0573</span> and <span class="hash">7b4ec16</span> miss in MVP20 is one of those emails: 33, 33 and 34 of them.</span><span class="zh">MVP20 的答案含项目负责人 2026-09-30 的 34 处更正：写明 written line 或 signed line 的邮件算核心。v5、<span class="hash">98a0573</span>、<span class="hash">7b4ec16</span> 在 MVP20 漏掉的全是这类邮件：分别 33、33、34 封。</span></li>
+      <li><span class="en">TEST15’s answers start from the v5 sheet: where the reviewer changed nothing, the answer is v5’s call, or a drop where v5 made none. Of the 74 calls the reviewer changed, <span class="hash">d09e319</span> follows 11, <span class="hash">b9140d4</span> 19 and <span class="hash">7e6db6b</span> 20.</span><span class="zh">TEST15 的答案以 v5 表为底：复核人没改的，答案就是 v5 的结论；v5 没下结论的，记为不留。复核人改过的 74 条里，<span class="hash">d09e319</span> 跟上 11 条，<span class="hash">b9140d4</span> 19 条，<span class="hash">7e6db6b</span> 20 条。</span></li>
+      <li><span class="en">From <span class="hash">d09e319</span> to <span class="hash">b9140d4</span> the extra keeps rose by 56 in MVP20, 1 in MVP3 and 16 in TEST15. Of the documents that became extra keeps, 58, 5 and 18 are emails <span class="hash">b9140d4</span>’s email rule keeps for the line or the firm order terms they carry, which the person dropped. MVP20’s and MVP3’s count as extra keeps until the project owner rules on those answers.</span><span class="zh">从 <span class="hash">d09e319</span> 到 <span class="hash">b9140d4</span>，多留的文件在 MVP20 增加 56 份，MVP3 增加 1 份，TEST15 增加 16 份。新变成多留的文件里，分别有 58、5、18 份是 <span class="hash">b9140d4</span> 的邮件规则因邮件自己写明承保份额或 FOT 而留下、人却没留的邮件。MVP20、MVP3 的这些邮件，在项目负责人对这些答案作出裁定之前，都算多留。</span></li>
+      <li><span class="en">From <span class="hash">b9140d4</span> to <span class="hash">7e6db6b</span> no document a person kept moved. The undecided fell by 38 in MVP20, 1 in MVP3 and 15 in TEST15, and the extra keeps by 8 in MVP20 and 5 in TEST15, every one of them a document the person dropped.</span><span class="zh">从 <span class="hash">b9140d4</span> 到 <span class="hash">7e6db6b</span>，人留下的文件一份都没动。没下结论的文件在 MVP20 减少 38 份，MVP3 减少 1 份，TEST15 减少 15 份；多留的文件在 MVP20 减少 8 份，TEST15 减少 5 份，全是人没留的文件。</span></li>
+    </ul>
+  </section>
+
+  <!-- wiki next -->
+<nav class="wknext" aria-labelledby="wknext-h">
+  <h2 class="wknext-h" id="wknext-h"><span class="wk-en">Keep reading</span><span class="wk-zh">继续阅读</span></h2>
+  <p class="wknext-s"><span class="wk-en">The rest of the wiki, one page at a time.</span><span class="wk-zh">手册的其余部分，一页一页看。</span></p>
+  <div class="wknext-g">
+    <a class="wknext-c" href="index.html">
+      <b><span class="wk-en">Overview</span><span class="wk-zh">总览</span></b>
+      <span class="wknext-d"><span class="wk-en">One submission, from the pack that arrives to the data the underwriter reads.</span><span class="wk-zh">一份申请：从收到的材料包，到核保人读到的数据。</span></span>
+      <span class="wknext-go" aria-hidden="true">→</span>
+    </a>
+    <a class="wknext-c" href="flow.html">
+      <b><span class="wk-en">How it works</span><span class="wk-zh">整体流程</span></b>
+      <span class="wknext-d"><span class="wk-en">The whole programme in four pictures, then the process stage by stage.</span><span class="wk-zh">先用四张图看懂整个项目，再按阶段展开流程。</span></span>
+      <span class="wknext-go" aria-hidden="true">→</span>
+    </a>
+    <a class="wknext-c" href="lifecycle.html">
+      <b><span class="wk-en">Step by step</span><span class="wk-zh">逐步流程</span></b>
+      <span class="wknext-d"><span class="wk-en">Seven steps: who runs each one, who signs it off, and every outcome it can have.</span><span class="wk-zh">七个步骤：每步由谁执行、由谁签核，可能出现哪些结果。</span></span>
+      <span class="wknext-go" aria-hidden="true">→</span>
+    </a>
+    <a class="wknext-c" href="rules.html">
+      <b><span class="wk-en">The rules</span><span class="wk-zh">分拣规则</span></b>
+      <span class="wknext-d"><span class="wk-en">What the machine looks at when it decides what each file is: folder, name, format, content.</span><span class="wk-zh">机器判定每份文件时看什么：文件夹、文件名、格式、内容。</span></span>
+      <span class="wknext-go" aria-hidden="true">→</span>
+    </a>
+    <a class="wknext-c" href="gate.html">
+      <b><span class="wk-en">RAG Gate</span><span class="wk-zh">RAG 闸门</span></b>
+      <span class="wknext-d"><span class="wk-en">Can a submission be passed on? Red, amber, green — and every rule behind the colour.</span><span class="wk-zh">一份提交能不能往下送？红、黄、绿，以及决定颜色的每一条规则。</span></span>
+      <span class="wknext-go" aria-hidden="true">→</span>
+    </a>
+  </div>
+</nav>
+<!-- /wiki next -->
+  <footer class="wkfoot">
+    <span class="en">Source of truth: <span class="code">docs/RULE-PERFORMANCE.md</span> in the code repository; MVP20 and MVP3 scored with <span class="code">tools/score/</span>, TEST15 counted off its answer files and label table · <a href="rules.html">The rules</a> · Written 2026-10-20</span>
+    <span class="zh">以代码库为准：<span class="code">docs/RULE-PERFORMANCE.md</span>；MVP20、MVP3 用 <span class="code">tools/score/</span> 打分，TEST15 按答案文件和标签表计数 · <a href="rules.html">分拣规则</a> · 写于 2026-10-20</span>
+  </footer>
+</div>
+
+<script>
+"use strict";
+function setLang(v){
+  var r=document.documentElement;
+  r.setAttribute("data-lang",v);
+  r.setAttribute("lang",v==="zh"?"zh-Hans":"en");
+  document.title=v==="zh"?"AI Data+ · 规则表现":"AI Data+ · Performance";
+}
+document.addEventListener("aidp:lang", function(e){ setLang(e.detail==="zh"?"zh":"en"); });
+setLang(document.documentElement.getAttribute("data-lang")||"en");
+
+/* The charts. Each reads its figures out of the table under it, so the
+   table is the data and the chart is a picture of it. */
+(function(){
+  var NS = "http://www.w3.org/2000/svg";
+  var ROUNDS = [
+    {k:"MVP20",  c:"var(--r1)", en:"MVP20",            zh:"MVP20"},
+    {k:"MVP3",   c:"var(--r2)", en:"MVP3 · held out",  zh:"MVP3 · 留作检验"},
+    {k:"TEST15", c:"var(--r3)", en:"TEST15",           zh:"TEST15"}
+  ];
+  var W = 820, H = 292, M = {l:46, r:118, t:16, b:52}, LO = 60, HI = 100;
+  var PW = W - M.l - M.r, PH = H - M.t - M.b;
+
+  function lang(){ return document.documentElement.getAttribute("data-lang") === "zh" ? "zh" : "en"; }
+  function pct(n, d){ return n === d ? "100%" : (Math.round(n * 1000 / d) / 10).toFixed(1) + "%"; }
+  function el(name, attrs, parent){
+    var e = document.createElementNS(NS, name);
+    for (var k in attrs) e.setAttribute(k, attrs[k]);
+    if (parent) parent.appendChild(e);
+    return e;
+  }
+  function txt(s, attrs, parent){ var t = el("text", attrs, parent); t.textContent = s; return t; }
+
+  function read(table){
+    var rows = table.tBodies[0].rows, vs = [], series = {};
+    ROUNDS.forEach(function(r){ series[r.k] = []; });
+    for (var i = 0; i < rows.length; i++){
+      var tr = rows[i];
+      vs.push({en: tr.getAttribute("data-en"), zh: tr.getAttribute("data-zh"),
+               date: tr.getAttribute("data-date")});
+      for (var j = 0; j < ROUNDS.length; j++){
+        var td = tr.cells[j + 1], n = td.getAttribute("data-n");
+        if (!n){ series[ROUNDS[j].k].push(null); continue; }
+        var p = {n: +n, d: +td.getAttribute("data-d")};
+        if (td.getAttribute("data-n2")){ p.n2 = +td.getAttribute("data-n2"); p.d2 = +td.getAttribute("data-d2"); }
+        series[ROUNDS[j].k].push(p);
+      }
+    }
+    return {versions: vs, series: series};
+  }
+
+  function x(i, n){ return M.l + (n === 1 ? PW / 2 : i * PW / (n - 1)); }
+  function y(v){ return M.t + (HI - v) / (HI - LO) * PH; }
+
+  function draw(fig){
+    var table = fig.nextElementSibling.querySelector("table"), data = read(table);
+    var L = lang(), n = data.versions.length, box = fig.querySelector(".viz-box");
+    box.textContent = "";
+
+    var legend = fig.querySelector(".viz-legend");
+    legend.textContent = "";
+    ROUNDS.forEach(function(r){
+      var s = document.createElement("span"), k = document.createElement("i");
+      k.style.setProperty("--k", r.c);
+      s.appendChild(k); s.appendChild(document.createTextNode(r[L]));
+      legend.appendChild(s);
+    });
+
+    var svg = el("svg", {viewBox: "0 0 " + W + " " + H, role: "img"}, box);
+    var name = fig.previousElementSibling.previousElementSibling.querySelector("." + L).textContent;
+    svg.setAttribute("aria-label", name + (L === "zh" ? "：逐版折线图，数字见下表。" : " - one line per round across the versions; the figures are in the table below."));
+
+    // the grid, recessive: a hairline every 10 points
+    var g = el("g", {}, svg);
+    for (var v = LO; v <= HI; v += 10){
+      var line = el("line", {x1: M.l, x2: W - M.r + 8, y1: y(v), y2: y(v)}, g);
+      line.style.stroke = "var(--line)"; line.style.strokeWidth = "1";
+      var t = txt(v + "%", {x: M.l - 10, y: y(v) + 4, "text-anchor": "end", "font-size": "11"}, g);
+      t.style.fill = "var(--mute)";
+    }
+    // the versions under the axis: the name, then the run's date
+    data.versions.forEach(function(ver, i){
+      var last = i === n - 1;
+      var a = txt(ver[L], {x: x(i, n), y: H - M.b + 22, "text-anchor": "middle", "font-size": "11.5",
+                           "font-weight": last ? "700" : "500"}, g);
+      a.style.fill = last ? "var(--navy)" : "var(--copy)";
+      var b = txt(ver.date, {x: x(i, n), y: H - M.b + 38, "text-anchor": "middle", "font-size": "10.5"}, g);
+      b.style.fill = "var(--mute)";
+    });
+
+    // one line per round, broken where the round was not run
+    var ends = [];
+    ROUNDS.forEach(function(r){
+      var s = data.series[r.k], d = "", pen = false;
+      s.forEach(function(p, i){
+        if (!p){ pen = false; return; }
+        var v = p.n * 100 / p.d;
+        d += (pen ? "L" : "M") + x(i, n).toFixed(1) + " " + y(v).toFixed(1);
+        pen = true;
+      });
+      var path = el("path", {d: d, fill: "none", "stroke-width": "2", "stroke-linejoin": "round",
+                             "stroke-linecap": "round"}, svg);
+      path.style.stroke = r.c;
+      s.forEach(function(p, i){
+        if (!p) return;
+        var c = el("circle", {cx: x(i, n), cy: y(p.n * 100 / p.d), r: 4, "stroke-width": "2"}, svg);
+        c.style.fill = r.c; c.style.stroke = "var(--card)";
+      });
+      var lp = s[n - 1];
+      if (lp) ends.push({r: r, p: lp, y: y(lp.n * 100 / lp.d)});
+    });
+
+    // the end labels: value first, then the round; pushed apart where they
+    // would touch, with a leader back to the point
+    ends.sort(function(a, b){ return a.y - b.y; });
+    for (var i = 0; i < ends.length; i++){
+      ends[i].ly = ends[i].y;
+      if (i && ends[i].ly < ends[i - 1].ly + 16) ends[i].ly = ends[i - 1].ly + 16;
+    }
+    var over = ends.length ? ends[ends.length - 1].ly - (H - M.b - 4) : 0;
+    if (over > 0) ends.forEach(function(e){ e.ly -= over; });
+    var xe = x(n - 1, n);
+    ends.forEach(function(e){
+      var lead = el("path", {d: "M" + (xe + 7) + " " + e.y + "L" + (xe + 16) + " " + e.ly + "L" + (xe + 20) + " " + e.ly,
+                             fill: "none", "stroke-width": "1"}, svg);
+      lead.style.stroke = e.r.c;
+      var t = el("text", {x: xe + 24, y: e.ly + 4, "font-size": "11.5"}, svg);
+      var a = el("tspan", {"font-weight": "700"}, t); a.textContent = pct(e.p.n, e.p.d);
+      a.style.fill = "var(--navy)";
+      var b = el("tspan", {dx: "6"}, t); b.textContent = e.r.k;
+      b.style.fill = "var(--copy)";
+    });
+
+    // the readout: a hairline at the nearest version, and every round's figure
+    var cross = el("line", {y1: M.t, y2: H - M.b + 6, visibility: "hidden"}, svg);
+    cross.style.stroke = "var(--mute-2)"; cross.style.strokeWidth = "1";
+    var hit = el("rect", {x: M.l - 30, y: 0, width: PW + 60, height: H - M.b + 8, fill: "transparent"}, svg);
+    var tip = document.createElement("div");
+    tip.className = "viz-tip"; tip.hidden = true; tip.setAttribute("aria-hidden", "true");
+    box.appendChild(tip);
+    var at = -1;
+
+    function show(i){
+      at = i;
+      var xi = x(i, n), ver = data.versions[i];
+      cross.setAttribute("x1", xi); cross.setAttribute("x2", xi);
+      cross.setAttribute("visibility", "visible");
+      tip.textContent = "";
+      var h = document.createElement("div"); h.className = "h";
+      var hb = document.createElement("b"); hb.textContent = ver[L];
+      h.appendChild(hb); h.appendChild(document.createTextNode("  " + ver.date));
+      tip.appendChild(h);
+      ROUNDS.forEach(function(r){
+        var p = data.series[r.k][i], row = document.createElement("div");
+        row.className = "row";
+        var k = document.createElement("i"); k.style.setProperty("--k", r.c); row.appendChild(k);
+        var b = document.createElement("b"), s = document.createElement("span"), em = document.createElement("em");
+        s.textContent = r.k;
+        if (p){ b.textContent = pct(p.n, p.d); em.textContent = p.n + " / " + p.d; }
+        else { b.textContent = "—"; em.textContent = L === "zh" ? "未跑" : "not run"; }
+        row.appendChild(b); row.appendChild(s); row.appendChild(em);
+        tip.appendChild(row);
+        if (p && p.n2){
+          var w = document.createElement("div"); w.className = "w";
+          w.textContent = (L === "zh" ? "算上邮件 " : "with the emails ") + pct(p.n2, p.d2) + " · " + p.n2 + " / " + p.d2;
+          tip.appendChild(w);
+        }
+      });
+      tip.hidden = false;
+      var bw = box.clientWidth, px = xi / W * bw, tw = tip.offsetWidth;
+      tip.style.left = Math.round(px + 14 + tw > bw ? px - 14 - tw : px + 14) + "px";
+    }
+    function hide(){ at = -1; tip.hidden = true; cross.setAttribute("visibility", "hidden"); }
+    function nearest(ev){
+      var r = svg.getBoundingClientRect(), sx = (ev.clientX - r.left) / r.width * W;
+      var i = Math.round((sx - M.l) / (PW / (n - 1)));
+      return Math.max(0, Math.min(n - 1, i));
+    }
+    hit.addEventListener("pointermove", function(ev){ show(nearest(ev)); });
+    hit.addEventListener("pointerdown", function(ev){ show(nearest(ev)); });
+    box.onpointerleave = hide;
+    // on a narrow screen the chart scrolls sideways: open it on the current version
+    box.parentNode.scrollLeft = box.parentNode.scrollWidth;
+    box.onfocus = function(){ show(at < 0 ? n - 1 : at); };
+    box.onblur = hide;
+    box.onkeydown = function(ev){
+      var k = ev.key;
+      if (k === "ArrowRight" || k === "ArrowLeft"){
+        ev.preventDefault();
+        show(Math.max(0, Math.min(n - 1, (at < 0 ? n - 1 : at) + (k === "ArrowRight" ? 1 : -1))));
+      } else if (k === "Home"){ ev.preventDefault(); show(0); }
+      else if (k === "End"){ ev.preventDefault(); show(n - 1); }
+      else if (k === "Escape"){ hide(); }
+    };
+  }
+
+  /* where the answers differ: a bar per version and round, from the table */
+  var KINDS = [
+    {k:"miss",  c:"var(--miss)",  en:"Missed", zh:"漏掉",
+     den:"the person kept it, the rules dropped it", dzh:"人留下了，规则没留"},
+    {k:"open",  c:"var(--open)",  en:"Undecided", zh:"没下结论",
+     den:"the rules left it for a person", dzh:"规则留给人判断"},
+    {k:"extra", c:"var(--extra)", en:"Kept extra", zh:"多留",
+     den:"the rules kept it, the person dropped it", dzh:"规则留下了，人没留"}
+  ];
+  var DMAX = 40;
+  function readDiffer(table){
+    var heads = table.tHead.rows[0].querySelectorAll("th.g"), of = [], rows = table.tBodies[0].rows, out = [];
+    for (var h = 0; h < heads.length; h++) of.push(+heads[h].getAttribute("data-of"));
+    for (var i = 0; i < rows.length; i++){
+      var tr = rows[i], cells = tr.querySelectorAll("td"), c = 0, per = [];
+      for (var j = 0; j < ROUNDS.length; j++){
+        if (!cells[c].getAttribute("data-n")){ per.push(null); c += 1; continue; }
+        per.push([+cells[c].getAttribute("data-n"), +cells[c + 1].getAttribute("data-n"), +cells[c + 2].getAttribute("data-n")]);
+        c += 3;
+      }
+      out.push({en: tr.getAttribute("data-en"), zh: tr.getAttribute("data-zh"),
+                date: tr.getAttribute("data-date"), cur: tr.classList.contains("cur"), per: per});
+    }
+    return {of: of, rows: out};
+  }
+  function drawDiffer(fig){
+    var table = fig.nextElementSibling.querySelector("table"), data = readDiffer(table);
+    var L = lang(), box = fig.querySelector(".viz-box");
+    box.textContent = "";
+    var legend = fig.querySelector(".viz-legend");
+    legend.textContent = "";
+    KINDS.forEach(function(k){
+      var s = document.createElement("span"), key = document.createElement("i"),
+          words = document.createElement("span"), b = document.createElement("b");
+      key.style.background = k.c;
+      b.textContent = k[L];
+      words.appendChild(b);
+      words.appendChild(document.createTextNode((L === "zh" ? "：" : ": ") + (L === "zh" ? k.dzh : k.den)));
+      s.appendChild(key); s.appendChild(words);
+      legend.appendChild(s);
+    });
+    var grid = document.createElement("div");
+    grid.className = "dgrid";
+    grid.setAttribute("role", "img");
+    grid.setAttribute("aria-label", L === "zh" ? "规则和人答得不一样的占比，逐版逐轮；数字见下表。"
+                                              : "The share the rules answered differently, version by version and round by round; the figures are in the table below.");
+    box.appendChild(grid);
+    function add(cls, text){ var d = document.createElement("div"); d.className = cls; if (text != null) d.textContent = text; grid.appendChild(d); return d; }
+    add("dh", "");
+    ROUNDS.forEach(function(r, j){
+      var h = add("dh", r.k + " "), s = document.createElement("span");
+      s.textContent = "/ " + data.of[j]; h.appendChild(s);
+    });
+    var tip = document.createElement("div");
+    tip.className = "viz-tip"; tip.hidden = true; tip.setAttribute("aria-hidden", "true");
+    box.appendChild(tip);
+    data.rows.forEach(function(row){
+      var v = add("dv" + (row.cur ? " cur" : ""), row[L]), sm = document.createElement("small");
+      sm.textContent = row.date; v.appendChild(sm);
+      row.per.forEach(function(p, j){
+        var cell = add("dcell" + (p ? "" : " nr"));
+        if (!p){ cell.textContent = L === "zh" ? "未跑" : "not run"; return; }
+        var bar = document.createElement("span"), of = data.of[j], total = p[0] + p[1] + p[2];
+        bar.className = "dbar";
+        KINDS.forEach(function(k, m){
+          if (!p[m]) return;
+          var seg = document.createElement("i");
+          seg.style.setProperty("--c", k.c);
+          seg.style.width = (p[m] / of * 100 / DMAX * 100).toFixed(3) + "%";
+          seg.onpointerenter = seg.onpointermove = function(ev){
+            tip.textContent = "";
+            var h = document.createElement("div"); h.className = "h";
+            var hb = document.createElement("b"); hb.textContent = row[L];
+            h.appendChild(hb); h.appendChild(document.createTextNode("  " + ROUNDS[j].k));
+            tip.appendChild(h);
+            KINDS.forEach(function(kk, mm){
+              var r = document.createElement("div"); r.className = "row";
+              var key = document.createElement("i"); key.style.setProperty("--k", kk.c); r.appendChild(key);
+              var b = document.createElement("b"); b.textContent = p[mm];
+              var s = document.createElement("span"); s.textContent = kk[L];
+              var em = document.createElement("em"); em.textContent = (p[mm] / of * 100).toFixed(1) + "%";
+              if (mm === m) r.style.fontWeight = "700";
+              r.appendChild(b); r.appendChild(s); r.appendChild(em); tip.appendChild(r);
+            });
+            tip.hidden = false;
+            var br = box.getBoundingClientRect(), x = ev.clientX - br.left, y = ev.clientY - br.top, tw = tip.offsetWidth;
+            tip.style.left = Math.round(x + 14 + tw > box.clientWidth ? x - 14 - tw : x + 14) + "px";
+            tip.style.top = Math.round(y + 14) + "px";
+          };
+          seg.onpointerleave = function(){ tip.hidden = true; };
+          bar.appendChild(seg);
+        });
+        // the bar is the share that differs; it takes the width its share is of 40%
+        bar.style.width = (total / of * 100 / DMAX * 100).toFixed(3) + "%";
+        bar.style.flex = "0 0 auto";
+        Array.prototype.forEach.call(bar.children, function(seg, m){
+          var n = +seg.style.width.replace("%", "");
+          seg.style.width = (n / (total / of * 100 / DMAX * 100) * 100).toFixed(3) + "%";
+        });
+        var track = document.createElement("div"), lab = document.createElement("b");
+        track.className = "dtrack";
+        track.appendChild(bar);
+        lab.textContent = (total / of * 100).toFixed(1) + "%";
+        lab.style.left = "calc(" + bar.style.width + " + 6px)";
+        track.appendChild(lab);
+        cell.appendChild(track);
+      });
+    });
+    add("dh", "");
+    ROUNDS.forEach(function(){
+      var t = add("dt");
+      [0, 10, 20, 30, 40].forEach(function(v){ var s = document.createElement("span"); s.textContent = v + (v === 40 ? "%" : ""); s.style.left = (v / DMAX * 100) + "%"; t.appendChild(s); });
+    });
+    box.parentNode.scrollLeft = 0;
+  }
+
+  function all(){
+    document.querySelectorAll(".viz").forEach(function(f){
+      if (f.getAttribute("data-for") === "differ") drawDiffer(f); else draw(f);
+    });
+  }
+  all();
+  document.addEventListener("aidp:lang", all);
+  window.addEventListener("beforeprint", function(){
+    document.querySelectorAll("details.figs").forEach(function(d){ d.open = true; });
+  });
+})();
+</script>
+</body>
+</html>

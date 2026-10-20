@@ -17,6 +17,7 @@ why the pages are the way they are.
 | `lifecycle.html` | **Step by step** — the seven steps of one submission: who runs each, who signs it off, and every outcome a step can have. |
 | `rules.html` | **The rules** — how the machine decides what each file is: every step and the six answers at a glance, each step as a question, what the rules read and the limit of each, and the underwriter's type every file gets beside its answer: from its name, then its title or a workbook's sheet names, then its folder, then its format. Step 6 and `R17_post_binding_report` read the same type from the name and the title or sheet names only; `R18_kyc_licence` and `R7_notes_folder_named` from the name alone. |
 | `gate.html` | **RAG Gate** — red / amber / green, and every rule behind the colour, in plain words beside its rule name in `flywheel/validate/lib/colour.py` (the code repository). |
+| `performance.html` | **Performance** — how each version of the triage rules scores against the documents a person chose by hand in MVP20, MVP3 and TEST15: recall, precision and accuracy, version by version, as charts and as tables. The figures are `docs/RULE-PERFORMANCE.md` in the code repository; the charts read them out of the page's own tables. |
 
 ## The developer portal
 
@@ -76,16 +77,17 @@ for that.
   `<!-- wiki chrome -->` and `<!-- /wiki chrome -->` right after `<body>`, with the
   password gate in the same shape below it on the three developer pages. The chrome
   owns the colour tokens, the sticky nav, the language switch, and the skip link.
-  Edit `tools/wiki_chrome.py` and re-run it rather than editing seven copies by hand;
+  Edit `tools/wiki_chrome.py` and re-run it rather than editing every copy by hand;
   the manual and the API reference both mark *Developer portal* as their current page.
-  Two of the five pages do not sit beside the others: `rules.html` and `gate.html` are
-  both about what the Submission Agent decides, so they hang under a **Submission
-  Agent** dropdown. The grouping is the `MENU` tuple in the script - moving a page in
-  or out of it is an edit there and a re-run, never a hand-edit of eight bars. The
-  panel hangs off the bar rather than off the strip the button sits in, because that
-  strip scrolls sideways on a narrow screen and clips whatever overflows it; its left
-  is measured from the button. A browser with no JavaScript gets the two links in
-  plain sight instead, out of the `<noscript>` block the same script writes.
+  Three of the six pages do not sit beside the others: `rules.html`, `gate.html` and
+  `performance.html` are about what the Submission Agent decides and how well it
+  decides, so they hang under a **Submission Agent** dropdown. The grouping is the
+  `MENU` tuple in the script - moving a page in or out of it is an edit there and a
+  re-run, never a hand-edit of every bar. The panel hangs off the bar rather than off
+  the strip the button sits in, because that strip scrolls sideways on a narrow screen
+  and clips whatever overflows it; its left is measured from the button. A browser
+  with no JavaScript gets the menu's links in plain sight instead, out of the
+  `<noscript>` block the same script writes.
 - **The page kit.** `index.html` is the reference for how this wiki looks — white ground
   with two soft washes and a dot grid, navy display headings, one warm orange accent,
   14px cards that lift on hover. The kit is that look written down: palette, shadows,
@@ -93,11 +95,14 @@ for that.
   footer. It rides in the same script, between `<!-- wiki page kit -->` and
   `<!-- /wiki page kit -->`, with the cards between `<!-- wiki next -->` and
   `<!-- /wiki next -->`, and it is loaded **after** the chrome so its tokens win over
-  whatever a page declared for itself. It goes on `flow.html`, `lifecycle.html`, `rules.html` and
-  `gate.html` only: the Overview carries none of it because it *is* the reference and
-  declares the same palette for itself, and the developer portal is its own room.
-  A page then styles itself out of the kit's tokens — a hard-coded hex on those three
-  pages is a defect, not a decision.
+  whatever a page declared for itself. It goes on `flow.html`, `lifecycle.html`,
+  `rules.html`, `gate.html` and `performance.html` only: the Overview carries none of it
+  because it *is* the reference and declares the same palette for itself, and the
+  developer portal is its own room.
+  A page then styles itself out of the kit's tokens — a hard-coded hex on those
+  pages is a defect, not a decision. The charts on `performance.html` draw their three
+  rounds in the bar's `--blue` and the kit's `--orange-ink` and `--purple`: as a set the
+  three pass the colour-blind checks and clear 3:1 on white.
 - **Both languages.** Every visible string exists in English and Chinese, and the two are
   edited in the same pass. An English change with no Chinese change is how the two
   versions start meaning different things. In the chrome the pair is

@@ -340,8 +340,9 @@
         <div class="wkmenu-p" id="wkmenu-p" hidden>
           <a href="rules.html"><span class="wk-en">The rules</span><span class="wk-zh">分拣规则</span></a>
           <a href="gate.html"><span class="wk-en">RAG Gate</span><span class="wk-zh">RAG 闸门</span></a>
+          <a href="performance.html"><span class="wk-en">Performance</span><span class="wk-zh">规则表现</span></a>
         </div></span>
-      <span class="wkmenu-fb"><a href="rules.html"><span class="wk-en">The rules</span><span class="wk-zh">分拣规则</span></a><a href="gate.html"><span class="wk-en">RAG Gate</span><span class="wk-zh">RAG 闸门</span></a></span>
+      <span class="wkmenu-fb"><a href="rules.html"><span class="wk-en">The rules</span><span class="wk-zh">分拣规则</span></a><a href="gate.html"><span class="wk-en">RAG Gate</span><span class="wk-zh">RAG 闸门</span></a><a href="performance.html"><span class="wk-en">Performance</span><span class="wk-zh">规则表现</span></a></span>
       <noscript><style>.wkmenu{display:none}.wkmenu-fb{display:contents}</style></noscript>
     </div>
     <a class="wkdev" href="developer.html"><span class="wk-en">Developer portal</span><span class="wk-zh">开发者门户</span></a>
@@ -511,9 +512,9 @@
     </section>
     <section class="st">
       <h2 data-i="s2h">Find the core files.</h2>
-      <p data-i="s2p">The Submission Agent reads every file and picks out the ones that actually carry the data: the slip, the EPI schedule, the loss history, the wording. The rest stay with the treaty as supporting&nbsp;material.</p>
+      <p data-i="s2p">The Submission Agent reads every file and picks out the core files: the cedant's contract and submission documents, such as the slip, the EPI schedule, the loss history, the wording and the renewal deck. It goes by what the cedant listed, the folder a file sits in, and the file's own format, name and text. The rest stay with the treaty as supporting material, such as the cover email, the broker's note sent by email and a slip whose name says&nbsp;superseded.</p>
       <span class="mod" data-i="s2m">Module A — Submission Agent</span>
-      <div class="note" data-i="s2n"><b>Red / amber / green gate:</b> only green passes to the next step. During development a Validation Flywheel reviews every call and feeds the corrections back into the agent.</div>
+      <div class="note" data-i="s2n"><b>Red / amber / green gate:</b> in production a green submission goes on with nobody looking first, apart from an audit sample of about one in five. A red or amber one goes to a person in the Validation Flywheel and is reviewed until it is green. While the rules are tuned, any submission may be reviewed there. A reviewer's ruling decides which files are core, and what reviewers overturn is how the rules improve. The core files are packed for every submission, whatever its colour.</div>
     </section>
     <section class="st">
       <h2 data-i="s3h">Extract the facts.</h2>
@@ -570,7 +571,7 @@
 <section class="wkc" aria-labelledby="wkc-h">
   <p class="wkc-ey"><span class="wk-en">Project wiki</span><span class="wk-zh">项目手册</span></p>
   <h2 id="wkc-h"><span class="wk-en">The rest of the story</span><span class="wk-zh">其余的部分</span></h2>
-  <p class="wkc-sub"><span class="wk-en">This page is the shape of it. These four go into how it is built, who signs what, and when a person has to look.</span><span class="wk-zh">这一页说的是大致轮廓。下面四页讲清楚：怎么搭起来、谁签什么字、什么时候必须有人看。</span></p>
+  <p class="wkc-sub"><span class="wk-en">This page is the shape of it. These six go into how it is built, who signs what, how each file is sorted, when a person has to look, and how each version of the rules scores.</span><span class="wk-zh">这一页说的是大致轮廓。下面六页讲清楚：怎么搭起来、谁签什么字、每份文件怎么分拣、什么时候必须有人看、每一版规则得了多少分。</span></p>
   <div class="wkc-grid">
 
     <a class="wkc-card" href="flow.html">
@@ -587,15 +588,29 @@
       <span class="wkc-go" aria-hidden="true">→</span>
     </a>
 
-    <a class="wkc-card" href="gate.html">
+    <a class="wkc-card" href="rules.html">
       <span class="wkc-n">03</span>
+      <b><span class="wk-en">The rules</span><span class="wk-zh">分拣规则</span></b>
+      <span class="wkc-d"><span class="wk-en">How each file is sorted: every step, the six answers, what the rules read, and the underwriter's type.</span><span class="wk-zh">每份文件怎么分拣：每一步、六种结论、规则读什么，以及核保类型。</span></span>
+      <span class="wkc-go" aria-hidden="true">→</span>
+    </a>
+
+    <a class="wkc-card" href="gate.html">
+      <span class="wkc-n">04</span>
       <b><span class="wk-en">RAG Gate</span><span class="wk-zh">RAG 闸门</span></b>
       <span class="wkc-d"><span class="wk-en">Can a submission be passed on? Red, amber, green, and every rule behind the colour, in plain words and in code.</span><span class="wk-zh">一份提交能不能往下送？红、黄、绿，以及决定颜色的每一条规则，大白话一道、代码名一道。</span></span>
       <span class="wkc-go" aria-hidden="true">→</span>
     </a>
 
+    <a class="wkc-card" href="performance.html">
+      <span class="wkc-n">05</span>
+      <b><span class="wk-en">Performance</span><span class="wk-zh">规则表现</span></b>
+      <span class="wkc-d"><span class="wk-en">How each version of the rules scores against the documents a person chose by hand.</span><span class="wk-zh">每一版分拣规则，对照人工挑出的文件得了多少分。</span></span>
+      <span class="wkc-go" aria-hidden="true">→</span>
+    </a>
+
     <a class="wkc-card" href="developer.html">
-      <span class="wkc-n">04</span>
+      <span class="wkc-n">06</span>
       <b><span class="wk-en">Developer portal</span><span class="wk-zh">开发者门户</span></b>
       <span class="wkc-d"><span class="wk-en">For whoever has to run it: the flywheel manual, the in-house model endpoints, and the code itself.</span><span class="wk-zh">给动手的人：飞轮手册、公司内部的模型端点，以及代码本身。</span></span>
       <span class="wkc-go" aria-hidden="true">→</span>
@@ -614,19 +629,19 @@
       intro:'Each treaty renewal arrives as a submission pack: a slip, schedules, spreadsheets, emails, a deck. Today its numbers are keyed in by hand, two months after the decision. This is how AI Data+ turns that pack into structured data before the&nbsp;decision.',
       hint:'Scroll to view the lifecycle of one submission',
       s1h:'One submission pack,<br>many formats.', s1p:'A submission arrives as a slip, schedules, spreadsheets, emails and a deck. The figures the underwriter needs are spread across all of them, with no common&nbsp;structure.', s1m:'One pack, five formats, no structure',
-      s2h:'Find the core files.', s2p:'The Submission Agent reads every file and picks out the ones that actually carry the data: the slip, the EPI schedule, the loss history, the wording. The rest stay with the treaty as supporting&nbsp;material.', s2m:'Module A — Submission Agent', s2n:'<b>Red / amber / green gate:</b> only green passes to the next step. During development a Validation Flywheel reviews every call and feeds the corrections back into the agent.',
+      s2h:'Find the core files.', s2p:'The Submission Agent reads every file and picks out the core files: the cedant\'s contract and submission documents, such as the slip, the EPI schedule, the loss history, the wording and the renewal deck. It goes by what the cedant listed, the folder a file sits in, and the file\'s own format, name and text. The rest stay with the treaty as supporting material, such as the cover email, the broker\'s note sent by email and a slip whose name says&nbsp;superseded.', s2m:'Module A — Submission Agent', s2n:'<b>Red / amber / green gate:</b> in production a green submission goes on with nobody looking first, apart from an audit sample of about one in five. A red or amber one goes to a person in the Validation Flywheel and is reviewed until it is green. While the rules are tuned, any submission may be reviewed there. A reviewer\'s ruling decides which files are core, and what reviewers overturn is how the rules improve. The core files are packed for every submission, whatever its colour.',
       s3h:'Extract the facts.', s3p:'The Facts Agent reads the core files against the agreed Shopping List and fills one structured TreatyRecord per treaty. Every figure is located in a document, never invented. A recipe per cedant tells it where to look, and sharpens with each treaty&nbsp;reviewed.', s3m:'Module B — Facts Agent', s3n:'<b>Red / amber / green gate:</b> only green records pass to the next step. During development a Validation Flywheel reviews every record and feeds the corrections back into the agent.',
       s4h:'Structured data,<br>ready to use.', s4p:'From the TreatyRecord the Template Agent produces what the underwriter needs: an Analysis Report to compare and decide on, and an Entry Report that goes straight into TPR, with nothing&nbsp;re-keyed.', s4m:'Module C — Template Agent',
       s5h:'Data before the decision.', s5p:'The underwriter opens a structured, comparable view of the treaty at the start of underwriting. TPR is filled by RPA or API at the end — instead of two months of keying after the&nbsp;decision.', s5m:'Underwriter · TPR system', s5n:'Values shown on the record are illustrative.',
       outro:'Same pack, same files. Structured before the decision instead of keyed in two months after&nbsp;it.', foot:'AI Data+ · September 2026 · Record values are&nbsp;illustrative.',
       folder:'Submission', folderSub:'the pack for one treaty, one year',
-      files:['Slip 2027.pdf','EPI schedule.xlsx','Loss history.xlsx','Wording.docx','Cover email.msg','Broker note.msg','Renewal deck.pptx','Company profile.pdf'],
-      a1:'Submission Agent', a1s:'Module A · definitive rules + LLM', core:'Core files', coreS:'carry the data', sup:'Supporting', supS:'stay with the treaty',
+      files:['Slip 2027.pdf','EPI schedule.xlsx','Loss history.xlsx','Wording.docx','Cover email.msg','Broker note.msg','Renewal deck.pptx','Slip 2027 superseded.pdf'],
+      a1:'Submission Agent', a1s:'Module A · deterministic rules + LLM', core:'Core files', coreS:'contract and submission', sup:'Supporting', supS:'stay with the treaty',
       a2:'Facts Agent', a2s:'Module B · Shopping List + recipe per cedant', rec:'TreatyRecord', recS:'one per treaty',
       rows:[['EPI','USD 12.4m'],['Cession','25%'],['Commission','32.5%'],['Profit commission','15%'],['Event limit','USD 15m'],['Period','1 Jan – 31 Dec 2027']],
       a3:'Template Agent', a3s:'Module C · report generation', shA:'Analysis Report', shAs:'for the underwriting decision', shE:'Entry Report', shEs:'shaped for TPR input',
       uw:'Underwriter', uwS:'reads it in the treaty folder', tpr:'TPR system', tprS:'filled in automatically', rpa:'RPA / API',
-      gate:'gate · only green passes', held:'amber — held for a human check'
+      gateA:'gate · green goes on, red and amber to a person', heldA:'amber — the submission goes to a person until green', gate:'gate · only green passes', held:'amber — held for a human check'
     },
     zh:{
       title:'一份分保资料的生命周期 — AI Data+', toplabel:'一份分保资料的生命周期', btn:'EN',
@@ -634,19 +649,19 @@
       intro:'每一份合约续转，都会收到一整套分保资料：条款单、附表、电子表格、邮件、演示文稿。如今，这些数字要等到核保决策之后，再花上两个月手工录入。AI Data+ 的做法是：在决策之前，就把这套资料变成结构化数据。',
       hint:'向下滚动，跟随一份分保资料走完全程',
       s1h:'一套资料，<br>多种格式', s1p:'分保资料由条款单、附表、电子表格、邮件和演示文稿组成。核保所需的数字散落其中，没有统一的结构。', s1m:'一套资料 · 五种格式 · 没有结构',
-      s2h:'找出核心文件', s2p:'文件分拣智能体（Submission Agent）逐一读取全部文件，挑出真正承载数据的核心文件：条款单、保费表、赔付记录、合约条文。其余文件作为辅助材料，随合约一并保留。', s2m:'模块 A — 文件分拣智能体', s2n:'<b>红 / 黄 / 绿三级闸门：</b>只有绿灯的结果才进入下一步。开发阶段由验证飞轮逐条复核，并把修正结果回馈给智能体。',
+      s2h:'找出核心文件', s2p:'文件分拣智能体（Submission Agent）逐一读取全部文件，挑出核心文件：分出公司的合约和提交材料，例如条款单、保费表、赔付记录、合约条文、续转介绍。判断依据是：分出公司是否列明送了这份文件，文件在哪个文件夹，以及文件本身的格式、文件名和正文。其余文件作为辅助材料，随合约一并保留，例如邮件正文、经纪人的备注邮件、文件名标明作废的条款单。', s2m:'模块 A — 文件分拣智能体', s2n:'<b>红 / 黄 / 绿三级闸门：</b>上线后，绿灯的分保资料直接往下送，事先无人过目，其中约五分之一照样抽查。红灯、黄灯交给验证飞轮，由人复核，直到转为绿灯。规则调校期间，任何一份分保资料都可在飞轮里复核。复核人的裁定决定哪些文件算核心文件；复核人推翻的判断，就是改进规则的依据。不论颜色，每份分保资料的核心文件都照常打包。',
       s3h:'提取关键事实', s3p:'数据提取智能体（Facts Agent）依据双方确认的数据清单（Shopping List）读取核心文件，为每份合约生成一条结构化的合约记录。每一个数字都能在原文中找到出处，绝不凭空生成。每家分出公司各有一套提取配方（recipe），指引它去哪里找，并随着复核的合约增多而不断改进。', s3m:'模块 B — 数据提取智能体', s3n:'<b>红 / 黄 / 绿三级闸门：</b>只有绿灯的记录才进入下一步。开发阶段由验证飞轮逐条复核，并把修正结果回馈给智能体。',
       s4h:'结构化数据，<br>即刻可用', s4p:'报表生成智能体（Template Agent）基于合约记录生成核保所需的两份输出：用于比较和决策的分析报告，以及可自动录入 TPR 系统的录入报告——无需再手工录入。', s4m:'模块 C — 报表生成智能体',
       s5h:'数据先于决策', s5p:'核保开始时，核保人就能看到结构化、可比较的合约数据；核保结束后，由 RPA 或 API 自动写入 TPR 系统——不再需要决策之后两个月的手工录入。', s5m:'核保人 · TPR 系统', s5n:'记录中的数值仅为示意。',
       outro:'同一套资料，同样的文件。在决策之前完成结构化，而不是在决策之后花两个月录入。', foot:'AI Data+ · 2026 年 9 月 · 记录中的数值仅为示意',
       folder:'分保资料', folderSub:'一份合约 · 一个年度',
-      files:['条款单 2027.pdf','保费表.xlsx','赔付记录.xlsx','合约条文.docx','邮件正文.msg','经纪人备注.msg','续转介绍.pptx','公司简介.pdf'],
-      a1:'文件分拣智能体', a1s:'模块 A · 确定性规则 + 大模型', core:'核心文件', coreS:'承载数据', sup:'辅助材料', supS:'随合约保留',
+      files:['条款单 2027.pdf','保费表.xlsx','赔付记录.xlsx','合约条文.docx','邮件正文.msg','经纪人备注.msg','续转介绍.pptx','条款单 2027 已作废.pdf'],
+      a1:'文件分拣智能体', a1s:'模块 A · 确定性规则 + 大模型', core:'核心文件', coreS:'合约与提交材料', sup:'辅助材料', supS:'随合约保留',
       a2:'数据提取智能体', a2s:'模块 B · 数据清单 + 分出公司专属配方', rec:'合约记录', recS:'每份合约一条',
       rows:[['预估保费 EPI','1,240 万美元'],['分保比例','25%'],['手续费','32.5%'],['盈余佣金','15%'],['事故限额','1,500 万美元'],['合约期间','2027 年 1 月 – 12 月']],
       a3:'报表生成智能体', a3s:'模块 C · 生成分析报告与录入报告', shA:'分析报告', shAs:'供核保决策', shE:'录入报告', shEs:'按 TPR 录入格式',
       uw:'核保人', uwS:'在合约文件夹中查看', tpr:'TPR 系统', tprS:'录入报告自动写入', rpa:'RPA / API',
-      gate:'闸门 · 只放行绿灯', held:'黄灯 — 暂停，转人工复核'
+      gateA:'闸门 · 绿灯放行，红黄转人工', heldA:'黄灯 — 整份分保资料转人工复核，直到转为绿灯', gate:'闸门 · 只放行绿灯', held:'黄灯 — 暂停，转人工复核'
     }
   };
   let stored=null; try{stored=localStorage.getItem('aidp.lang');}catch(e){}
@@ -700,10 +715,10 @@
       '</svg>';
   }
   const agentIllu=(cls,kind,name,sub)=>'<div class="bot side '+cls+'"><div class="illu">'+illu(kind)+'</div><div class="lab"><b>'+name+'</b><small>'+sub+'</small></div></div>';
-  const gate=(w,h)=>'<div class="gt"><svg viewBox="0 0 300 140" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">'+
+  const gate=(w,h,lbl,hd)=>'<div class="gt"><svg viewBox="0 0 300 140" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">'+
     '<path class="beam" d="M70 34h160l52 96H18z"/>'+
     '<line class="sweep" x1="62" y1="42" x2="238" y2="42" stroke-width="2" stroke-linecap="round"/>'+
-    '</svg><small>'+L.gate+'</small><div class="held">'+L.held+'</div></div>';
+    '</svg><small>'+lbl+'</small><div class="held">'+hd+'</div></div>';
   const gateBar=()=>'<div class="gt gtb"><svg viewBox="0 0 300 40" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">'+
     '<rect x="40" y="12" width="220" height="22" rx="11" fill="#13294B"/>'+
     '<rect x="56" y="21" width="120" height="4" rx="2" fill="#fff" opacity=".22"/>'+
@@ -729,7 +744,7 @@
     obj('<div class="fold-back"></div><div class="fold-tab"></div>',240,170,F,'',1);
     obj('<div class="fold-front"><div class="t">'+L.folder+'</div><div class="s">'+L.folderSub+'</div></div>',240,170,F,'',10);
 
-    const EXT=['pdf','xlsx','xlsx','docx','msg','msg','pptx','pdf'], CORE=[1,1,1,1,0,0,0,0];
+    const EXT=['pdf','xlsx','xlsx','docx','msg','msg','pptx','pdf'], CORE=[1,1,1,1,0,0,1,0];
     const rot0=[-16,12,-8,18,-12,9,-20,14];
     let kc=0,ko=0;
     L.files.forEach((name,i)=>{
@@ -742,18 +757,18 @@
         {p:.14},{p:.18,y:182-i*2,e:'io'},
         {p:t1},{p:t1+.016,x:260,y:385,s:.72,r:0,e:'io'},              /* at the junction */
         {p:t1+.03,x:core?205:315,y:463,s:.8,r:core?-12:12,e:'io'},    /* along the curve */
-        {p:t1+.045,x:tray.x,y:tray.y,s:.95,r:(k-1.5)*4,e:'out'},
+        {p:t1+.045,x:tray.x,y:tray.y,s:.95,r:(k-(core?2:1))*4,e:'out'},
         {p:.36}
       ];
       if(core){
-        const tg=.362+k*.009, amber=(k===2), hold=amber?.014:0;
-        gate1.push({g:tg+.022,amber,hold:hold+.006});
-        fr.push({p:tg},{p:tg+.022,x:260,y:R1+8,s:.85,r:0,e:'io'},{p:tg+.022+hold,x:260,y:R1+8,s:.85},
-                {p:tg+.045+hold,x:250+(k-1.5)*14,y:R1+200+k*5,s:.95,r:(k-1.5)*2,e:'io'},{p:.55},{p:.58,y:R1+140,o:0});
-      } else fr.push({p:.37},{p:.41,x:tray.x+180,o:0});
+        const tg=.362+k*.004;   /* the core files reach the gate together: the colour is the submission's */
+        fr.push({p:tg},{p:.39,x:260+(k-2)*12,y:R1+8,s:.85,r:(k-2)*3,e:'io'},{p:.412},
+                {p:.428+k*.004,x:250+(k-2)*14,y:R1+200+k*5,s:.95,r:(k-2)*2,e:'io'},{p:.55},{p:.58,y:R1+140,o:0});
+      } else fr.push({p:.412},{p:.43,x:tray.x+180,o:0});   /* every file counts towards the colour */
       const html='<div class="doc"><div class="lines"><i></i><i></i><i></i></div><div class="ext ext-'+ext+'">'+ext.toUpperCase()+'</div></div><div class="fname">'+name+'</div>';
       const o=obj(html,80,102,fr,'file '+(core?'core':'other'),2+i); o.el.style.setProperty('--d',(i*.45)+'s'); o.tagAt=t1+.02; o.qAt=t0+.045; o.jAt=t1+.016; o.core=!!core; files.push(o);
     });
+    gate1=[{g:.39,amber:true,hold:.022}];   /* one colour for the whole submission */
 
     obj('<svg class="tracks" viewBox="0 0 300 260" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">'+
       '<path d="M150 85C150 150 40 170 40 260" stroke="#C9D6E4" stroke-width="10" stroke-linecap="round" fill="none"/>'+
@@ -766,10 +781,10 @@
     obj('<div class="lbl core">'+L.core+'<small>'+L.coreS+'</small></div>',150,null,
       [{p:.22,x:150,y:664,o:0},{p:.25,o:1,y:656},{p:.36},{p:.39,o:0}],'',12);
     obj('<div class="lbl other">'+L.sup+'<small>'+L.supS+'</small></div>',150,null,
-      [{p:.22,x:370,y:664,o:0},{p:.25,o:1,y:656},{p:.37},{p:.41,o:0}],'',12);
+      [{p:.22,x:370,y:664,o:0},{p:.25,o:1,y:656},{p:.412},{p:.43,o:0}],'',12);
 
     /* gate on the Sort→Read boundary, then room 1 — stack, lens on the stack, record */
-    g1=obj(gate(300,150),300,null,[{p:.34,x:260,y:R1-10,s:.9,o:0},{p:.36,s:1,o:1},{p:.44},{p:.465,o:0,s:.95}],'',1);
+    g1=obj(gate(300,150,L.gateA,L.heldA),300,null,[{p:.34,x:260,y:R1-10,s:.9,o:0},{p:.36,s:1,o:1},{p:.44},{p:.465,o:0,s:.95}],'',1);
     g1b=obj(gateBar(),300,40,[{p:.34,x:260,y:R1-63,s:.9,o:0},{p:.36,s:1,o:1},{p:.44},{p:.465,o:0,s:.95}],'',13);
     obj(agentIllu('purple lens-on-files','read',L.a2,L.a2s),220,null,
       [{p:.41,x:302,y:R1+248,s:.6,o:0},{p:.44,s:1,o:1,e:'ob'},{p:.64},{p:.67,o:0}],'',12);
@@ -789,7 +804,7 @@
     gate2=[{g:.588,amber:false,hold:.022}];
 
     /* gate on the Read→Write boundary, then room 2 — record, stamp, two reports */
-    g2=obj(gate(300,160),300,null,[{p:.54,x:260,y:R2-12,s:.9,o:0},{p:.56,s:1,o:1},{p:.64},{p:.665,o:0,s:.95}],'',1);
+    g2=obj(gate(300,160,L.gate,L.held),300,null,[{p:.54,x:260,y:R2-12,s:.9,o:0},{p:.56,s:1,o:1},{p:.64},{p:.665,o:0,s:.95}],'',1);
     g2b=obj(gateBar(),300,40,[{p:.54,x:260,y:R2-65,s:.9,o:0},{p:.56,s:1,o:1},{p:.64},{p:.665,o:0,s:.95}],'',13);
     obj(agentIllu('green','write',L.a3,L.a3s),220,null,
       [{p:.615,x:260,y:R2+365,s:.6,o:0},{p:.645,s:1,o:1,e:'ob'},{p:.84},{p:.87,o:0}],'',12);
