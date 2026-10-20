@@ -23,7 +23,7 @@ why the pages are the way they are.
 | Page | What it is |
 |---|---|
 | `developer.html` | The portal itself, in three parts: General (LLM API), Submission Agent (flywheel manual, the code), Facts Agent (to be filled). |
-| `manual.html` | The flywheel manual. Built from `validate/manual/` in the code repo by `build.py`, which inlines every screenshot; that is why it is one 3.4 MB file. To refresh it, rebuild there and copy the result over this file. |
+| `manual.html` | The flywheel manual, a copy of `docs/flywheel-manual.html` in the code repo. `python flywheel/validate/manual_illustrated/build.py` writes that file: it starts the review app in hosted mode on an invented corpus, photographs its screens with headless Chrome or Edge and inlines the pictures into `template.html`, which is why it is one file of about 5 MB. To refresh it, run the builder on an up-to-date main and copy what it writes over this file. The committed `docs/flywheel-manual.html` is not rebuilt with every change to `template.html`: do not copy it as it stands. |
 | `llm-api.html` | The two in-house OpenAI-compatible hosts: model ids, the reasoning switch each expects, and the gotchas. **Neither the API keys nor the addresses are on this page** — a host reads `<chat-host>` or `<vision-host>`, a key reads "see the internal note". The real values live together in the internal API note on the project share and in each stage's gitignored config. A host and port are credential-class here, not documentation: published together with "traffic is HTTP, not HTTPS" they are a recipe for lifting a key off the wire. Keep both off this page. |
 
 ### The password on it
@@ -116,9 +116,9 @@ for that.
 The language choice is shared across the wiki through `localStorage["aidp.lang"]` and
 the switch in the nav bar, so a reader who switches to Chinese stays in Chinese as
 they move between pages. Pages that have extra work on a switch (rebuilding a
-chart, rewriting a title) listen for `aidp:lang`. The illustrated manual still
-writes `flywheel-manual-lang` as well, so a rebuild of that file does not forget
-the last choice, but it follows the wiki bar.
+chart, rewriting a title) listen for `aidp:lang`. The illustrated manual keeps its
+own choice in `flywheel-manual-lang`: it opens in the language last picked on its own
+chips, whatever the bar says, and follows the bar once the bar is switched.
 
 ## How these pages are written
 
@@ -150,6 +150,6 @@ page kept talking about itself instead of about the system.
   every other answer. The same test is why no card carries an edge band and no
   small tag carries a stripe.
 
-`manual.html` is generated in the code repository and is **not** edited to this
-standard here — it has its own, stricter one (write so a reviewer can act, never
-teach the system), which lives beside its source.
+`manual.html` is generated in the code repository and is **not** edited here: a
+change to its words goes into its source, `flywheel/validate/manual_illustrated/template.html`,
+and comes back with the next build.
