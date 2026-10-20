@@ -384,9 +384,9 @@ NEXT_CARDS = [
      "七个步骤：每步由谁执行、由谁签核，"
      "可能出现哪些结果。"),
     ("rules.html", "The rules", "分拣规则",
-     "What the machine looks at when it decides what each file is — folder, name, type, content.",
-     "机器判定每份文件时到底看什么——"
-     "位置、文件名、格式、内容。"),
+     "What the machine looks at when it decides what each file is: folder, name, format, content.",
+     "机器判定每份文件时看什么："
+     "文件夹、文件名、格式、内容。"),
     ("gate.html", "RAG Gate", "RAG 闸门",
      "Can a submission be passed on? Red, amber, green — and every rule behind the colour.",
      "一份提交能不能往下送？红、黄、绿，"

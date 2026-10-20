@@ -664,18 +664,24 @@
       </div>
     </div>
 
+    <!-- MODULE A -->
+    <div class="mod" style="--mc:var(--modA);--mci:var(--modA-ink)">
+      <div class="modhead">
+        <span class="modtag">A</span>
+        <span class="modname">Submission Agent</span>
+      </div>
     <!-- 1 pulled -->
-    <section class="step" style="--ac:var(--slate)">
+    <section class="step" style="--ac:var(--modA-ink)">
       <span class="num">1</span>
       <div class="card">
         <div class="head" role="button" tabindex="0" aria-expanded="false">
           <div class="pic"><svg viewBox="0 0 48 48"><use href="#s-pull"/></svg></div>
           <div>
             <p class="phrase"><span class="en">File download</span><span class="zh">文件下载</span></p>
-            <div class="whos"><span class="who p"><svg><use href="#i-person"/></svg><span class="en">Data &amp; AI Engineer</span><span class="zh">数据与 AI 工程师</span></span></div>
+            <div class="whos"><span class="who p"><svg><use href="#i-person"/></svg><span class="en">Data &amp; AI Engineer</span><span class="zh">数据与 AI 工程师</span></span><span class="who m"><svg><use href="#i-gear"/></svg>Submission Agent</span></div>
           </div>
           <span class="side">
-            <span class="info" tabindex="0"><svg><use href="#i-i"/></svg><span class="tt"><span class="en">A script fetches the files from EFS; each submission is identified by TNO and underwriting year. Nothing is filtered. The Data &amp; AI Engineer triggers the script at MVP; automatic through the IT API at production. No sign-off.</span><span class="zh">脚本从 EFS 拉取文件；每份申请以 TNO 和承保年度标识。不做筛选。MVP 阶段由数据与 AI 工程师触发脚本，上线后通过 IT 的 API 自动完成。无需签核。</span></span></span>
+            <span class="info" tabindex="0"><svg><use href="#i-i"/></svg><span class="tt"><span class="en">The Submission Agent downloads one zip per submission from EFS and unzips each into a folder of its own; each submission is identified by TNO and underwriting year. Nothing is filtered. The Data &amp; AI Engineer starts the download. No sign-off.</span><span class="zh">Submission Agent 从 EFS 下载压缩包，每份申请一个，再解压到各自的文件夹；每份申请以 TNO 和承保年度标识。不做筛选。下载由数据与 AI 工程师启动。无需签核。</span></span></span>
             <span class="chev"><svg><use href="#i-chev"/></svg></span>
           </span>
         </div>
@@ -687,12 +693,6 @@
       </div>
     </section>
 
-    <!-- MODULE A -->
-    <div class="mod" style="--mc:var(--modA);--mci:var(--modA-ink)">
-      <div class="modhead">
-        <span class="modtag">A</span>
-        <span class="modname">Submission Agent</span>
-      </div>
     <!-- 2 sorted -->
     <section class="step" style="--ac:var(--modA-ink)">
       <span class="num">2</span>
@@ -704,7 +704,7 @@
             <div class="whos"><span class="who p"><svg><use href="#i-person"/></svg><span class="en">Data &amp; AI Engineer</span><span class="zh">数据与 AI 工程师</span></span><span class="who m"><svg><use href="#i-gear"/></svg>Submission Agent</span></div>
           </div>
           <span class="side">
-            <span class="info" tabindex="0"><svg><use href="#i-i"/></svg><span class="tt"><span class="en">The Data &amp; AI Engineer triggers the Submission Agent. A deterministic rule picks the Core files; the LLM only classifies what the rule can't. Every file is kept, tagged Core or Others. Signed off at step 3.</span><span class="zh">数据与 AI 工程师触发 Submission Agent。确定性规则先选出核心文件，规则未命中的才交给 LLM 分类。所有文件都保留，标记为核心或其他。在第 3 步签核。</span></span></span>
+            <span class="info" tabindex="0"><svg><use href="#i-i"/></svg><span class="tt"><span class="en">The Submission Agent reads every file; a scan is read through OCR. Named rules give each file its role; a file no rule claims stays UNDECIDED, for a person to settle. No model gives a file a role: the vision model only transcribes scans, and the second read, run only when asked, can only add files for a person to check. Every file is kept, tagged Core or Others. The run ends by grading the submission green, amber or red and writing the core pack: the list of Core files handed downstream. Reviewed at step 3.</span><span class="zh">Submission Agent 读取每份文件，扫描件经 OCR 识别。具名规则给每份文件定角色；没有规则认领的文件保持 UNDECIDED，交给人判断。模型不给文件定角色：视觉模型只转写扫描件；二次阅读仅在指定时运行，只能增加要人看的文件。所有文件都保留，标记为核心或其他。运行结束时给这份申请评出绿、黄或红，并写出核心文件包：交给下游的核心文件列表。在第 3 步复核。</span></span></span>
             <span class="chev"><svg><use href="#i-chev"/></svg></span>
           </span>
         </div>
@@ -724,17 +724,17 @@
           <div class="pic"><svg viewBox="0 0 48 48"><use href="#s-check"/></svg></div>
           <div>
             <p class="phrase"><span class="en">Result validation</span><span class="zh">结果验证</span></p>
-            <div class="whos"><span class="who p"><svg><use href="#i-person"/></svg><span class="en">Reviewer</span><span class="zh">复核人</span></span><span class="arrow">→</span><span class="who s"><svg><use href="#i-stamp"/></svg><span class="en">Domain Specialist</span><span class="zh">领域专家</span></span></div>
+            <div class="whos"><span class="who p"><svg><use href="#i-person"/></svg><span class="en">Reviewer</span><span class="zh">复核人</span></span><span class="arrow">→</span><span class="who s"><svg><use href="#i-stamp"/></svg><span class="en">Approver, where named</span><span class="zh">审批人（若指定）</span></span></div>
           </div>
           <span class="side">
-            <span class="info" tabindex="0"><svg><use href="#i-i"/></svg><span class="tt"><span class="en">Validation Flywheel, Module A. The vendor reviewer checks the split; the Domain Specialist signs it off as "validated Core". Corrections go back to the Data &amp; AI Engineer to teach the agent. Green/amber/red gates from MVP 500; full review at MVP 20. Logged to validations/validations.csv.</span><span class="zh">验证飞轮，模块 A。外包复核人检查分拣结果；领域专家签核为"已确认核心"。纠正结果反馈给数据与 AI 工程师改进 agent。绿黄红门控自 MVP 500 启用；MVP 20 全检。记录于 validations/validations.csv。</span></span></span>
+            <span class="info" tabindex="0"><svg><use href="#i-i"/></svg><span class="tt"><span class="en">Validation Flywheel, Module A. A reviewer checks the split in the review app, corrects what the machine got wrong and confirms; one assigned reviewer's confirmation makes the submission reviewed. Where the assignment list names an approver, the approver's confirmation is the one that counts, and the approver rules where two reviewers disagree. Not every submission names one. The review app grades the colour again after every answer; a ruling reaches the core pack when the pack is built again. Corrections go back to the Data &amp; AI Engineer to teach the agent. While the rules are tuned any submission may be reviewed; in production a person reviews red and amber until they turn green, and an audit sample of about one green in five. MVP 20 was reviewed in full, by hand. Each reviewer's answers go in a file of their own, validations-&lt;name&gt;.csv.</span><span class="zh">验证飞轮，模块 A。复核人在复核工具中检查分拣结果，改正机器判错的文件，然后确认；分派到这份申请的复核人中任一人确认，即为已复核。分派表若指定了审批人，则以审批人的确认为准；两位复核人答复不一时，由审批人裁定。并非每份申请都指定审批人。复核工具每收到一条答复就重算颜色；人工裁定在核心文件包重新生成时进包。纠正结果反馈给数据与 AI 工程师改进 agent。规则调校期间，任何一份申请都可复核；上线后，红色和黄色复核到转绿为止，绿色约五份抽一份作抽查。MVP 20 已由人工全检。每位复核人的答复各存一份 validations-&lt;姓名&gt;.csv。</span></span></span>
             <span class="chev"><svg><use href="#i-chev"/></svg></span>
           </span>
         </div>
         <div class="body"><div class="pills">
           <span class="pill o-wait"><svg><use href="#i-clock"/></svg><span class="en">To be reviewed</span><span class="zh">待复核</span> <small>→ <span class="en">Reviewer</span><span class="zh">复核人</span></small></span>
-          <span class="pill o-spot"><svg><use href="#i-mag"/></svg><span class="en">Reviewed, to be signed off</span><span class="zh">已复核，待签核</span> <small>→ <span class="en">Domain Specialist</span><span class="zh">领域专家</span></small></span>
-          <span class="pill o-ok"><svg><use href="#i-check"/></svg><span class="en">Signed off</span><span class="zh">已签核</span></span>
+          <span class="pill o-spot"><svg><use href="#i-mag"/></svg><span class="en">Reviewed, to be approved</span><span class="zh">已复核，待审批</span> <small>→ <span class="en">Approver, where named</span><span class="zh">审批人（若指定）</span></small></span>
+          <span class="pill o-ok"><svg><use href="#i-check"/></svg><span class="en">Reviewed; approved where an approver is named</span><span class="zh">已复核；指定了审批人的，已审批</span></span>
           <span class="pill o-fix"><svg><use href="#i-loop"/></svg><span class="en">Corrected</span><span class="zh">已纠正</span> <small>→ <span class="en">Data &amp; AI Engineer</span><span class="zh">数据与 AI 工程师</span></small></span>
         </div></div>
       </div>
@@ -759,12 +759,12 @@
             <div class="whos"><span class="who p"><svg><use href="#i-person"/></svg><span class="en">Data &amp; AI Engineer</span><span class="zh">数据与 AI 工程师</span></span><span class="who m"><svg><use href="#i-gear"/></svg>Facts Agent</span></div>
           </div>
           <span class="side">
-            <span class="info" tabindex="0"><svg><use href="#i-i"/></svg><span class="tt"><span class="en">The Data &amp; AI Engineer triggers the Facts Agent. It reads the validated Core files into one TreatyRecord: every field on the signed Shopping List, with where each value was found. Locates, never invents. If no recipe fits this treaty, the Business Analyst writes one (with a coding agent) and the run repeats. Signed off at step 5.</span><span class="zh">数据与 AI 工程师触发 Facts Agent。它将已确认的核心文件读取为一条 TreatyRecord：按已签核的 Shopping List 逐字段提取并记录出处。只定位，不臆造。若没有适用的 recipe，由业务分析师（借助编码 agent）编写后重跑。在第 5 步签核。</span></span></span>
+            <span class="info" tabindex="0"><svg><use href="#i-i"/></svg><span class="tt"><span class="en">The Data &amp; AI Engineer triggers the Facts Agent. It reads the submission's Core files, as the core pack lists them, into one TreatyRecord: every field on the signed Shopping List, with where each value was found. Locates, never invents. If no recipe fits this treaty, the Business Analyst writes one (with a coding agent) and the run repeats. Signed off at step 5.</span><span class="zh">数据与 AI 工程师触发 Facts Agent。Facts Agent 读取核心文件包里这份申请的核心文件，整理成一条 TreatyRecord：按已签核的 Shopping List 逐字段提取并记录出处。只定位，不臆造。若没有适用的 recipe，由业务分析师（借助编码 agent）编写后重跑。在第 5 步签核。</span></span></span>
             <span class="chev"><svg><use href="#i-chev"/></svg></span>
           </span>
         </div>
         <div class="body"><div class="pills">
-          <span class="pill o-wait"><svg><use href="#i-clock"/></svg><span class="en">Waiting for validated Core</span><span class="zh">等待已确认核心</span></span>
+          <span class="pill o-wait"><svg><use href="#i-clock"/></svg><span class="en">Waiting for the core pack</span><span class="zh">等待核心文件包</span></span>
           <span class="pill o-ok"><svg><use href="#i-check"/></svg><span class="en">Record extracted</span><span class="zh">记录已提取</span></span>
           <span class="pill o-spot"><svg><use href="#i-loop"/></svg><span class="en">No recipe fits</span><span class="zh">无适用 recipe</span> <small>→ <span class="en">BA writes one</span><span class="zh">BA 编写</span></small></span>
           <span class="pill o-fix"><svg><use href="#i-alert"/></svg><span class="en">Fields missing</span><span class="zh">字段缺失</span> <small>→ <span class="en">Data &amp; AI Engineer (e.g. image tables)</span><span class="zh">数据与 AI 工程师（如图片表格）</span></small></span>
@@ -919,7 +919,7 @@
     </a>
     <a class="wknext-c" href="rules.html">
       <b><span class="wk-en">The rules</span><span class="wk-zh">分拣规则</span></b>
-      <span class="wknext-d"><span class="wk-en">What the machine looks at when it decides what each file is — folder, name, type, content.</span><span class="wk-zh">机器判定每份文件时到底看什么——位置、文件名、格式、内容。</span></span>
+      <span class="wknext-d"><span class="wk-en">What the machine looks at when it decides what each file is: folder, name, format, content.</span><span class="wk-zh">机器判定每份文件时看什么：文件夹、文件名、格式、内容。</span></span>
       <span class="wknext-go" aria-hidden="true">→</span>
     </a>
     <a class="wknext-c" href="gate.html">
@@ -931,8 +931,8 @@
 </nav>
 <!-- /wiki next -->
   <footer class="wkfoot">
-    <span class="en"><a href="flow.html">How it works</a> · <a href="gate.html">RAG Gate</a> · Updated 2026-09-07</span>
-    <span class="zh"><a href="flow.html">整体流程</a> · <a href="gate.html">RAG 闸门</a> · 更新于 2026-09-07</span>
+    <span class="en"><a href="flow.html">How it works</a> · <a href="gate.html">RAG Gate</a> · Updated 2026-10-20</span>
+    <span class="zh"><a href="flow.html">整体流程</a> · <a href="gate.html">RAG 闸门</a> · 更新于 2026-10-20</span>
   </footer>
 
 </div>
