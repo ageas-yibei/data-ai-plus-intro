@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
-<meta name="description" content="When a person has to look at a TNO after the machine sorts the files.">
+<meta name="description" content="When a person has to look at a submission after the machine sorts the files.">
 <title>AI Data+ · RAG Gate</title>
 <script>try{if(localStorage.getItem("aidp.lang")==="zh"){document.documentElement.setAttribute("data-lang","zh");document.documentElement.setAttribute("lang","zh-Hans");}}catch(e){}</script>
 <style>
@@ -517,8 +517,8 @@
       <p class="wkey">AI Data+</p>
       <h1><span class="en">When a person has to look</span><span class="zh">什么时候需要人看</span></h1>
       <p class="wklede">
-        <span class="en">Can this submission be passed on to downstream? After the machine sorts a treaty’s files, the gate asks that one question about the result, and the three colours are the three answers. <span class="code">agent/run.py</span> works the colour out at its step 9, after the label table and before the pack. The review app shows the colour and works it out again when it starts and after every answer, flag or confirmation. Each round’s <span class="code">submissions.csv</span> hands the colour to downstream. Where <span class="code">contract/store_config.json</span> is set up, a <span class="code">fired.json</span> beside each round’s <span class="code">submissions.csv</span> holds what each rule that fired said and the files it names.</span>
-        <span class="zh">这份提交能不能往下送给下游？机器分拣完一份合约的文件后，闸门就对这个结果只问这一个问题，三种颜色就是三个答案。<span class="code">agent/run.py</span> 在第 9 步算出颜色：标签表之后，材料包之前。复核工具显示颜色，启动时重算一遍，之后每记下一条答复、标记或确认，再重算一遍。每一轮的 <span class="code">submissions.csv</span> 把颜色交给下游。配置了 <span class="code">contract/store_config.json</span> 时，每一轮 <span class="code">submissions.csv</span> 旁边还有一份 <span class="code">fired.json</span>，记下每条触发的规则说了什么、点名了哪些文件。</span>
+        <span class="en">After the machine sorts a submission, a colour says whether the result can go downstream as it is.</span>
+        <span class="zh">机器分拣完一份提交，用红黄绿告诉你：这份结果能不能直接交给下游。</span>
       </p>
     </div>
   </header>
@@ -529,61 +529,61 @@
         <span class="dot" aria-hidden="true"></span>
         <h3><span class="en">Green</span><span class="zh">绿灯</span></h3>
       </div>
-      <p><span class="en">It can be passed on. Nothing is left to check, and downstream gets it as it is.</span><span class="zh">可以往下送。没有待查的内容，下游直接拿到。</span></p>
-      <p class="do"><span class="en">Minus a standing audit sample: about one treaty in five is read anyway, so the gate keeps being measured after it stops being reviewed.</span><span class="zh">但保留固定抽查：约每五份抽一份照样有人读，好让闸门在没人复核之后仍被持续检验。</span></p>
+      <p><span class="en">It can go downstream as it is.</span><span class="zh">可以直接交给下游。</span></p>
+      <p class="do"><span class="en">A standing audit still sends about one green submission in five to a person.</span><span class="zh">绿灯提交约每五份固定抽查一份，照样有人读。</span></p>
     </article>
     <article class="lamp" style="--c:var(--wait);--cs:var(--amber-2)">
       <div class="lamp-h">
         <span class="dot" aria-hidden="true"></span>
         <h3><span class="en">Amber</span><span class="zh">黄灯</span></h3>
       </div>
-      <p><span class="en">Double check needed. Somebody looks before it goes on.</span><span class="zh">需要复核。先有人过目，再往下送。</span></p>
-      <p class="do"><span class="en">Most amber rules name the files to look at, and that list is the work — not the whole treaty. A file somebody settles comes off the list. Two of them name no file: they are facts about the treaty itself, and confirming the submission clears them.</span><span class="zh">多数黄灯规则会列出要看的文件，要做的就是这份名单，而不是整份合约；有人定下来的文件即从名单上划掉。其中两条不列文件，说的是这份合约本身的情况，确认这份提交即可消除。</span></p>
+      <p><span class="en">Double check needed: someone looks before it goes on.</span><span class="zh">需要复核：有人看过，再往下送。</span></p>
+      <p class="do"><span class="en">Most amber rules name the files to check: look at those, not the whole treaty.</span><span class="zh">多数黄灯规则会列出要看的文件：看这些就行，不必看整份合约。</span></p>
     </article>
     <article class="lamp" style="--c:var(--halt);--cs:var(--halt-2)">
       <div class="lamp-h">
         <span class="dot" aria-hidden="true"></span>
         <h3><span class="en">Red</span><span class="zh">红灯</span></h3>
       </div>
-      <p><span class="en">Investigation needed. The result is not trusted — find out why before anything goes on.</span><span class="zh">需要查清。不信任这次结果——先弄明白原因，再谈往下送。</span></p>
-      <p class="do"><span class="en">The amber list still comes with it, so the person knows where to start. Once the person whose confirmation is the record (<em>What counts as a review</em>, below) has been through the submission and confirmed it, the red rules clear, with two exceptions. An undecided file still counts for <em>the machine sat on the fence</em> while it is flagged, or while two reviewers’ answers on it differ and no approver has ruled on it. A treaty that is parked, or that the label table holds no row for, stays red until it is unparked or sorted.</span><span class="zh">黄灯名单一并附上，好让人知道从哪里入手。确认须出自算数的那个人，见下文<em>什么才算复核</em>；看完整份提交并确认之后，红灯规则即消除，只有两个例外。未定文件若被标记疑问，或两个人的答复仍不一致、也没有批准人裁定，仍计入<em>大半文件没有表态</em>。合约若已搁置，或标签表里没有这份合约的行，在解除搁置或分拣之前一直是红灯。</span></p>
+      <p><span class="en">Investigation needed: find out why before it goes on.</span><span class="zh">需要查清：先查明原因，再往下送。</span></p>
+      <p class="do"><span class="en">Any files the amber rules name are listed too: start there.</span><span class="zh">黄灯规则点名的文件也一并列出，可以从那里入手。</span></p>
     </article>
   </div>
 
   <div class="pick">
     <h3><span class="en">How the colour is picked</span><span class="zh">颜色怎么定</span></h3>
     <ol>
-      <li><span class="en">If the treaty is parked, or the label table holds no row for it → red, with one code in place of a rule: <span class="code">parked</span> (<span class="code">"staged": true</span> in its <span class="code">setup.json</span>, whatever rows the table holds), <span class="code">reduced_inventory_only</span> (no row, and the treaty’s <span class="code">&lt;TNO&gt;_inventory.csv</span> on this machine has no <span class="code">role</span> column) or <span class="code">never_triaged</span> (no row otherwise). No review clears it, and neither does a row of the register: take <span class="code">"staged": true</span> out, or sort the treaty, first.</span><span class="zh">合约已搁置，或标签表里没有这份合约的行 → 红灯，不记规则，只记一个代码：<span class="code">parked</span>（<span class="code">setup.json</span> 里写着 <span class="code">"staged": true</span>，标签表里有没有行都一样）、<span class="code">reduced_inventory_only</span>（没有行，且本机这份合约的 <span class="code">&lt;TNO&gt;_inventory.csv</span> 没有 <span class="code">role</span> 栏）或 <span class="code">never_triaged</span>（其余没有行的情形）。复核消除不了，登记表上的一行也不行：得先删去 <span class="code">"staged": true</span>，或先把合约分拣一遍。</span></li>
-      <li><span class="en">Otherwise, if any investigation-needed test failed → red.</span><span class="zh">否则，凡“需要查清”的测试有一条未过 → 红灯。</span></li>
-      <li><span class="en">Otherwise, if any look-at-these test failed → amber.</span><span class="zh">否则，“复查这些文件”的测试有一条未过 → 黄灯。</span></li>
-      <li><span class="en">Otherwise → green. Nothing fired, and having no reason to stop is what “it can be passed on” means.</span><span class="zh">否则 → 绿灯。没有任何一条触发；没有要停下的理由，就是“可以往下送”的意思。</span></li>
+      <li><span class="en">If the treaty is parked or not sorted yet → red, until it is unparked or sorted.</span><span class="zh">合约被搁置或还没分拣 → 红灯，直到解除搁置或分拣完。</span></li>
+      <li><span class="en">Otherwise, if any investigation-needed rule fired → red.</span><span class="zh">否则，“需要查清”的规则只要有一条触发 → 红灯。</span></li>
+      <li><span class="en">Otherwise, if any look-at-these-files rule fired → amber.</span><span class="zh">否则，“复查这些文件”的规则只要有一条触发 → 黄灯。</span></li>
+      <li><span class="en">Otherwise → green.</span><span class="zh">否则 → 绿灯。</span></li>
     </ol>
     <p class="note">
-      <span class="en">Keeping an extra file never makes the colour worse: no rule asks whether too much was kept, the file is still in the pack, and someone can read it. Throwing one away on a weak reason turns the light amber, because nobody will see it unless we say so. A kept file nothing could be read from does not turn the light amber: it ships in the pack and is read there. There is no G7: <span class="code">G7_core_empty</span> is retired, and the number is not reused.</span>
-      <span class="zh">多留一份文件，灯色不会因此变差：没有哪条规则管“留多了”；文件还在材料包里，总有人读得到。凭弱理由扔掉一份，才亮黄灯：不点出来，就没人看得见。留下的文件即便一个字也读不出来，同样不亮黄灯：照样进材料包，到那里再读。没有 G7：<span class="code">G7_core_empty</span> 已停用，编号不再复用。</span>
+      <span class="en">Keeping an extra file never makes the colour worse; throwing one away can.</span>
+      <span class="zh">多留一份文件，颜色不会变差；扔掉一份，却可能变差。</span>
     </p>
   </div>
 
   <section class="block">
     <h2 class="wkh2"><span class="en">Investigation needed</span><span class="zh">需要查清</span></h2>
-    <p class="wksub"><span class="en">No colour stops the pack: <span class="code">agent/output/pack.py</span> reads no colour, and packs a submission these rules turn red exactly as it packs a green one. Click a row for the rule name and the exact test.</span><span class="zh">颜色不影响材料包：<span class="code">agent/output/pack.py</span> 不读颜色，被这几条规则判为红灯的提交，打包方式与绿灯提交完全一样。点开一行，可看规则名与具体判定条件。</span></p>
+    <p class="wksub"><span class="en">A submission these rules turn red is still packed.</span><span class="zh">这几条规则判为红灯的提交，照样打包。</span></p>
 
     <details class="rule" style="--c:var(--halt)">
       <summary>
         <div>
           <div class="rname"><span class="en">Too little arrived</span><span class="zh">收到的文件太少</span></div>
-          <div class="rplain"><span class="en">Fewer than three distinct documents. That is not a submission we can work.</span><span class="zh">不足三份不同的文件，构不成一份可处理的提交。</span></div>
+          <div class="rplain"><span class="en">Fewer than three different files arrived.</span><span class="zh">收到的不同文件不足三份。</span></div>
         </div>
-        <span class="who-looks"><span class="en">whole TNO</span><span class="zh">整份 TNO</span></span>
+        <span class="who-looks"><span class="en">whole treaty</span><span class="zh">整份合约</span></span>
       </summary>
       <div class="tech">
         <dl>
           <dt><span class="en">Rule</span><span class="zh">规则</span></dt>
           <dd><span class="code">G1_too_few_documents</span></dd>
           <dt><span class="en">Trigger</span><span class="zh">触发</span></dt>
-          <dd><span class="en">Distinct documents (by file hash) &lt; 3.</span><span class="zh">按文件哈希计，不同文件不足 3 份。</span></dd>
+          <dd><span class="en">Fewer than 3 distinct documents, by file hash.</span><span class="zh">按文件哈希计，不同文件不足 3 份。</span></dd>
           <dt><span class="en">A review clears it</span><span class="zh">复核可消除</span></dt>
-          <dd><span class="en">Yes, once the submission is confirmed: the person confirming says these files are the whole submission.</span><span class="zh">可以，确认这份提交即可：确认的人认定，这几份文件就是整份提交。</span></dd>
+          <dd><span class="en">Yes, once the submission is confirmed.</span><span class="zh">可以，确认这份提交即可。</span></dd>
         </dl>
       </div>
     </details>
@@ -592,9 +592,9 @@
       <summary>
         <div>
           <div class="rname"><span class="en">Nothing was kept as core</span><span class="zh">核心一份都没留</span></div>
-          <div class="rplain"><span class="en">The machine did not name a single core file. There is no pack to send on.</span><span class="zh">一份核心文件也没标出，没有可往下送的材料。</span></div>
+          <div class="rplain"><span class="en">The pack is empty unless a person keeps a file.</span><span class="zh">没人留下文件，材料包就是空的。</span></div>
         </div>
-        <span class="who-looks"><span class="en">whole TNO</span><span class="zh">整份 TNO</span></span>
+        <span class="who-looks"><span class="en">whole treaty</span><span class="zh">整份合约</span></span>
       </summary>
       <div class="tech">
         <dl>
@@ -603,7 +603,7 @@
           <dt><span class="en">Trigger</span><span class="zh">触发</span></dt>
           <dd><span class="en">No row is CORE.</span><span class="zh">没有任何一行是 CORE。</span></dd>
           <dt><span class="en">A review clears it</span><span class="zh">复核可消除</span></dt>
-          <dd><span class="en">Yes, once the submission is confirmed. A file a person marks Keep goes into the pack once <span class="code">agent/output/pack.py</span> builds it again. The review app does not build the pack.</span><span class="zh">可以，确认这份提交即可。人标为保留的文件，要等 <span class="code">agent/output/pack.py</span> 重新生成材料包才进包。复核工具本身不生成材料包。</span></dd>
+          <dd><span class="en">Yes, once the submission is confirmed.</span><span class="zh">可以，确认这份提交即可。</span></dd>
         </dl>
       </div>
     </details>
@@ -612,18 +612,18 @@
       <summary>
         <div>
           <div class="rname"><span class="en">The machine could not read anything</span><span class="zh">一个字也读不出来</span></div>
-          <div class="rplain"><span class="en">Not one file could be read: not by the rules, and not off its page images by the vision model. A scan the vision model read counts as read.</span><span class="zh">没有一份文件读得出来：规则读不出，视觉模型从页面图片也读不出。经视觉模型读出的扫描件，算作已读。</span></div>
+          <div class="rplain"><span class="en">No text came out of any file, so a person has to read them.</span><span class="zh">哪份文件都提取不出文字，只能靠人读。</span></div>
         </div>
-        <span class="who-looks"><span class="en">whole TNO</span><span class="zh">整份 TNO</span></span>
+        <span class="who-looks"><span class="en">whole treaty</span><span class="zh">整份合约</span></span>
       </summary>
       <div class="tech">
         <dl>
           <dt><span class="en">Rule</span><span class="zh">规则</span></dt>
           <dd><span class="code">G3_core_unreadable</span></dd>
           <dt><span class="en">Trigger</span><span class="zh">触发</span></dt>
-          <dd><span class="en">Every row is unread: the rules read no text of it, no reading of its page images brought back a page's words, and no native text file of it holds words.</span><span class="zh">每一行都是未读：规则读不出正文，页面图片的识别没有读回任何一页的文字，原生文本文件里也没有文字。</span></dd>
+          <dd><span class="en">Every row is unread: no text layer, no words back from the vision model, and no words in a text file made from it.</span><span class="zh">每一行都没读出文字：没有文本层，视觉模型没认出文字，从文件提取的文本文件里也没有文字。</span></dd>
           <dt><span class="en">A review clears it</span><span class="zh">复核可消除</span></dt>
-          <dd><span class="en">Yes, once the submission is confirmed: the person read the files the machine could not.</span><span class="zh">可以，确认这份提交即可：机器读不出的文件，确认的人已经看过。</span></dd>
+          <dd><span class="en">Yes, once the submission is confirmed.</span><span class="zh">可以，确认这份提交即可。</span></dd>
         </dl>
       </div>
     </details>
@@ -631,19 +631,19 @@
     <details class="rule" style="--c:var(--halt)">
       <summary>
         <div>
-          <div class="rname"><span class="en">The machine sat on the fence</span><span class="zh">大半文件没有表态</span></div>
+          <div class="rname"><span class="en">The machine left most files undecided</span><span class="zh">大半文件没有下判断</span></div>
           <div class="rplain"><span class="en">It took no position, and gave no reason, on more than half the files.</span><span class="zh">过半文件，机器既没有给出判断，也没有说明原因。</span></div>
         </div>
-        <span class="who-looks"><span class="en">whole TNO</span><span class="zh">整份 TNO</span></span>
+        <span class="who-looks"><span class="en">whole treaty</span><span class="zh">整份合约</span></span>
       </summary>
       <div class="tech">
         <dl>
           <dt><span class="en">Rule</span><span class="zh">规则</span></dt>
           <dd><span class="code">G4_mostly_undecided</span></dd>
           <dt><span class="en">Trigger</span><span class="zh">触发</span></dt>
-          <dd><span class="en">UNDECIDED rows nobody has settled × 2 &gt; total rows, leaving out the rows that say where the ladder stalled: outside the submission folders (<span class="code">R14_outside_boundary</span>), in a notes folder the machine could not read (<span class="code">R7_notes_folder_unreadable</span>), an archive nothing came out of (<span class="code">R1_container_unopened</span>). Those are still pending, and they are <em>it never decided on some files</em> work.</span><span class="zh">没人定下来的 UNDECIDED 行数 × 2 &gt; 总行数；写明阶梯停在何处的行不计入：在提交文件夹之外（<span class="code">R14_outside_boundary</span>）、在机器读不出正文的备注文件夹里（<span class="code">R7_notes_folder_unreadable</span>）、什么都没取出来的压缩包（<span class="code">R1_container_unopened</span>）。这些行仍待定，属于<em>有些文件没有下判断</em>那一条的工作。</span></dd>
+          <dd><span class="en">UNDECIDED rows nobody has settled × 2 &gt; all rows. Three kinds of undecided row are not counted: outside the submission folders (<span class="code">R14_outside_boundary</span>), in a notes folder the machine could not read (<span class="code">R7_notes_folder_unreadable</span>), and an archive it could not open (<span class="code">R1_container_unopened</span>).</span><span class="zh">没人定下来的 UNDECIDED 行数 × 2 &gt; 总行数。以下三种未定的行不计入：在提交文件夹之外（<span class="code">R14_outside_boundary</span>）、在读不出正文的备注文件夹里（<span class="code">R7_notes_folder_unreadable</span>）、打不开的压缩包（<span class="code">R1_container_unopened</span>）。</span></dd>
           <dt><span class="en">A review clears it</span><span class="zh">复核可消除</span></dt>
-          <dd><span class="en">Yes. A file somebody settled drops out of this count, and so does every file nobody stopped on once the submission is confirmed. A flagged file still counts until whoever flagged it takes the flag off, and so does a file two reviewers answered opposite ways, until one of them changes or takes back their answer, or the approver rules on it.</span><span class="zh">可以。有人定下来的文件不再计入这个数字；确认这份提交后，没人停下来看过的文件也不再计入。被标记疑问的文件照样计入，直到标记的人撤下标记；两个人给出相反答复的文件也照样计入，直到其中一人改答复或撤回答复，或批准人作出裁定。</span></dd>
+          <dd><span class="en">Yes, once its files are settled.</span><span class="zh">可以，文件定下来即可。</span></dd>
         </dl>
       </div>
     </details>
@@ -656,7 +656,7 @@
       <summary>
         <div>
           <div class="rname"><span class="en">It threw a file away on a weak reason</span><span class="zh">凭弱理由扔掉了文件</span></div>
-          <div class="rplain"><span class="en">A file in a submission folder was dropped on evidence nothing else backs up: its name was read as made from another file, or words in its text decided where its name alone would not have. Check it before it leaves.</span><span class="zh">提交文件夹里扔掉了一份文件，依据却没有旁证：要么只凭文件名推断是由别的文件加工而来，要么是正文里的字眼定的案，单看文件名定不下来。文件离场前得看一眼。</span></div>
+          <div class="rplain"><span class="en">Check whether the file belongs in the pack.</span><span class="zh">看看这份文件该不该进材料包。</span></div>
         </div>
         <span class="who-looks"><span class="en">named files</span><span class="zh">名单上的文件</span></span>
       </summary>
@@ -665,11 +665,9 @@
           <dt><span class="en">Rule</span><span class="zh">规则</span></dt>
           <dd><span class="code">G5_contested_discard</span></dd>
           <dt><span class="en">Which discards</span><span class="zh">哪些丢弃要看</span></dt>
-          <dd><span class="en">Only unique files in a submission folder. Always: <span class="code">R6_version_pair</span>, <span class="code">R6_uw_derivative</span>. Only when the text fired and the name did not: <span class="code">R7_internal_signal</span>, <span class="code">R2_withdrawn_marker</span>. Never: emails and printed emails, archives, images, comparison tags and names, newsletters, files the computer wrote, KYC, NDA and licence documents, the notes folder, broker copies.</span><span class="zh">仅限提交文件夹里的唯一文件。一律要看：<span class="code">R6_version_pair</span>、<span class="code">R6_uw_derivative</span>。仅凭正文命中、文件名没命中时要看：<span class="code">R7_internal_signal</span>、<span class="code">R2_withdrawn_marker</span>。一律不看：邮件与打印的邮件、压缩包、图片、对比标签与对比命名、简报、电脑生成的文件、KYC、NDA、licence 类文件、备注文件夹、经纪人版本。</span></dd>
-          <dt><span class="en">Unknown reason</span><span class="zh">未知理由</span></dt>
-          <dd><span class="en">A discard citing a rule nobody has classified <em>halts the label table</em> (step 8 of <span class="code">agent/run.py</span>) before anything is written: it does not fail open. The run records the halt in <span class="code">data/_overview/run_errors.md</span> and goes on: the colour (step 9) is not worked out again, and the pack (step 10) is still built.</span><span class="zh">丢弃理由若是从未归类过的规则，标签表（<span class="code">agent/run.py</span> 第 8 步）在写出任何内容之前<em>直接停下</em>，绝不悄悄放过。停下的原因记进 <span class="code">data/_overview/run_errors.md</span>，运行接着往下走：颜色（第 9 步）不再重算，材料包（第 10 步）照样生成。</span></dd>
+          <dd><span class="en">Files dropped in a submission folder that are neither a copy nor a near-copy of another file, for one of four reasons: <span class="code">R6_version_pair</span> and <span class="code">R6_uw_derivative</span> always; <span class="code">R7_internal_signal</span> and <span class="code">R2_withdrawn_marker</span> only when the file’s name alone would not have decided it.</span><span class="zh">提交文件夹里被扔掉、既非副本也非近似副本的文件，理由限以下四种：<span class="code">R6_version_pair</span>、<span class="code">R6_uw_derivative</span> 一律要看；<span class="code">R7_internal_signal</span>、<span class="code">R2_withdrawn_marker</span> 仅当单看文件名定不了时才看。</span></dd>
           <dt><span class="en">A review clears it</span><span class="zh">复核可消除</span></dt>
-          <dd><span class="en">Yes. A file somebody settled, kept or dropped, is off the list, and so is every file nobody stopped on once the submission is confirmed. A flagged file stays on it until whoever flagged it takes the flag off, and so does a file two reviewers answered opposite ways, until one of them changes or takes back their answer, or the approver rules on it.</span><span class="zh">可以。有人定下来的文件，留下也好、扔掉也好，即从名单上划掉；确认这份提交后，没人停下来看过的文件也一并划掉。被标记疑问的文件仍留在名单上，直到标记的人撤下标记；两个人给出相反答复的文件也留着，直到其中一人改答复或撤回答复，或批准人作出裁定。</span></dd>
+          <dd><span class="en">Yes, once its files are settled.</span><span class="zh">可以，文件定下来即可。</span></dd>
         </dl>
       </div>
     </details>
@@ -678,7 +676,7 @@
       <summary>
         <div>
           <div class="rname"><span class="en">It never decided on some files</span><span class="zh">有些文件没有下判断</span></div>
-          <div class="rplain"><span class="en">Those files sit as “undecided”. A person has to place them.</span><span class="zh">这些文件停在“未定”，要人来归位。</span></div>
+          <div class="rplain"><span class="en">A person has to decide them.</span><span class="zh">这些文件要人来定。</span></div>
         </div>
         <span class="who-looks"><span class="en">named files</span><span class="zh">名单上的文件</span></span>
       </summary>
@@ -687,9 +685,9 @@
           <dt><span class="en">Rule</span><span class="zh">规则</span></dt>
           <dd><span class="code">G6_pending</span></dd>
           <dt><span class="en">Trigger</span><span class="zh">触发</span></dt>
-          <dd><span class="en">Any UNDECIDED row nobody has settled, including one whose market reference belongs to another treaty (that one also fires G9). The detail says how many files the machine took no position on. It then counts the files outside the submission folders (and names the folders they sit in), the files in notes folders the machine could not read, and the archives nothing came out of, so the list can be worked by the folder.</span><span class="zh">任何没人定下来的 UNDECIDED 行，包括市场编号属于另一份合约的（那条同时触发 G9）。说明先给出机器没有表态的文件数，再分别计数：提交文件夹之外的文件（并列出所在的文件夹）、机器读不出正文的备注文件夹里的文件、什么都没取出来的压缩包；名单可以按文件夹来处理。</span></dd>
+          <dd><span class="en">Any UNDECIDED row nobody has settled.</span><span class="zh">任何没人定下来的 UNDECIDED 行。</span></dd>
           <dt><span class="en">A review clears it</span><span class="zh">复核可消除</span></dt>
-          <dd><span class="en">Yes. A file somebody settled is no longer pending. A flagged row stays pending until whoever flagged it takes the flag off, and so does a row two reviewers answered opposite ways, until one of them changes or takes back their answer, or the approver rules on it.</span><span class="zh">可以：有人定下来的文件不再待定。被标记疑问的行仍待定，直到标记的人撤下标记；两个人给出相反答复的行也仍待定，直到其中一人改答复或撤回答复，或批准人作出裁定。</span></dd>
+          <dd><span class="en">Yes, once its files are settled.</span><span class="zh">可以，文件定下来即可。</span></dd>
         </dl>
       </div>
     </details>
@@ -698,16 +696,16 @@
       <summary>
         <div>
           <div class="rname"><span class="en">The folders are not ones we recognise</span><span class="zh">文件夹不是认得的那一套</span></div>
-          <div class="rplain"><span class="en">Nothing sits in a submission folder the rules know. This treaty is filed a different way.</span><span class="zh">没有文件落在规则认得的提交文件夹里。这份合约另有一套归档方式。</span></div>
+          <div class="rplain"><span class="en">No file sits in a submission folder the rules know.</span><span class="zh">没有文件落在规则认得的提交文件夹里。</span></div>
         </div>
-        <span class="who-looks"><span class="en">the treaty</span><span class="zh">整份合约</span></span>
+        <span class="who-looks"><span class="en">whole treaty</span><span class="zh">整份合约</span></span>
       </summary>
       <div class="tech">
         <dl>
           <dt><span class="en">Rule</span><span class="zh">规则</span></dt>
           <dd><span class="code">G8_scheme_unrecognised</span></dd>
           <dt><span class="en">Trigger</span><span class="zh">触发</span></dt>
-          <dd><span class="en">R14’s two-folder submission scheme is not in use: no live file sits in a recognised submission folder. Does not name files.</span><span class="zh">R14 的双文件夹提交方案未启用：没有任何实际文件落在已识别的提交文件夹中。不列出具体文件。</span></dd>
+          <dd><span class="en">No file other than a byte-identical copy sits in a submission folder (<span class="code">Slip &amp; End't</span> or <span class="code">U W Information</span>, in any spelling the rules know).</span><span class="zh">除逐字节相同的副本外，没有文件落在提交文件夹里（<span class="code">Slip &amp; End't</span> 或 <span class="code">U W Information</span>，规则认得的写法都算）。</span></dd>
           <dt><span class="en">A review clears it</span><span class="zh">复核可消除</span></dt>
           <dd><span class="en">Yes, once the submission is confirmed.</span><span class="zh">可以，确认这份提交即可。</span></dd>
         </dl>
@@ -717,8 +715,8 @@
     <details class="rule" style="--c:var(--wait)">
       <summary>
         <div>
-          <div class="rname"><span class="en">A file looks like another treaty</span><span class="zh">有文件疑似属于另一份合约</span></div>
-          <div class="rplain"><span class="en">Its market reference belongs somewhere else. Do not silently keep it in this pack.</span><span class="zh">市场编号指向别处，不能就这么留在材料包里。</span></div>
+          <div class="rname"><span class="en">A file may belong to another treaty</span><span class="zh">有文件疑似属于另一份合约</span></div>
+          <div class="rplain"><span class="en">Its market reference belongs to another treaty: a person decides whether it goes in this pack.</span><span class="zh">市场编号属于另一份合约，放不放进本材料包，由人来定。</span></div>
         </div>
         <span class="who-looks"><span class="en">named files</span><span class="zh">名单上的文件</span></span>
       </summary>
@@ -727,9 +725,9 @@
           <dt><span class="en">Rule</span><span class="zh">规则</span></dt>
           <dd><span class="code">G9_finding</span></dd>
           <dt><span class="en">Trigger</span><span class="zh">触发</span></dt>
-          <dd><span class="en">The label table's <span class="code">reason</span> is <span class="code">R3_umr_mismatch_review</span>. Triage leaves the row UNDECIDED on purpose.</span><span class="zh">标签表的 <span class="code">reason</span> 列为 <span class="code">R3_umr_mismatch_review</span>。分拣故意把该行留在 UNDECIDED。</span></dd>
+          <dd><span class="en">A row nobody has settled whose reason is <span class="code">R3_umr_mismatch_review</span>.</span><span class="zh">没人定下来、理由为 <span class="code">R3_umr_mismatch_review</span> 的行。</span></dd>
           <dt><span class="en">A review clears it</span><span class="zh">复核可消除</span></dt>
-          <dd><span class="en">Yes. Settle the file, keep it in this pack or drop it, and it is off this list and off <em>it never decided on some files</em>. Confirming the submission settles every such file nobody stopped on as not kept. A flagged file stays on the list until whoever flagged it takes the flag off, and so does a file two reviewers answered opposite ways, until one of them changes or takes back their answer, or the approver rules on it.</span><span class="zh">可以。把这份文件定下来，留在本材料包里或扔掉都行，就从这份名单上划掉，也不再算在<em>有些文件没有下判断</em>里。确认这份提交时，这类文件若没人停下来看过，一律按不留下定案。被标记疑问的文件仍留在名单上，直到标记的人撤下标记；两个人给出相反答复的文件也留着，直到其中一人改答复或撤回答复，或批准人作出裁定。</span></dd>
+          <dd><span class="en">Yes, once its files are settled.</span><span class="zh">可以，文件定下来即可。</span></dd>
         </dl>
       </div>
     </details>
@@ -738,9 +736,9 @@
       <summary>
         <div>
           <div class="rname"><span class="en">Everything kept as core is a guess</span><span class="zh">留下的核心全凭推断</span></div>
-          <div class="rplain"><span class="en">There is core, but none of it is listed by the cedant, recognised by its own name, title or sheet names, or marked with the market reference of this treaty or the one it renews. Weak to ship on.</span><span class="zh">有核心文件，但没有一份是分出公司列明的，没有一份凭自身文件名、标题或工作表名认得出，也没有一份带本合约或所续合约的市场编号。据此放行，依据偏弱。</span></div>
+          <div class="rplain"><span class="en">None of the kept files is listed by the cedant, recognised by its own name, title or sheet names, or marked with the market reference of this treaty or the one it renews.</span><span class="zh">留下的文件里，没有分出公司列明的，没有凭自身文件名、标题或工作表名认得出的，也没有带本合约或所续合约市场编号的。</span></div>
         </div>
-        <span class="who-looks"><span class="en">the treaty</span><span class="zh">整份合约</span></span>
+        <span class="who-looks"><span class="en">whole treaty</span><span class="zh">整份合约</span></span>
       </summary>
       <div class="tech">
         <dl>
@@ -748,9 +746,9 @@
           <dd><span class="code">G10_no_strong_core</span></dd>
           <dt><span class="en">Strong core means</span><span class="zh">何谓强核心</span></dt>
           <dd><span class="code">core_structural_category</span>, <span class="code">core_umr_in_family</span>, <span class="code">R10_mrc_declared</span>, <span class="code">R10b_app_series_declared</span>.
-            <span class="en">A byte-for-byte duplicate inherits the original’s reason. These are core but not strong: <span class="code">core_in_submission_folder</span> (a file kept on the folder alone), <span class="code">core_line_email</span> and <span class="code">core_terms_email</span> (an email kept because it states the written or signed line, or the FOT or proposed structure).</span><span class="zh">字节级重复件继承原件的理由。以下算核心，不算强理由：<span class="code">core_in_submission_folder</span>（仅凭文件夹留下的文件）；<span class="code">core_line_email</span>、<span class="code">core_terms_email</span>（因写明承保份额、FOT 或拟议结构而留下的邮件）。</span></dd>
+            <span class="en">A byte-identical copy takes its original’s reason.</span><span class="zh">逐字节相同的副本沿用原件的理由。</span></dd>
           <dt><span class="en">A review clears it</span><span class="zh">复核可消除</span></dt>
-          <dd><span class="en">Yes, once the submission is confirmed: the person confirming has checked what was kept.</span><span class="zh">可以，确认这份提交即可：留下了哪些文件，确认的人已经核对过。</span></dd>
+          <dd><span class="en">Yes, once the submission is confirmed.</span><span class="zh">可以，确认这份提交即可。</span></dd>
         </dl>
       </div>
     </details>
@@ -758,8 +756,8 @@
     <details class="rule" style="--c:var(--wait)">
       <summary>
         <div>
-          <div class="rname"><span class="en">A second read says a file we did not keep is a real submission file</span><span class="zh">二次阅读认出没留下的提交文件</span></div>
-          <div class="rplain"><span class="en">Optional. If we ran a second read, and it called a file the rules did not keep (dropped or undecided) a cedant submission document, that file goes on the list.</span><span class="zh">可选。若跑过二次阅读，并把一份规则没留下的文件（已丢弃或未定）认作分出公司的提交文件，该文件即入名单。</span></div>
+          <div class="rname"><span class="en">A second read finds a submission file the rules did not keep</span><span class="zh">二次阅读认出规则没留下的提交文件</span></div>
+          <div class="rplain"><span class="en">A person decides whether it goes in the pack.</span><span class="zh">进不进材料包，由人来定。</span></div>
         </div>
         <span class="who-looks"><span class="en">named files</span><span class="zh">名单上的文件</span></span>
       </summary>
@@ -768,9 +766,9 @@
           <dt><span class="en">Rule</span><span class="zh">规则</span></dt>
           <dd><span class="code">G11_second_read_flagged</span></dd>
           <dt><span class="en">Trigger</span><span class="zh">触发</span></dt>
-          <dd><span class="en">The second read's verdict <span class="code">RC_submission</span> on a unique file that is not CORE, read off the label table's <span class="code">llm_verdict</span>. Its other answers (not a submission / cannot tell / no answer) do not change the colour. No second read is normal; G11 then cannot fire.</span><span class="zh">标签表 <span class="code">llm_verdict</span> 中，二次阅读对一份唯一的非 CORE 文件给出 <span class="code">RC_submission</span>。其余答复（不是提交文件 / 看不出 / 无答案）不改变颜色。没有二次阅读是常态，此时 G11 不会触发。</span></dd>
+          <dd><span class="en"><span class="code">llm_verdict</span> is <span class="code">RC_submission</span> on a row nobody has settled that is not CORE and is neither a copy nor a near-copy of another file.</span><span class="zh">没人定下来、不是 CORE、既非副本也非近似副本的行，<span class="code">llm_verdict</span> 为 <span class="code">RC_submission</span>。</span></dd>
           <dt><span class="en">A review clears it</span><span class="zh">复核可消除</span></dt>
-          <dd><span class="en">Yes. A file somebody settled is off the list, and so is every file nobody stopped on once the submission is confirmed. A flagged file stays on it until whoever flagged it takes the flag off, and so does a file two reviewers answered opposite ways, until one of them changes or takes back their answer, or the approver rules on it.</span><span class="zh">可以：有人定下来的文件即从名单上划掉；确认这份提交后，没人停下来看过的文件也一并划掉。被标记疑问的文件仍留在名单上，直到标记的人撤下标记；两个人给出相反答复的文件也留着，直到其中一人改答复或撤回答复，或批准人作出裁定。</span></dd>
+          <dd><span class="en">Yes, once its files are settled.</span><span class="zh">可以，文件定下来即可。</span></dd>
         </dl>
       </div>
     </details>
@@ -778,42 +776,40 @@
 
   <section class="block">
     <h2 class="wkh2"><span class="en">When somebody has already looked</span><span class="zh">已经有人看过之后</span></h2>
-    <p class="wksub"><span class="en">A person’s reading reaches the gate, and the colour is worked out again with it. An answer is recorded on the file it is about; a confirmation is one record for the whole submission. An answer or a confirmation counts only in the round it was given in. MVP20 and MVP3 are not reviewed in the review app: there, only a row of the register below reaches the gate.</span><span class="zh">人看过的结果会送到闸门，颜色据此重新算一遍。答复记在所答的那份文件上；确认针对整份提交，只记一条。答复和确认都只在给出时的那一轮算数。MVP20 与 MVP3 不在复核工具里复核：这两轮能送到闸门的，只有下文登记表上的一行。</span></p>
+    <p class="wksub"><span class="en">Answers and confirmations count only in the round they were given in.</span><span class="zh">答复和确认只在给出的那一轮算数。</span></p>
 
     <div class="pick">
       <h3><span class="en">What a review changes</span><span class="zh">复核会改变什么</span></h3>
       <ol>
-        <li><span class="en">A file somebody settled is off every list that named it: <em>it threw a file away on a weak reason</em>, <em>it never decided on some files</em>, <em>a file looks like another treaty</em>, <em>a second read says a file we did not keep is a real submission file</em>. <em>The machine sat on the fence</em> names no file, only a count: a settled file drops out of it, and the files it counts are all on the list of <em>it never decided on some files</em>.</span><span class="zh">有人定下来的文件，从点名它的每一份名单上划掉：<em>凭弱理由扔掉了文件</em>、<em>有些文件没有下判断</em>、<em>有文件疑似属于另一份合约</em>、<em>二次阅读认出没留下的提交文件</em>。<em>大半文件没有表态</em>不列文件，只给一个数：定下来的文件不再计入，计入的文件都在<em>有些文件没有下判断</em>的名单上。</span></li>
-        <li><span class="en">The rules about the submission as a whole — <em>too little arrived</em>, <em>nothing was kept as core</em>, <em>the machine could not read anything</em>, <em>the folders are not ones we recognise</em>, <em>everything kept as core is a guess</em> — go once the submission is confirmed. Answers alone do not clear them.</span><span class="zh">针对整份提交的规则——<em>收到的文件太少</em>、<em>核心一份都没留</em>、<em>一个字也读不出来</em>、<em>文件夹不是认得的那一套</em>、<em>留下的核心全凭推断</em>——确认这份提交后即消除。光逐份答复，消除不了这几条。</span></li>
-        <li><span class="en">Answer the files the lists name and confirm: the submission turns green and goes on to downstream. A flagged file stays on its list until whoever flagged it takes the flag off; nobody else can, the approver included. A file two reviewers answered opposite ways stays too, until one of them changes or takes back their answer, or the approver rules on it.</span><span class="zh">把名单上的文件答完，再确认：提交即转为绿灯，交给下游。被标记疑问的文件留在名单上，直到标记的人自己撤下标记；别人撤不掉，批准人也不行。两个人答复相反的文件同样留着，直到其中一人改答复或撤回答复，或批准人作出裁定。</span></li>
-        <li><span class="en">A review changes the pack too: a file a person keeps goes into it and a file a person drops comes out, each with every byte-identical copy of it. An answer on a flagged file does not count until whoever flagged it takes the flag off. Nor does one on a file two reviewers answered opposite ways, until one of them changes or takes back their answer, or the approver rules on it. A file nobody stopped on keeps the machine’s call in the pack, and so does every file of a submission signed off in the register.</span><span class="zh">复核也改变材料包：人留下的文件进包，人扔掉的文件出包，逐字节相同的副本一并进出。被标记疑问的文件，答复不算数，直到标记的人撤下标记；两个人答复相反的文件，答复也不算数，直到其中一人改答复或撤回答复，或批准人作出裁定。没人停下来看过的文件，材料包里仍按机器的结论；登记表上签核的提交，每份文件也都按机器的结论。</span></li>
-        <li><span class="en">The review app does not build the pack. The pack follows the review once it is built again: first the colour (<span class="code">flywheel/validate/submissions.py</span>), then the pack (<span class="code">agent/output/pack.py</span>), the order of steps 9 and 10 of <span class="code">agent/run.py</span>. Step 5 of <span class="code">docs/RUNBOOK.md</span> gives the two commands; a new run of <span class="code">agent/run.py</span> runs both. Where <span class="code">contract/store_config.json</span> is not set up, the run builds the pack again only when given <span class="code">--raw</span>, or <span class="code">--rules-only</span> with the unzipped folders still on this machine.</span><span class="zh">复核工具不生成材料包。材料包重新生成之后，才跟上复核结果：先算颜色（<span class="code">flywheel/validate/submissions.py</span>），再生成材料包（<span class="code">agent/output/pack.py</span>），顺序同 <span class="code">agent/run.py</span> 的第 9、10 步。两条命令见 <span class="code">docs/RUNBOOK.md</span> 第 5 步；重新跑一遍 <span class="code">agent/run.py</span>，两步都会跑到。没有配置 <span class="code">contract/store_config.json</span> 时，须带 <span class="code">--raw</span>，或在解压文件夹仍在本机时带 <span class="code">--rules-only</span>，才会重新生成材料包。</span></li>
-        <li><span class="en">Nothing recorded, nothing changed. A submission nobody has reviewed comes out exactly as it did before anyone could. That is what lets a green submission go on to downstream in production with nobody looking first, apart from the standing audit sample. A red or amber one goes to a person, who reviews it in the review app until it is green. A treaty that is parked, or that the label table holds no row for, is unparked or sorted first.</span><span class="zh">没有记录，就什么都不变。没人复核过的提交，判定结果与从前完全一致。正因如此，生产流程里的绿灯提交不经人看就交给下游，只留固定抽查。红灯、黄灯的提交由人在复核工具里复核，直到转为绿灯。合约若已搁置，或标签表里没有这份合约的行，得先解除搁置或先分拣。</span></li>
+        <li><span class="en">A settled file comes off every list that names it.</span><span class="zh">定下来的文件，从点名它的每份名单上划掉。</span></li>
+        <li><span class="en">Confirming the submission clears the rules about it as a whole.</span><span class="zh">确认这份提交，针对整份提交的规则即消除。</span></li>
+        <li><span class="en">Once every listed file is settled and the submission is confirmed, it turns green.</span><span class="zh">名单上的文件都定下来、提交也确认后，即转为绿灯。</span></li>
+        <li><span class="en">When the pack is built again, a settled file a person kept goes in, and one a person dropped comes out.</span><span class="zh">材料包重新生成时，已定下来的文件，人留下的进包，人扔掉的出包。</span></li>
       </ol>
       <p class="note">
-        <span class="en">So a person looking can only ever make a verdict better, and a green never depends on one.</span>
-        <span class="zh">因此，有人看过只可能让判定变好，而绿灯从不以它为前提。</span>
+        <span class="en">A review never leaves the colour worse than the machine’s alone.</span>
+        <span class="zh">复核不会让颜色比机器单独判定的差。</span>
       </p>
     </div>
 
     <div class="pick">
       <h3><span class="en">What counts as a review</span><span class="zh">什么才算复核</span></h3>
       <ol>
-        <li><span class="en">An answer on a file, from a named person, settles that file. Not every file needs one: the confirmation below settles the files nobody stopped on. A file two reviewers answered opposite ways is settled once one of them changes or takes back their answer; where an approver is named, the approver’s ruling settles it too. Marking a row as one you could not settle is not settling it: a flag is how somebody says so.</span><span class="zh">某份文件只要有署名的人答复过，就算定下来。不必每份都答：没人停下来看过的文件，由下面的确认一并定下。两个复核人答复相反的文件，要等其中一人改答复或撤回答复，才算定下来；指定了批准人的，批准人裁定也算。把一行标为“定不了”，不算定下来：标记本身就是在说这一份定不下来。</span></li>
-        <li><span class="en">A confirmation of the submission, by the person whose confirmation is the record: the approver where one is named, otherwise an assigned reviewer; where the assignment list says nothing of the submission, the one person on record. It settles every file they went past, and clears the rules about the submission as a whole. Where a row of the assignment list about the submission is refused, nobody’s confirmation counts, nor the approver’s ruling, until the row is fixed.</span><span class="zh">对整份提交的确认，须出自算数的那个人：指定了批准人的，是批准人；否则是被分派的复核人；分派名单上没有这份提交的，是记录上唯一的那个人。确认把其看过而未作答的文件一并定下，也消除针对整份提交的规则。分派名单上关于这份提交的行若有一行被拒绝，改好之前，谁的确认都不算数，批准人的裁定也不算数。</span></li>
-        <li><span class="en">A review done before the review app existed counts too, on the authority of a register that names who went through which submission, and when.</span><span class="zh">在复核工具出现之前做过的复核同样算数，依据是一份登记表：谁看过哪份提交、什么时候看的。</span></li>
-        <li><span class="en">For a review done before the app, nothing but a row of the register counts as a sign-off: the treaty, the name of the person who signed it off and a date, on one row. If a treaty’s row has no name or no date, or the register names the treaty twice, the register settles none of its files. A file landing in a folder must not turn a submission green. In the app, the confirmation above is the sign-off.</span><span class="zh">复核工具出现之前做的复核，只有登记表上的一行才算签核：同一行写明合约、签核人的名字和日期。合约的行若没写名字或日期，或合约在登记表上出现两次，登记表就定不下这份合约的任何文件。一份文件落进某个文件夹，不能就此把提交变成绿灯。在复核工具里，签核就是上面的确认。</span></li>
+        <li><span class="en">A person’s answer settles a file, unless the file is flagged, or two reviewers answered it opposite ways and the approver has not ruled.</span><span class="zh">有人答复过的文件即定下来；标了疑问的除外，两个复核人答复相反、批准人又没裁定的也除外。</span></li>
+        <li><span class="en">Confirming the submission settles every file nobody answered, except a flagged one.</span><span class="zh">确认这份提交，没人答复的文件一并定下来，标了疑问的除外。</span></li>
+        <li><span class="en">A confirmation counts from the approver where one is named, otherwise from an assigned reviewer; for a submission the assignment list leaves out, only if nobody else recorded anything.</span><span class="zh">指定了批准人的，只认批准人的确认；没指定的，认分派到的复核人的。分派名单上没有这份提交的，别人都没留过记录，确认才算数。</span></li>
+        <li><span class="en">A review outside the review app (the only kind for MVP20 and MVP3) counts only as a row of the sign-off register, which settles every file as the machine called it and clears the rules about the submission as a whole.</span><span class="zh">复核工具之外的复核（MVP20 与 MVP3 只能这样）只认签核登记表：登记了的合约，每份文件按机器的结论定下来，针对整份提交的规则也一并消除。</span></li>
       </ol>
       <p class="note">
-        <span class="en">If the treaty is sorted again and its files, or the machine's answer on any of them, change, a confirmation no longer covers the submission: the files it settled by going past them are open again, and it counts as neither reviewed nor approved. An answer typed on a file stays with that file's bytes. Sorting the treaty again does not undo a row of the register: the row settles every file the treaty holds after the new sort, and still clears the rules about the submission as a whole. The date on the row is recorded, never compared.</span>
-        <span class="zh">若合约重新分拣，文件或机器对其中任何一份的结论有变，原先的确认就不再覆盖这份提交：靠确认一并放过的文件重新待定，确认本身既不算已复核，也不算已批准。对某份文件亲手给出的答复，跟着文件的字节走。登记表上的一行不因重新分拣而失效：分拣后合约里有哪些文件，这一行就把哪些文件全部定下来，针对整份提交的规则也照样消除。行上的日期只作记录，从不比对。</span>
+        <span class="en">If a new sort changes the files or any of the machine’s calls, the confirmation lapses until someone confirms again; answers on unchanged files still hold.</span>
+        <span class="zh">重新分拣后，只要文件有变，或机器对哪份文件的结论有变，原先的确认就失效，要有人再确认一次；文件没变的，答复照旧有效。</span>
       </p>
     </div>
   </section>
 
   <section class="scope">
     <h3><span class="en">This is the file-sort gate</span><span class="zh">这是文件分拣这一关</span></h3>
-    <p><span class="en">Facts extraction uses the same three colours later: green auto-accepts, amber checks flagged fields, red reviews the whole record, and retrospective cases are also checked against TPR booked values. That is a separate process, not this gate.</span><span class="zh">后续的信息提取环节同样用红黄绿三色：绿灯自动通过，黄灯核对标出的字段，红灯复核整单；回溯案例还要与 TPR 入账值比对。那是另一关，不是这一关。</span></p>
+    <p><span class="en">Facts extraction, a later step, has its own check with the same three colours.</span><span class="zh">后续的信息提取环节另有一道检查，也用红黄绿三色。</span></p>
   </section>
 
   <!-- wiki next -->
@@ -850,8 +846,8 @@
 </nav>
 <!-- /wiki next -->
   <footer class="wkfoot">
-    <span class="en">Source of truth: <span class="code">flywheel/validate/lib/colour.py</span>; <span class="code">contract/reasons.py</span> for which reasons count as strong core and which say where the ladder stalled · <a href="lifecycle.html">Step by step</a> · Written 2026-09-04 · Updated 2026-10-20</span>
-    <span class="zh">以代码为准：<span class="code">flywheel/validate/lib/colour.py</span>；哪些理由算强核心、哪些说明阶梯停在何处，以 <span class="code">contract/reasons.py</span> 为准 · <a href="lifecycle.html">逐步流程</a> · 写于 2026-09-04 · 更新于 2026-10-20</span>
+    <span class="en">Source of truth: <span class="code">flywheel/validate/lib/colour.py</span>; <span class="code">contract/reasons.py</span> for the strong-core reasons and those G4 leaves out · The colour is written to each round’s <span class="code">submissions.csv</span> and, where <span class="code">contract/store_config.json</span> is set up, to a <span class="code">fired.json</span> beside it with each fired rule’s message and files · After a review: <span class="code">docs/RUNBOOK.md</span>, step 5 · <a href="lifecycle.html">Step by step</a> · Written 2026-09-04 · Updated 2026-10-20</span>
+    <span class="zh">以代码为准：<span class="code">flywheel/validate/lib/colour.py</span>；强核心理由和 G4 不计入的理由，以 <span class="code">contract/reasons.py</span> 为准 · 颜色写进每一轮的 <span class="code">submissions.csv</span>；配置了 <span class="code">contract/store_config.json</span> 时，旁边的 <span class="code">fired.json</span> 记下每条触发规则的提示和文件 · 复核之后：<span class="code">docs/RUNBOOK.md</span> 第 5 步 · <a href="lifecycle.html">逐步流程</a> · 写于 2026-09-04 · 更新于 2026-10-20</span>
   </footer>
 </div>
 
