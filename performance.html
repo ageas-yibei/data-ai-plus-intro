@@ -115,6 +115,33 @@
   table.dif td.n{text-align:right;font-variant-numeric:tabular-nums}
   table.dif td.gs,table.dif td.nr{border-left:1px solid var(--line)}
 
+  /* ---- what the rules keep: one bar per type and round, in the round's colour ---- */
+  .kviz .viz-legend i{width:12px;height:12px;border-radius:3px}
+  .kgrid{display:grid;grid-template-columns:168px repeat(3,minmax(0,1fr));column-gap:18px;
+         align-items:center;min-width:760px}
+  .kgrid .kh{font-family:var(--mono);font-size:11px;color:var(--navy);font-weight:700;padding:0 0 6px}
+  .kgrid .kv{font-size:12px;line-height:1.25;color:var(--copy);padding:3px 0 3px 12px}
+  .kgrid .kv.g{padding-left:0;color:var(--navy);font-weight:700}
+  .kgrid .ksep{grid-column:1/-1;height:1px;background:var(--line);margin:6px 0 2px}
+  /* the track is the 0-100% scale; the cell keeps room after it for the label */
+  .kcell{position:relative;height:22px}
+  .ktrack{position:absolute;left:0;top:0;bottom:0;right:86px;border-right:1px solid var(--line);
+          background:linear-gradient(to right,var(--line) 1px,transparent 1px) 0 0/25% 100% repeat-x}
+  .kbar{position:absolute;left:0;top:6px;height:10px;background:var(--c);border-radius:0 3px 3px 0}
+  .kcell.g .kbar{top:4px;height:14px}
+  .kcell:hover .kbar{filter:brightness(1.12)}
+  .ktrack b{position:absolute;top:0;bottom:0;display:flex;align-items:center;font-family:var(--mono);
+            font-size:11px;font-weight:600;color:var(--navy);font-variant-numeric:tabular-nums;white-space:nowrap}
+  .ktrack b span{margin-left:6px;font-weight:400;color:var(--mute)}
+  .kcell.nr{display:flex;align-items:center;font-size:12px;color:var(--mute)}
+  .kgrid .kt{position:relative;height:18px;margin-right:86px;font-family:var(--mono);font-size:10px;
+             color:var(--mute)}
+  .kgrid .kt span{position:absolute;top:4px;transform:translateX(-50%)}
+  .kgrid .kt span:first-child{transform:none}
+  table.kept{min-width:620px}
+  table.kept tbody th{padding-left:26px;color:var(--copy)}
+  table.kept tr.grp th,table.kept tr.all th{padding-left:12px;color:var(--navy);font-weight:700}
+
   details.figs{margin:10px 0 0}
   details.figs summary{cursor:pointer;display:inline-flex;align-items:center;gap:8px;
         font-family:var(--disp);font-weight:600;font-size:13.5px;color:var(--orange-ink);
@@ -729,6 +756,65 @@
     </div>
   </details>
 
+  <h2 class="wkh2" id="kept"><span class="en">What the rules keep, by group and type</span><span class="zh">按大类和类型看，规则留下了什么</span></h2>
+  <p class="wksub"><span class="en">Of every document in a round, the share the rules keep, by the <a href="rules.html#uw-type">group and type</a> each is given. TEST15 here is the whole export: 29 submissions, not only the 12 the reviewer answered.</span><span class="zh">每轮全部文件里，规则留下的占比，按每份文件的<a href="rules.html#uw-type">大类和类型</a>分。这里的 TEST15 是整批导出：29 份提交，不只复核人答过的 12 份。</span></p>
+  <figure class="viz kviz" data-for="kept">
+    <div class="viz-legend"></div>
+    <div class="viz-scroll"><div class="viz-box kbox"></div></div>
+    <figcaption><span class="en">Contract and submission files are kept almost whole; TPRe’s own files and post-binding reports almost never. TEST15’s 221 special-acceptance requests are left undecided because they sit outside the submission folders; 35 of the 36 comparisons it keeps sit inside them.</span><span class="zh">合约和提交材料几乎全部留下；太平再自己的文件和成交后的报告几乎都不留。TEST15 的 221 份特别承保申请在提交文件夹之外，所以没下结论；它留下的 36 份对比里，35 份就在提交文件夹里。</span></figcaption>
+  </figure>
+  <details class="figs">
+    <summary><span class="en">The figures, type by type</span><span class="zh">逐类数字</span></summary>
+    <div class="mx-scroll">
+      <table class="mx fig kept" data-metric="kept">
+        <thead>
+          <tr><th><span class="en">Group and type</span><span class="zh">大类和类型</span></th><th>MVP20</th><th>MVP3</th><th>TEST15</th></tr>
+        </thead>
+        <tbody>
+          <tr class="all" data-en="All documents" data-zh="全部文件"><th scope="row"><span class="en">All documents</span><span class="zh">全部文件</span></th><td data-n="438" data-d="808" data-u="12"><b>54.2%</b><span class="of">438 / 808</span><span class="with"><span class="en">12 undecided</span><span class="zh">12 份没下结论</span></span></td><td data-n="76" data-d="159" data-u="3"><b>47.8%</b><span class="of">76 / 159</span><span class="with"><span class="en">3 undecided</span><span class="zh">3 份没下结论</span></span></td><td data-n="754" data-d="1388" data-u="234"><b>54.3%</b><span class="of">754 / 1,388</span><span class="with"><span class="en">234 undecided</span><span class="zh">234 份没下结论</span></span></td></tr>
+          <tr class="grp" data-en="Contract" data-zh="合约"><th scope="row"><span class="en">Contract</span><span class="zh">合约</span></th><td data-n="212" data-d="216" data-u="1"><b>98.1%</b><span class="of">212 / 216</span><span class="with"><span class="en">1 undecided</span><span class="zh">1 份没下结论</span></span></td><td data-n="48" data-d="50" data-u="0"><b>96.0%</b><span class="of">48 / 50</span></td><td data-n="287" data-d="287" data-u="0"><b>100%</b><span class="of">287 / 287</span></td></tr>
+          <tr data-en="Slips" data-zh="条款单"><th scope="row"><span class="en">Slips</span><span class="zh">条款单</span></th><td data-n="84" data-d="84" data-u="0"><b>100%</b><span class="of">84 / 84</span></td><td data-n="20" data-d="21" data-u="0"><b>95.2%</b><span class="of">20 / 21</span></td><td data-n="158" data-d="158" data-u="0"><b>100%</b><span class="of">158 / 158</span></td></tr>
+          <tr data-en="Signing pages" data-zh="签署页"><th scope="row"><span class="en">Signing pages</span><span class="zh">签署页</span></th><td data-n="52" data-d="52" data-u="0"><b>100%</b><span class="of">52 / 52</span></td><td data-n="12" data-d="12" data-u="0"><b>100%</b><span class="of">12 / 12</span></td><td data-n="17" data-d="17" data-u="0"><b>100%</b><span class="of">17 / 17</span></td></tr>
+          <tr data-en="Endorsements" data-zh="批单"><th scope="row"><span class="en">Endorsements</span><span class="zh">批单</span></th><td data-n="16" data-d="16" data-u="0"><b>100%</b><span class="of">16 / 16</span></td><td data-n="1" data-d="2" data-u="0"><b>50.0%</b><span class="of">1 / 2</span></td><td data-n="20" data-d="20" data-u="0"><b>100%</b><span class="of">20 / 20</span></td></tr>
+          <tr data-en="Wording &amp; clauses" data-zh="合约条文与条款"><th scope="row"><span class="en">Wording &amp; clauses</span><span class="zh">合约条文与条款</span></th><td data-n="20" data-d="21" data-u="1"><b>95.2%</b><span class="of">20 / 21</span><span class="with"><span class="en">1 undecided</span><span class="zh">1 份没下结论</span></span></td><td data-n="8" data-d="8" data-u="0"><b>100%</b><span class="of">8 / 8</span></td><td data-n="43" data-d="43" data-u="0"><b>100%</b><span class="of">43 / 43</span></td></tr>
+          <tr data-en="Line confirmations" data-zh="份额确认"><th scope="row"><span class="en">Line confirmations</span><span class="zh">份额确认</span></th><td data-n="40" data-d="43" data-u="0"><b>93.0%</b><span class="of">40 / 43</span></td><td data-n="7" data-d="7" data-u="0"><b>100%</b><span class="of">7 / 7</span></td><td data-n="49" data-d="49" data-u="0"><b>100%</b><span class="of">49 / 49</span></td></tr>
+          <tr class="grp" data-en="Submission" data-zh="提交材料"><th scope="row"><span class="en">Submission</span><span class="zh">提交材料</span></th><td data-n="175" data-d="175" data-u="0"><b>100%</b><span class="of">175 / 175</span></td><td data-n="22" data-d="22" data-u="0"><b>100%</b><span class="of">22 / 22</span></td><td data-n="361" data-d="365" data-u="2"><b>98.9%</b><span class="of">361 / 365</span><span class="with"><span class="en">2 undecided</span><span class="zh">2 份没下结论</span></span></td></tr>
+          <tr data-en="Narrative" data-zh="业务说明"><th scope="row"><span class="en">Narrative</span><span class="zh">业务说明</span></th><td data-n="19" data-d="19" data-u="0"><b>100%</b><span class="of">19 / 19</span></td><td data-n="3" data-d="3" data-u="0"><b>100%</b><span class="of">3 / 3</span></td><td data-n="62" data-d="62" data-u="0"><b>100%</b><span class="of">62 / 62</span></td></tr>
+          <tr data-en="Premium &amp; statistics" data-zh="保费与统计"><th scope="row"><span class="en">Premium &amp; statistics</span><span class="zh">保费与统计</span></th><td data-n="29" data-d="29" data-u="0"><b>100%</b><span class="of">29 / 29</span></td><td data-n="4" data-d="4" data-u="0"><b>100%</b><span class="of">4 / 4</span></td><td data-n="65" data-d="66" data-u="0"><b>98.5%</b><span class="of">65 / 66</span></td></tr>
+          <tr data-en="Exposure" data-zh="风险敞口"><th scope="row"><span class="en">Exposure</span><span class="zh">风险敞口</span></th><td data-n="44" data-d="44" data-u="0"><b>100%</b><span class="of">44 / 44</span></td><td data-n="9" data-d="9" data-u="0"><b>100%</b><span class="of">9 / 9</span></td><td data-n="86" data-d="88" data-u="2"><b>97.7%</b><span class="of">86 / 88</span><span class="with"><span class="en">2 undecided</span><span class="zh">2 份没下结论</span></span></td></tr>
+          <tr data-en="Losses" data-zh="赔付"><th scope="row"><span class="en">Losses</span><span class="zh">赔付</span></th><td data-n="32" data-d="32" data-u="0"><b>100%</b><span class="of">32 / 32</span></td><td data-n="3" data-d="3" data-u="0"><b>100%</b><span class="of">3 / 3</span></td><td data-n="59" data-d="59" data-u="0"><b>100%</b><span class="of">59 / 59</span></td></tr>
+          <tr data-en="Financials &amp; rating" data-zh="财务与评级"><th scope="row"><span class="en">Financials &amp; rating</span><span class="zh">财务与评级</span></th><td data-n="4" data-d="4" data-u="0"><b>100%</b><span class="of">4 / 4</span></td><td class="nr" data-n="" data-d="0"><span class="en">none</span><span class="zh">无</span></td><td data-n="11" data-d="11" data-u="0"><b>100%</b><span class="of">11 / 11</span></td></tr>
+          <tr data-en="Special acceptances" data-zh="特别承保"><th scope="row"><span class="en">Special acceptances</span><span class="zh">特别承保</span></th><td data-n="1" data-d="1" data-u="0"><b>100%</b><span class="of">1 / 1</span></td><td data-n="1" data-d="1" data-u="0"><b>100%</b><span class="of">1 / 1</span></td><td data-n="9" data-d="9" data-u="0"><b>100%</b><span class="of">9 / 9</span></td></tr>
+          <tr data-en="Name says nothing" data-zh="名字什么都没说"><th scope="row"><span class="en">Name says nothing</span><span class="zh">名字什么都没说</span></th><td data-n="46" data-d="46" data-u="0"><b>100%</b><span class="of">46 / 46</span></td><td data-n="2" data-d="2" data-u="0"><b>100%</b><span class="of">2 / 2</span></td><td data-n="69" data-d="70" data-u="0"><b>98.6%</b><span class="of">69 / 70</span></td></tr>
+          <tr class="grp" data-en="Ours (TPRe)" data-zh="我方（太平再）"><th scope="row"><span class="en">Ours (TPRe)</span><span class="zh">我方（太平再）</span></th><td data-n="0" data-d="91" data-u="0"><b>0%</b><span class="of">0 / 91</span></td><td data-n="0" data-d="20" data-u="2"><b>0%</b><span class="of">0 / 20</span><span class="with"><span class="en">2 undecided</span><span class="zh">2 份没下结论</span></span></td><td data-n="1" data-d="113" data-u="4"><b>0.9%</b><span class="of">1 / 113</span><span class="with"><span class="en">4 undecided</span><span class="zh">4 份没下结论</span></span></td></tr>
+          <tr data-en="UW notes" data-zh="核保备注"><th scope="row"><span class="en">UW notes</span><span class="zh">核保备注</span></th><td data-n="0" data-d="31" data-u="0"><b>0%</b><span class="of">0 / 31</span></td><td data-n="0" data-d="7" data-u="1"><b>0%</b><span class="of">0 / 7</span><span class="with"><span class="en">1 undecided</span><span class="zh">1 份没下结论</span></span></td><td data-n="0" data-d="44" data-u="2"><b>0%</b><span class="of">0 / 44</span><span class="with"><span class="en">2 undecided</span><span class="zh">2 份没下结论</span></span></td></tr>
+          <tr data-en="Pricing" data-zh="定价"><th scope="row"><span class="en">Pricing</span><span class="zh">定价</span></th><td data-n="0" data-d="20" data-u="0"><b>0%</b><span class="of">0 / 20</span></td><td data-n="0" data-d="5" data-u="0"><b>0%</b><span class="of">0 / 5</span></td><td data-n="1" data-d="34" data-u="0"><b>2.9%</b><span class="of">1 / 34</span></td></tr>
+          <tr data-en="Treaty statistics" data-zh="合约统计"><th scope="row"><span class="en">Treaty statistics</span><span class="zh">合约统计</span></th><td data-n="0" data-d="39" data-u="0"><b>0%</b><span class="of">0 / 39</span></td><td data-n="0" data-d="8" data-u="1"><b>0%</b><span class="of">0 / 8</span><span class="with"><span class="en">1 undecided</span><span class="zh">1 份没下结论</span></span></td><td data-n="0" data-d="31" data-u="2"><b>0%</b><span class="of">0 / 31</span><span class="with"><span class="en">2 undecided</span><span class="zh">2 份没下结论</span></span></td></tr>
+          <tr data-en="Working copies" data-zh="工作副本"><th scope="row"><span class="en">Working copies</span><span class="zh">工作副本</span></th><td data-n="0" data-d="1" data-u="0"><b>0%</b><span class="of">0 / 1</span></td><td class="nr" data-n="" data-d="0"><span class="en">none</span><span class="zh">无</span></td><td data-n="0" data-d="4" data-u="0"><b>0%</b><span class="of">0 / 4</span></td></tr>
+          <tr class="grp" data-en="Correspondence" data-zh="往来邮件"><th scope="row"><span class="en">Correspondence</span><span class="zh">往来邮件</span></th><td data-n="50" data-d="217" data-u="0"><b>23.0%</b><span class="of">50 / 217</span></td><td data-n="6" data-d="38" data-u="0"><b>15.8%</b><span class="of">6 / 38</span></td><td data-n="65" data-d="212" data-u="0"><b>30.7%</b><span class="of">65 / 212</span></td></tr>
+          <tr data-en="Emails" data-zh="邮件"><th scope="row"><span class="en">Emails</span><span class="zh">邮件</span></th><td data-n="30" data-d="197" data-u="0"><b>15.2%</b><span class="of">30 / 197</span></td><td data-n="3" data-d="35" data-u="0"><b>8.6%</b><span class="of">3 / 35</span></td><td data-n="44" data-d="191" data-u="0"><b>23.0%</b><span class="of">44 / 191</span></td></tr>
+          <tr data-en="FOT emails" data-zh="FOT 邮件"><th scope="row"><span class="en">FOT emails</span><span class="zh">FOT 邮件</span></th><td data-n="20" data-d="20" data-u="0"><b>100%</b><span class="of">20 / 20</span></td><td data-n="3" data-d="3" data-u="0"><b>100%</b><span class="of">3 / 3</span></td><td data-n="21" data-d="21" data-u="0"><b>100%</b><span class="of">21 / 21</span></td></tr>
+          <tr class="grp" data-en="Post-binding" data-zh="成交后"><th scope="row"><span class="en">Post-binding</span><span class="zh">成交后</span></th><td data-n="0" data-d="27" data-u="6"><b>0%</b><span class="of">0 / 27</span><span class="with"><span class="en">6 undecided</span><span class="zh">6 份没下结论</span></span></td><td class="nr" data-n="" data-d="0"><span class="en">none</span><span class="zh">无</span></td><td data-n="0" data-d="238" data-u="222"><b>0%</b><span class="of">0 / 238</span><span class="with"><span class="en">222 undecided</span><span class="zh">222 份没下结论</span></span></td></tr>
+          <tr data-en="Special-acceptance requests" data-zh="特别承保申请"><th scope="row"><span class="en">Special-acceptance requests</span><span class="zh">特别承保申请</span></th><td class="nr" data-n="" data-d="0"><span class="en">none</span><span class="zh">无</span></td><td class="nr" data-n="" data-d="0"><span class="en">none</span><span class="zh">无</span></td><td data-n="0" data-d="221" data-u="221"><b>0%</b><span class="of">0 / 221</span><span class="with"><span class="en">221 undecided</span><span class="zh">221 份没下结论</span></span></td></tr>
+          <tr data-en="Loss updates" data-zh="赔案更新"><th scope="row"><span class="en">Loss updates</span><span class="zh">赔案更新</span></th><td data-n="0" data-d="22" data-u="5"><b>0%</b><span class="of">0 / 22</span><span class="with"><span class="en">5 undecided</span><span class="zh">5 份没下结论</span></span></td><td class="nr" data-n="" data-d="0"><span class="en">none</span><span class="zh">无</span></td><td class="nr" data-n="" data-d="0"><span class="en">none</span><span class="zh">无</span></td></tr>
+          <tr data-en="Results" data-zh="经营结果"><th scope="row"><span class="en">Results</span><span class="zh">经营结果</span></th><td data-n="0" data-d="3" data-u="1"><b>0%</b><span class="of">0 / 3</span><span class="with"><span class="en">1 undecided</span><span class="zh">1 份没下结论</span></span></td><td class="nr" data-n="" data-d="0"><span class="en">none</span><span class="zh">无</span></td><td data-n="0" data-d="15" data-u="0"><b>0%</b><span class="of">0 / 15</span></td></tr>
+          <tr data-en="Cancellation notices" data-zh="注销通知"><th scope="row"><span class="en">Cancellation notices</span><span class="zh">注销通知</span></th><td data-n="0" data-d="2" data-u="0"><b>0%</b><span class="of">0 / 2</span></td><td class="nr" data-n="" data-d="0"><span class="en">none</span><span class="zh">无</span></td><td data-n="0" data-d="2" data-u="1"><b>0%</b><span class="of">0 / 2</span><span class="with"><span class="en">1 undecided</span><span class="zh">1 份没下结论</span></span></td></tr>
+          <tr class="grp" data-en="Derived" data-zh="派生文件"><th scope="row"><span class="en">Derived</span><span class="zh">派生文件</span></th><td data-n="1" data-d="72" data-u="0"><b>1.4%</b><span class="of">1 / 72</span></td><td data-n="0" data-d="28" data-u="0"><b>0%</b><span class="of">0 / 28</span></td><td data-n="36" data-d="114" data-u="1"><b>31.6%</b><span class="of">36 / 114</span><span class="with"><span class="en">1 undecided</span><span class="zh">1 份没下结论</span></span></td></tr>
+          <tr data-en="Comparisons" data-zh="对比"><th scope="row"><span class="en">Comparisons</span><span class="zh">对比</span></th><td data-n="1" data-d="72" data-u="0"><b>1.4%</b><span class="of">1 / 72</span></td><td data-n="0" data-d="28" data-u="0"><b>0%</b><span class="of">0 / 28</span></td><td data-n="36" data-d="114" data-u="1"><b>31.6%</b><span class="of">36 / 114</span><span class="with"><span class="en">1 undecided</span><span class="zh">1 份没下结论</span></span></td></tr>
+          <tr class="grp" data-en="Admin" data-zh="行政"><th scope="row"><span class="en">Admin</span><span class="zh">行政</span></th><td data-n="0" data-d="7" data-u="4"><b>0%</b><span class="of">0 / 7</span><span class="with"><span class="en">4 undecided</span><span class="zh">4 份没下结论</span></span></td><td class="nr" data-n="" data-d="0"><span class="en">none</span><span class="zh">无</span></td><td data-n="4" data-d="23" data-u="4"><b>17.4%</b><span class="of">4 / 23</span><span class="with"><span class="en">4 undecided</span><span class="zh">4 份没下结论</span></span></td></tr>
+          <tr data-en="KYC, NDA, licence" data-zh="KYC、NDA、licence"><th scope="row"><span class="en">KYC, NDA, licence</span><span class="zh">KYC、NDA、licence</span></th><td class="nr" data-n="" data-d="0"><span class="en">none</span><span class="zh">无</span></td><td class="nr" data-n="" data-d="0"><span class="en">none</span><span class="zh">无</span></td><td data-n="1" data-d="20" data-u="4"><b>5.0%</b><span class="of">1 / 20</span><span class="with"><span class="en">4 undecided</span><span class="zh">4 份没下结论</span></span></td></tr>
+          <tr data-en="Newsletters" data-zh="简报"><th scope="row"><span class="en">Newsletters</span><span class="zh">简报</span></th><td data-n="0" data-d="3" data-u="0"><b>0%</b><span class="of">0 / 3</span></td><td class="nr" data-n="" data-d="0"><span class="en">none</span><span class="zh">无</span></td><td data-n="3" data-d="3" data-u="0"><b>100%</b><span class="of">3 / 3</span></td></tr>
+          <tr data-en="Reciprocal business" data-zh="互惠业务"><th scope="row"><span class="en">Reciprocal business</span><span class="zh">互惠业务</span></th><td data-n="0" data-d="4" data-u="4"><b>0%</b><span class="of">0 / 4</span><span class="with"><span class="en">4 undecided</span><span class="zh">4 份没下结论</span></span></td><td class="nr" data-n="" data-d="0"><span class="en">none</span><span class="zh">无</span></td><td class="nr" data-n="" data-d="0"><span class="en">none</span><span class="zh">无</span></td></tr>
+          <tr class="grp" data-en="Other" data-zh="其他"><th scope="row"><span class="en">Other</span><span class="zh">其他</span></th><td data-n="0" data-d="3" data-u="1"><b>0%</b><span class="of">0 / 3</span><span class="with"><span class="en">1 undecided</span><span class="zh">1 份没下结论</span></span></td><td data-n="0" data-d="1" data-u="1"><b>0%</b><span class="of">0 / 1</span><span class="with"><span class="en">1 undecided</span><span class="zh">1 份没下结论</span></span></td><td data-n="0" data-d="36" data-u="1"><b>0%</b><span class="of">0 / 36</span><span class="with"><span class="en">1 undecided</span><span class="zh">1 份没下结论</span></span></td></tr>
+          <tr data-en="Archives" data-zh="压缩包"><th scope="row"><span class="en">Archives</span><span class="zh">压缩包</span></th><td data-n="0" data-d="1" data-u="0"><b>0%</b><span class="of">0 / 1</span></td><td class="nr" data-n="" data-d="0"><span class="en">none</span><span class="zh">无</span></td><td data-n="0" data-d="26" data-u="0"><b>0%</b><span class="of">0 / 26</span></td></tr>
+          <tr data-en="Images" data-zh="图片"><th scope="row"><span class="en">Images</span><span class="zh">图片</span></th><td data-n="0" data-d="1" data-u="0"><b>0%</b><span class="of">0 / 1</span></td><td class="nr" data-n="" data-d="0"><span class="en">none</span><span class="zh">无</span></td><td data-n="0" data-d="2" data-u="0"><b>0%</b><span class="of">0 / 2</span></td></tr>
+          <tr data-en="System files" data-zh="系统自动生成的文件"><th scope="row"><span class="en">System files</span><span class="zh">系统自动生成的文件</span></th><td class="nr" data-n="" data-d="0"><span class="en">none</span><span class="zh">无</span></td><td class="nr" data-n="" data-d="0"><span class="en">none</span><span class="zh">无</span></td><td data-n="0" data-d="7" data-u="0"><b>0%</b><span class="of">0 / 7</span></td></tr>
+          <tr data-en="No type" data-zh="定不了类型"><th scope="row"><span class="en">No type</span><span class="zh">定不了类型</span></th><td data-n="0" data-d="1" data-u="1"><b>0%</b><span class="of">0 / 1</span><span class="with"><span class="en">1 undecided</span><span class="zh">1 份没下结论</span></span></td><td data-n="0" data-d="1" data-u="1"><b>0%</b><span class="of">0 / 1</span><span class="with"><span class="en">1 undecided</span><span class="zh">1 份没下结论</span></span></td><td data-n="0" data-d="1" data-u="1"><b>0%</b><span class="of">0 / 1</span><span class="with"><span class="en">1 undecided</span><span class="zh">1 份没下结论</span></span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </details>
+
   <h2 class="wkh2" id="versions"><span class="en">The versions</span><span class="zh">各版规则</span></h2>
     <div class="mx-scroll">
     <table class="mx ver">
@@ -830,8 +916,8 @@
 </nav>
 <!-- /wiki next -->
   <footer class="wkfoot">
-    <span class="en">Source of truth: <span class="code">docs/RULE-PERFORMANCE.md</span> in the code repository; MVP20 and MVP3 scored with <span class="code">tools/score/</span>, TEST15 counted off its answer files and label table · <a href="rules.html">The rules</a> · Written 2026-10-20</span>
-    <span class="zh">以代码库为准：<span class="code">docs/RULE-PERFORMANCE.md</span>；MVP20、MVP3 用 <span class="code">tools/score/</span> 打分，TEST15 按答案文件和标签表计数 · <a href="rules.html">分拣规则</a> · 写于 2026-10-20</span>
+    <span class="en">Source of truth: <span class="code">docs/RULE-PERFORMANCE.md</span> in the code repository; MVP20 and MVP3 scored with <span class="code">tools/score/</span>, TEST15 counted off its answer files and label table; group and type off run-15’s label tables and reduced inventories · <a href="rules.html">The rules</a> · Written 2026-10-20</span>
+    <span class="zh">以代码库为准：<span class="code">docs/RULE-PERFORMANCE.md</span>；MVP20、MVP3 用 <span class="code">tools/score/</span> 打分，TEST15 按答案文件和标签表计数；大类和类型按 run-15 的标签表和精简清单计数 · <a href="rules.html">分拣规则</a> · 写于 2026-10-20</span>
   </footer>
 </div>
 
@@ -1147,9 +1233,104 @@ setLang(document.documentElement.getAttribute("data-lang")||"en");
     box.parentNode.scrollLeft = 0;
   }
 
+  /* what the rules keep: a bar per group or type and round, from the table */
+  function kpct(n, d){ return n ? pct(n, d) : "0%"; }
+  function readKept(table){
+    var rows = table.tBodies[0].rows, out = [];
+    for (var i = 0; i < rows.length; i++){
+      var tr = rows[i], per = [];
+      for (var j = 0; j < ROUNDS.length; j++){
+        var td = tr.cells[j + 1];
+        per.push(+td.getAttribute("data-d") ? {n: +td.getAttribute("data-n"), d: +td.getAttribute("data-d"),
+                                               u: +td.getAttribute("data-u")} : null);
+      }
+      out.push({en: tr.getAttribute("data-en"), zh: tr.getAttribute("data-zh"),
+                head: tr.classList.contains("grp") || tr.classList.contains("all"), per: per});
+    }
+    return out;
+  }
+  function drawKept(fig){
+    var table = fig.nextElementSibling.querySelector("table"), rows = readKept(table);
+    var L = lang(), box = fig.querySelector(".viz-box");
+    box.textContent = "";
+    var legend = fig.querySelector(".viz-legend");
+    legend.textContent = "";
+    ROUNDS.forEach(function(r){
+      var s = document.createElement("span"), k = document.createElement("i");
+      k.style.background = r.c;
+      s.appendChild(k); s.appendChild(document.createTextNode(r[L]));
+      legend.appendChild(s);
+    });
+    var grid = document.createElement("div");
+    grid.className = "kgrid";
+    grid.setAttribute("role", "img");
+    grid.setAttribute("aria-label", L === "zh" ? "规则留下的占比，逐类逐轮；数字见下表。"
+                                              : "The share of each group's and type's documents the rules keep, round by round; the figures are in the table below.");
+    box.appendChild(grid);
+    function add(cls, text){ var d = document.createElement("div"); d.className = cls; if (text != null) d.textContent = text; grid.appendChild(d); return d; }
+    add("kh", "");
+    ROUNDS.forEach(function(r){ add("kh", r.k); });
+    var tip = document.createElement("div");
+    tip.className = "viz-tip"; tip.hidden = true; tip.setAttribute("aria-hidden", "true");
+    box.appendChild(tip);
+    var PARTS = [
+      {c: null,           en: "kept",       zh: "留下",     of: function(p){ return p.n; }},
+      {c: "var(--mute)",  en: "undecided",  zh: "没下结论", of: function(p){ return p.u; }},
+      {c: "var(--line-2)", en: "dropped",   zh: "不留",     of: function(p){ return p.d - p.n - p.u; }}
+    ];
+    rows.forEach(function(row, i){
+      if (row.head && i) add("ksep");
+      add("kv" + (row.head ? " g" : ""), row[L]);
+      row.per.forEach(function(p, j){
+        var cell = add("kcell" + (row.head ? " g" : "") + (p ? "" : " nr"));
+        if (!p){ cell.textContent = L === "zh" ? "无" : "none"; return; }
+        var track = document.createElement("div"), bar = document.createElement("i"),
+            lab = document.createElement("b"), of = document.createElement("span"),
+            w = (p.n / p.d * 100).toFixed(3) + "%";
+        track.className = "ktrack"; bar.className = "kbar";
+        bar.style.setProperty("--c", ROUNDS[j].c);
+        bar.style.width = w;
+        lab.textContent = kpct(p.n, p.d);
+        of.textContent = p.n.toLocaleString("en-US") + "/" + p.d.toLocaleString("en-US");
+        lab.appendChild(of);
+        lab.style.left = "calc(" + w + " + 6px)";
+        track.appendChild(bar); track.appendChild(lab);
+        cell.appendChild(track);
+        cell.onpointerenter = cell.onpointermove = function(ev){
+          tip.textContent = "";
+          var h = document.createElement("div"); h.className = "h";
+          var hb = document.createElement("b"); hb.textContent = row[L];
+          h.appendChild(hb); h.appendChild(document.createTextNode("  " + ROUNDS[j].k));
+          tip.appendChild(h);
+          PARTS.forEach(function(part, m){
+            var r = document.createElement("div"); r.className = "row";
+            var key = document.createElement("i"); key.style.setProperty("--k", part.c || ROUNDS[j].c); r.appendChild(key);
+            var b = document.createElement("b"); b.textContent = part.of(p).toLocaleString("en-US");
+            var s = document.createElement("span"); s.textContent = part[L];
+            var em = document.createElement("em"); em.textContent = kpct(part.of(p), p.d);
+            if (!m) r.style.fontWeight = "700";
+            r.appendChild(b); r.appendChild(s); r.appendChild(em); tip.appendChild(r);
+          });
+          tip.hidden = false;
+          var br = box.getBoundingClientRect(), x = ev.clientX - br.left, y = ev.clientY - br.top, tw = tip.offsetWidth;
+          tip.style.left = Math.round(x + 14 + tw > box.clientWidth ? x - 14 - tw : x + 14) + "px";
+          tip.style.top = Math.round(y + 14) + "px";
+        };
+        cell.onpointerleave = function(){ tip.hidden = true; };
+      });
+    });
+    add("kh", "");
+    ROUNDS.forEach(function(){
+      var t = add("kt");
+      [0, 25, 50, 75, 100].forEach(function(v){ var s = document.createElement("span"); s.textContent = v + (v === 100 ? "%" : ""); s.style.left = v + "%"; t.appendChild(s); });
+    });
+    box.parentNode.scrollLeft = 0;
+  }
+
   function all(){
     document.querySelectorAll(".viz").forEach(function(f){
-      if (f.getAttribute("data-for") === "differ") drawDiffer(f); else draw(f);
+      var k = f.getAttribute("data-for");
+      if (k === "differ") drawDiffer(f); else if (k === "kept") drawKept(f); else draw(f);
     });
   }
   all();
