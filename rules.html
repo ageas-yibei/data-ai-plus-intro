@@ -973,8 +973,8 @@
     </article>
     <article class="look">
       <h3><span class="en">Content</span><span class="zh">内容</span></h3>
-      <p><span class="en">The text the machine extracted.</span><span class="zh">机器读出的文字。</span></p>
-      <p class="blind"><b><span class="en">Limit:</span><span class="zh">局限：</span></b><span class="en"> a scan has no text the rules can read; they do not read the vision model's transcription of it either.</span><span class="zh">扫描件没有文字可读；视觉模型转写出的文字，规则也不读。</span></p>
+      <p><span class="en">The text the machine extracted. For a file it extracted none of, such as a scan, the words the vision model read off its pages.</span><span class="zh">机器读出的文字。一个字都没读出的文件，比如扫描件，读视觉模型从页面上转写出的文字。</span></p>
+      <p class="blind"><b><span class="en">Limit:</span><span class="zh">局限：</span></b><span class="en"> a file with neither has nothing to read. A PDF with text of its own is read by that text alone, not by the vision model's reading of its scanned pages. A reading made after the rules ran counts only once they run again.</span><span class="zh">两样都没有的文件，无字可读。本身读得出文字的 PDF，只读这些文字，不读视觉模型对其中扫描页的转写。规则跑过之后才做的转写，要等规则重跑才算数。</span></p>
     </article>
     <article class="look rest">
       <h3><span class="en">Other files in the same treaty</span><span class="zh">同一合约的其他文件</span></h3>
@@ -998,7 +998,7 @@
         <tr class="gstart">
           <td class="g" rowspan="5"><span class="en">Contract</span><span class="zh">合约</span><span class="cd">contract</span></td>
           <td class="c"><span class="en">Slip</span><span class="zh">条款单</span><span class="cd">slip</span></td>
-          <td><span class="en">slip, MRC, FOT, firm order, offerte, cover note, contract, agreement, binder, placement, quote, draft, redline; a market reference beside QS, XL or another treaty form; 批单, 签单, 分保单, 报价; a file in <span class="code">Slip &amp; End't</span> whose name and text give no type. Never a workbook</span><span class="zh">slip、MRC、FOT、firm order、offerte、cover note、contract、agreement、binder、placement、quote、draft、redline；市场编号旁带 QS、XL 等合约形式；批单、签单、分保单、报价；在 <span class="code">Slip &amp; End't</span> 里、文件名和正文都定不了类型的文件。工作簿不算</span></td>
+          <td><span class="en">slip, MRC, FOT, firm order, offerte, cover note, contract, agreement, binder, placement, quote, draft, redline; a market reference beside QS, XL or another treaty form; 批单, 签单, 分保单, 报价; a file in <span class="code">Slip &amp; End't</span> whose name and text give no type. Never a workbook. For the type alone: the title RISKS DETAILS, in the plural</span><span class="zh">slip、MRC、FOT、firm order、offerte、cover note、contract、agreement、binder、placement、quote、draft、redline；市场编号旁带 QS、XL 等合约形式；批单、签单、分保单、报价；在 <span class="code">Slip &amp; End't</span> 里、文件名和正文都定不了类型的文件。工作簿不算。只用于定类型：复数写法的标题 RISKS DETAILS</span></td>
         </tr>
         <tr>
           <td class="c"><span class="en">Signing page</span><span class="zh">签署页</span><span class="cd">signing_page</span></td>
@@ -1019,19 +1019,19 @@
         <tr class="gstart">
           <td class="g" rowspan="7"><span class="en">Submission</span><span class="zh">提交材料</span><span class="cd">submission</span></td>
           <td class="c"><span class="en">Narrative</span><span class="zh">业务说明</span><span class="cd">narrative</span></td>
-          <td><span class="en">narrative, presentation, renewal information, information memorandum, UW memo, cover letter, questionnaire, submission letter</span><span class="zh">narrative、presentation、renewal information、information memorandum、UW memo、cover letter、questionnaire、submission letter</span></td>
+          <td><span class="en">narrative, presentation, renewal information, information memorandum, UW memo, cover letter, questionnaire, submission letter. For the type alone, in the name: wish list</span><span class="zh">narrative、presentation、renewal information、information memorandum、UW memo、cover letter、questionnaire、submission letter。只用于定类型：文件名里的 wish list</span></td>
         </tr>
         <tr>
           <td class="c"><span class="en">Premium &amp; statistics</span><span class="zh">保费与统计</span><span class="cd">premium_and_stats</span></td>
-          <td><span class="en">GNPI, EPI, GWP, premium, stats, results, structure of programme, 保费, 业绩; submission, exhibit, renewal pack; a workbook with no other type</span><span class="zh">GNPI、EPI、GWP、premium、stats、results、structure of programme、保费、业绩；submission、exhibit、renewal pack；别的都定不了类型的工作簿</span></td>
+          <td><span class="en">GNPI, EPI, GWP, premium, stats, results, structure of programme, 保费, 业绩; submission, exhibit, renewal pack; a workbook with no other type. For the type alone, in the name: assiettes; in a workbook's cells: premium, commission, loss ratio, GNPI, EPI, GWP, GPI, 保费, 佣金, 手续费, 赔付率</span><span class="zh">GNPI、EPI、GWP、premium、stats、results、structure of programme、保费、业绩；submission、exhibit、renewal pack；别的都定不了类型的工作簿。只用于定类型：文件名里的 assiettes；工作簿单元格里的 premium、commission、loss ratio、GNPI、EPI、GWP、GPI、保费、佣金、手续费、赔付率</span></td>
         </tr>
         <tr>
           <td class="c"><span class="en">Exposure</span><span class="zh">风险敞口</span><span class="cd">exposure</span></td>
-          <td><span class="en">exposure, profiles, aggregates, accumulation, SOV, PML, TIV, sum insured, modelling, portfolio, perils, top 10</span><span class="zh">exposure、profiles、aggregates、accumulation、SOV、PML、TIV、sum insured、modelling、portfolio、perils、top 10</span></td>
+          <td><span class="en">exposure, profiles, aggregates, accumulation, SOV, PML, TIV, sum insured, modelling, portfolio, perils, top 10. For the type alone, in the name: Accum (not Accum. as in accounts), asset list or listing (not a fixed asset list), OEP, AEP, YELT, policy or policies followed by with, over, above, larger or list, risk or risks followed by over, above or list; in a workbook's cells: sum insured, total insured, insured value, TSI, TIV, PML, risk count, number of risks or locations, CRESTA, latitude, longitude, accumulation, limit band, SI band, 保额, 保险金额, and, where no cell names the losses, policy number, occupancy, location</span><span class="zh">exposure、profiles、aggregates、accumulation、SOV、PML、TIV、sum insured、modelling、portfolio、perils、top 10。只用于定类型：文件名里的 Accum（会计里的 Accum. 不算）、asset list 或 asset listing（fixed asset list 不算）、OEP、AEP、YELT，policy 或 policies 后接 with、over、above、larger、list，risk 或 risks 后接 over、above、list；工作簿单元格里的 sum insured、total insured、insured value、TSI、TIV、PML、risk count、number of risks、number of locations、CRESTA、latitude、longitude、accumulation、limit band、SI band、保额、保险金额，没有单元格指向赔付时，policy number、occupancy、location 也算</span></td>
         </tr>
         <tr>
           <td class="c"><span class="en">Losses</span><span class="zh">赔付</span><span class="cd">losses</span></td>
-          <td><span class="en">losses, claims, triangles, large loss, burning cost, bordereaux, 赔付, 赔款, 理赔, 损失, 赔案, 出险</span><span class="zh">losses、claims、triangles、large loss、burning cost、bordereaux、赔付、赔款、理赔、损失、赔案、出险</span></td>
+          <td><span class="en">losses, claims, triangles, large loss, burning cost, bordereaux, 赔付, 赔款, 理赔, 损失, 赔案, 出险. For the type alone, in the name: triangulations; in a workbook's cells: claim number, reference or ID, loss number or date, date of loss, accident, occurrence or event, cause of loss or claim, D.O.L., 赔案号, 赔案编号, 出险日期, 出险原因</span><span class="zh">losses、claims、triangles、large loss、burning cost、bordereaux、赔付、赔款、理赔、损失、赔案、出险。只用于定类型：文件名里的 triangulations；工作簿单元格里的 claim number、claim reference、claim ID、loss number、loss date，date of 后接 loss、accident、occurrence 或 event，cause of loss、cause of claim、D.O.L.、赔案号、赔案编号、出险日期、出险原因</span></td>
         </tr>
         <tr>
           <td class="c"><span class="en">Financials &amp; rating</span><span class="zh">财务与评级</span><span class="cd">financials_rating</span></td>
@@ -1039,11 +1039,11 @@
         </tr>
         <tr>
           <td class="c"><span class="en">Special acceptances</span><span class="zh">特别承保</span><span class="cd">special_acceptances</span></td>
-          <td><span class="en">special acceptance, in a file sent with the submission</span><span class="zh">随提交材料送来、写着 special acceptance 的文件</span></td>
+          <td><span class="en">special acceptance, in a file sent with the submission. For the type alone, in a workbook's cells: special acceptance</span><span class="zh">随提交材料送来、写着 special acceptance 的文件。只用于定类型：工作簿单元格里的 special acceptance</span></td>
         </tr>
         <tr>
           <td class="c"><span class="en">Name says nothing, in <span class="code">U W Information</span></span><span class="zh">在 <span class="code">U W Information</span> 里、名字什么都没说</span><span class="cd">unspecified</span></td>
-          <td><span class="en">neither the name nor the text gives a type</span><span class="zh">文件名和正文都定不了类型</span></td>
+          <td><span class="en">neither the name, the text nor a workbook's cells give a type</span><span class="zh">文件名、正文、工作簿单元格都定不了类型</span></td>
         </tr>
         <tr class="gstart">
           <td class="g"><span class="en">Ours (TPRe)</span><span class="zh">我方（太平再）</span><span class="cd">ours</span></td>
@@ -1070,7 +1070,8 @@
   <div class="tafter">
     <div class="plain">
       <h3><span class="en">How the type is worked out</span><span class="zh">类型怎么定</span></h3>
-      <p><span class="en">First the name; where it says too little, the document's title or a workbook's sheet names; then the folder; then the format.</span><span class="zh">先看文件名；文件名说得不够，再看文件开头的标题或工作簿的工作表名；然后看文件夹，再看格式。</span></p>
+      <p><span class="en">First the name; where it says too little, the title at the top of the document (a scan's, off the vision model's reading) or a workbook's sheet names; then the words of the name and of a workbook's cells that the table gives for the type alone, which no rule reads; then the folder; then the format.</span><span class="zh">先看文件名；文件名说得不够，再看文件开头的标题（扫描件看视觉模型转写出的标题）或工作簿的工作表名；然后看表中“只用于定类型”的文件名用词和工作簿单元格，这些规则都不读；然后看文件夹，再看格式。</span></p>
+      <p><span class="en">A workbook's cells are the first 80 pieces of text in an <span class="code">.xlsx</span> or <span class="code">.xlsm</span>, or an <span class="code">.xls</span> that is really one: the type is the part of the submission at least two of them name, and more than name any other. Where a workbook's name names two parts, such as losses and statistics, its cells choose between those two the same way; a name of one part keeps it. A file in a post-binding folder is read for the type alone only if it, or an exact copy, is in <span class="code">Slip &amp; End't</span> or <span class="code">U W Information</span>.</span><span class="zh">工作簿单元格，指 <span class="code">.xlsx</span>、<span class="code">.xlsm</span>（或实为这两种的 <span class="code">.xls</span>）里的前 80 段文字：至少两段指向同一类提交材料、且多于指向其他任何一类的，就定为这一类。工作簿文件名同时点了两类提交材料的，比如赔付和统计，也这样按单元格在两类里选；文件名只点了一类的，就按这一类。成交后文件夹里的文件，只有本身或其完全相同的副本在 <span class="code">Slip &amp; End't</span> 或 <span class="code">U W Information</span> 里，才看“只用于定类型”的词。</span></p>
       <p><span class="en">A notes, post-binding or <span class="code">Reciprocal Business</span> folder overrides the type: the file becomes ours, post-binding or reciprocal business. Emails, Q&amp;A, line confirmations, comparisons, archives, images and system files keep their own type, and so does a file that is, or has an exact copy, in <span class="code">Slip &amp; End't</span> or <span class="code">U W Information</span>.</span><span class="zh">备注、成交后或 <span class="code">Reciprocal Business</span> 文件夹会改掉文件原有的类型，分别改为我方、成交后或互惠业务。邮件、问答、份额确认、对比、压缩包、图片、系统自动生成的文件不改；本身或其完全相同的副本在 <span class="code">Slip &amp; End't</span>、<span class="code">U W Information</span> 里的也不改。</span></p>
     </div>
     <div class="plain">
@@ -1121,8 +1122,8 @@
 </nav>
 <!-- /wiki next -->
   <footer class="wkfoot">
-    <span class="en">Source of truth: <span class="code">agent/triage/tpre_triage.py</span>, <span class="code">agent/output/pack.py</span> · <a href="gate.html">RAG Gate</a> · Written 2026-09-10 · Updated 2026-10-20</span>
-    <span class="zh">以代码为准：<span class="code">agent/triage/tpre_triage.py</span>、<span class="code">agent/output/pack.py</span> · <a href="gate.html">RAG 闸门</a> · 写于 2026-09-10 · 更新于 2026-10-20</span>
+    <span class="en">Source of truth: <span class="code">agent/triage/tpre_triage.py</span>, <span class="code">agent/output/pack.py</span> · <a href="gate.html">RAG Gate</a> · Written 2026-09-10 · Updated 2026-10-22</span>
+    <span class="zh">以代码为准：<span class="code">agent/triage/tpre_triage.py</span>、<span class="code">agent/output/pack.py</span> · <a href="gate.html">RAG 闸门</a> · 写于 2026-09-10 · 更新于 2026-10-22</span>
   </footer>
 </div>
 
