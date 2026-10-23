@@ -95,6 +95,17 @@ CHROME_CSS = """
   .wknav .wkmenu-p a[aria-current="page"]::after{display:none}
   @media (prefers-reduced-motion:reduce){.wkmenu-p,.wkcar{transition:none}}
 
+  /* the one link in the bar that leaves the wiki: the console's demo, in a new tab.
+     A wash of the accent, not a fill - white on this orange is under 4.5:1. */
+  .wknav .wkdemo{flex:0 0 auto;display:inline-flex;align-items:center;gap:5px;padding:5px 12px;
+           border:1px solid rgba(224,99,42,.32);border-radius:999px;
+           background:rgba(224,99,42,.08);color:#A34A14}
+  .wknav .wkdemo:hover{background:rgba(224,99,42,.15);border-color:rgba(224,99,42,.5);color:#8A3C0F}
+  .wkdemo-go{font-size:12px;line-height:1;transition:transform .15s}
+  .wkdemo:hover .wkdemo-go{transform:translate(1px,-1px)}
+  .wkdemo-s{display:none}
+  @media (prefers-reduced-motion:reduce){.wkdemo-go{transition:none}}
+
   .wkdev{flex:0 0 auto;display:inline-flex;align-items:center;gap:6px}
   .wkdev::before{content:"";position:absolute;left:-8px;top:9px;bottom:9px;width:1px;background:rgba(20,36,58,.14)}
 
@@ -108,8 +119,17 @@ CHROME_CSS = """
   .wklang button[aria-selected="true"]:hover{background:var(--navy);color:#fff}
   .wklang button:focus-visible{outline:2px solid var(--orange);outline-offset:-2px}
 
+  /* the bar gives up its tag, then its gaps, then the demo's long label, so the
+     language switch leaves the screen later: the strip hides its scrollbar. The
+     tag's selector outranks the rules that show a .wk-zh span. A bar with no
+     JavaScript is wider, and gets the same steps sooner (nav()'s <noscript>). */
+  @media (max-width:1060px){.wknav .wkmark span.wk-en,.wknav .wkmark span.wk-zh{display:none}
+    .wknav-in{gap:8px}.wkdev::before{left:-5px}}
   @media (max-width:980px){.wknav-in{padding:0 22px}}
-  @media (max-width:780px){.wkmark span{display:none}}
+  @media (max-width:880px){.wknav .wkdemo{padding:5px 9px}.wkdemo-l{display:none}.wkdemo-s{display:inline}}
+  @media (max-width:800px){.wkrule,.wkdemo-go{display:none}
+    .wknav a,.wknav .wkmenu-btn{padding-left:7px;padding-right:7px}
+    .wknav a[aria-current="page"]::after,.wknav .wkmenu-btn.wk-cur::after{left:7px;right:7px}}
   @media print{.wknav,.wkskip,.wklang{display:none}}
 </style>
 """
@@ -140,7 +160,33 @@ CHROME_JS = """
     }
   }
   window.aidpSetLang = function(v){ apply(v==="zh"?"zh":"en", false); };
-  apply(read(), true);
+  // The manual names its own language in its markup and keeps its own choice:
+  // a page whose <body> already names one is not handed the reader's.
+  var own=!!(document.body && document.body.hasAttribute("data-lang"));
+  if(!own) apply(read(), true);
+  // The language on show is whichever was set last, by the bar or by the page
+  // (the manual's chips, the Overview's ?lang=): the other two attributes and
+  // the switch follow it. Nothing here writes the choice the rest of the wiki
+  // reads.
+  function zh(el, at){ return /^zh/.test(el.getAttribute(at)||""); }
+  function follow(v){
+    var r=document.documentElement, b=document.body, z=v==="zh";
+    if(zh(r,"data-lang")!==z) r.setAttribute("data-lang", v);
+    if(zh(r,"lang")!==z) r.setAttribute("lang", z ? "zh-Hans" : "en");
+    if(zh(b,"data-lang")!==z) b.setAttribute("data-lang", v);
+    paint(v);
+  }
+  if(document.body){
+    if(own) follow(zh(document.body,"data-lang") ? "zh" : "en");
+    if(window.MutationObserver){
+      var mo=new MutationObserver(function(rs){
+        var last=rs[rs.length-1];
+        follow(zh(last.target, last.attributeName) ? "zh" : "en");
+      });
+      mo.observe(document.documentElement, {attributes:true, attributeFilter:["lang","data-lang"]});
+      mo.observe(document.body, {attributes:true, attributeFilter:["data-lang"]});
+    }
+  }
   document.addEventListener("click", function(e){
     var b=e.target && e.target.closest && e.target.closest(".wklang button");
     if(!b) return;
@@ -148,6 +194,20 @@ CHROME_JS = """
   });
   document.addEventListener("aidp:lang", function(e){
     if(e && e.detail) paint(e.detail==="zh"?"zh":"en");
+  });
+})();
+(function(){
+  // A control that takes focus is brought wholly into the strip: the strip hides
+  // its scrollbar, and the browser stops once a sliver of the control shows. The
+  // menu's panel hangs off the bar, not the strip, and is left to place().
+  var strip = document.querySelector(".wknav-in");
+  if(!strip) return;
+  strip.addEventListener("focusin", function(e){
+    var t = e.target;
+    if(!t || !t.getBoundingClientRect || (t.closest && t.closest("#wkmenu-p"))) return;
+    var b = t.getBoundingClientRect(), s = strip.getBoundingClientRect();
+    if(b.right > s.right) strip.scrollLeft += b.right - s.right + 4;
+    else if(b.left < s.left) strip.scrollLeft -= s.left - b.left + 4;
   });
 })();
 (function(){
@@ -414,6 +474,12 @@ MENU = ("Submission Agent", "\u6587\u4ef6\u5206\u62e3\u667a\u80fd\u4f53", [
     ("performance.html", "Performance", "\u89c4\u5219\u8868\u73b0"),
 ])
 DEV = ("developer.html", "Developer portal", "\u5f00\u53d1\u8005\u95e8\u6237")
+# The console's cloud demo on Railway: the invented treaty, every step
+# simulated, open to anyone. Its semi-live (?data=live) asks a password and is
+# not linked from here. href, English, Chinese, then the short pair a narrow
+# bar shows.
+DEMO = ("https://console-production-bc17.up.railway.app/", "Go to demo", "\u8fdb\u5165\u6f14\u793a",
+        "Demo", "\u6f14\u793a")
 
 
 def pair(en, zh):
@@ -447,10 +513,19 @@ def nav(current):
         f'        <div class="wkmenu-p" id="wkmenu-p" hidden>\n{menu}\n'
         f'        </div></span>')
     rows.append(f'      <span class="wkmenu-fb">{"".join(fallback)}</span>')
+    # the fallback's three links are wider than the one button, so the bar's
+    # narrow steps (CHROME_CSS) come sooner here
     rows.append('      <noscript><style>.wkmenu{display:none}'
-                '.wkmenu-fb{display:contents}</style></noscript>')
+                '.wkmenu-fb{display:contents}'
+                '@media (max-width:1160px){.wknav .wkmark span.wk-en,.wknav .wkmark span.wk-zh{display:none}'
+                '.wknav-in{gap:8px}.wkdev::before{left:-5px}}'
+                '@media (max-width:1000px){.wknav .wkdemo{padding:5px 9px}.wkdemo-l{display:none}'
+                '.wkdemo-s{display:inline}}</style></noscript>')
     links = "\n".join(rows)
     dcur = ' aria-current="page"' if current == DEV[0] else ""
+    # the long label, and the short one the 880px rule swaps in
+    demo = pair(f'<span class="wkdemo-l">{DEMO[1]}</span><span class="wkdemo-s">{DEMO[3]}</span>',
+                f'<span class="wkdemo-l">{DEMO[2]}</span><span class="wkdemo-s">{DEMO[4]}</span>')
     return f"""
 <a class="wkskip" href="#main"><span class="wk-en">Skip to content</span><span class="wk-zh">\u8df3\u5230\u6b63\u6587</span></a>
 <nav class="wknav" aria-label="Project wiki">
@@ -462,6 +537,7 @@ def nav(current):
     <div class="wklinks">
 {links}
     </div>
+    <a class="wkdemo" href="{DEMO[0]}" target="_blank" rel="noopener">{demo}<span class="wkdemo-go" aria-hidden="true">↗</span></a>
     <a class="wkdev" href="{DEV[0]}"{dcur}><span class="wk-en">{DEV[1]}</span><span class="wk-zh">{DEV[2]}</span></a>
     <div class="wklang" role="group" aria-label="Language">
       <button type="button" data-v="en" aria-selected="true">EN</button>

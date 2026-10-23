@@ -23,9 +23,9 @@ why the pages are the way they are.
 
 | Page | What it is |
 |---|---|
-| `developer.html` | The portal itself, in three parts: General (LLM API), Submission Agent (flywheel manual, the code), Facts Agent (to be filled). |
+| `developer.html` | The portal itself, in three parts: General (LLM API, the console demo's code), Submission Agent (flywheel manual, the code), Facts Agent (to be filled). |
 | `manual.html` | The flywheel manual, a copy of `docs/flywheel-manual.html` in the code repo. `python flywheel/validate/manual_illustrated/build.py` writes that file: it starts the review app in hosted mode on an invented corpus, photographs its screens with headless Chrome or Edge and inlines the pictures into `template.html`, which is why it is one file of about 5 MB. To refresh it, run the builder on an up-to-date main and copy what it writes over this file. The committed `docs/flywheel-manual.html` is not rebuilt with every change to `template.html`: do not copy it as it stands. |
-| `llm-api.html` | The two in-house OpenAI-compatible hosts: model ids, the reasoning switch each expects, and the gotchas. **Neither the API keys nor the addresses are on this page** — a host reads `<chat-host>` or `<vision-host>`, a key reads "see the internal note". The real values live together in the internal API note on the project share and in each stage's gitignored config. A host and port are credential-class here, not documentation: published together with "traffic is HTTP, not HTTPS" they are a recipe for lifting a key off the wire. Keep both off this page. |
+| `llm-api.html` | The two in-house OpenAI-compatible hosts: model ids, the reasoning switch each expects, and the gotchas. **Neither the API keys nor the addresses are on this page** — a host reads `<chat-host>` or `<vision-host>`, a key reads "see the internal note". The real values are in the internal API note on the project share; the pipeline's gitignored `agent/triage/llm_config.json` holds the chat and vision endpoints it calls. A host and port are credential-class here, not documentation: published together with "traffic is HTTP, not HTTPS" they are a recipe for lifting a key off the wire. Keep both off this page. |
 
 ### The password on it
 
@@ -77,6 +77,14 @@ for that.
   `<!-- wiki chrome -->` and `<!-- /wiki chrome -->` right after `<body>`, with the
   password gate in the same shape below it on the three developer pages. The chrome
   owns the colour tokens, the sticky nav, the language switch, and the skip link.
+  The bar's **Go to demo ↗** opens the console's cloud demo on Railway in a new tab
+  (`DEMO` in the script): the invented treaty, every step simulated, open to anyone.
+  Its semi-live (`?data=live`, the **Semi-live** button in the demo's own header) asks a
+  password; the bar does not link it. As the window narrows, the bar drops its
+  *project wiki* tag, closes its gaps and shortens the label to **Demo** before the
+  language switch leaves the screen; a bar with no JavaScript, which is wider, does
+  each sooner. Below that the strip scrolls sideways with no scrollbar showing, and a
+  control that takes keyboard focus is scrolled wholly into view.
   Edit `tools/wiki_chrome.py` and re-run it rather than editing every copy by hand;
   the manual and the API reference both mark *Developer portal* as their current page.
   Three of the six pages do not sit beside the others: `rules.html`, `gate.html` and
@@ -122,8 +130,13 @@ The language choice is shared across the wiki through `localStorage["aidp.lang"]
 the switch in the nav bar, so a reader who switches to Chinese stays in Chinese as
 they move between pages. Pages that have extra work on a switch (rebuilding a
 chart, rewriting a title) listen for `aidp:lang`. The illustrated manual keeps its
-own choice in `flywheel-manual-lang`: it opens in the language last picked on its own
-chips, whatever the bar says, and follows the bar once the bar is switched.
+own choice in `flywheel-manual-lang`: it opens in the language it last showed, whatever
+the bar says, and in Chinese the first time. Its `<body>` names that language in the
+markup, so the chrome leaves it alone on load. Its text follows the bar once the bar is
+switched, though its own chips keep their last pick and the next visit opens in the
+manual's own choice again. On every page, the language on show is whichever was set
+last, by the bar or by the page (the manual's chips, the Overview's `?lang=`), and the
+bar's labels and lit button follow it; that never writes `aidp.lang`.
 
 ## How these pages are written
 

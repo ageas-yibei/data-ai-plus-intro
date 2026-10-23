@@ -156,6 +156,17 @@
   .wknav .wkmenu-p a[aria-current="page"]::after{display:none}
   @media (prefers-reduced-motion:reduce){.wkmenu-p,.wkcar{transition:none}}
 
+  /* the one link in the bar that leaves the wiki: the console's demo, in a new tab.
+     A wash of the accent, not a fill - white on this orange is under 4.5:1. */
+  .wknav .wkdemo{flex:0 0 auto;display:inline-flex;align-items:center;gap:5px;padding:5px 12px;
+           border:1px solid rgba(224,99,42,.32);border-radius:999px;
+           background:rgba(224,99,42,.08);color:#A34A14}
+  .wknav .wkdemo:hover{background:rgba(224,99,42,.15);border-color:rgba(224,99,42,.5);color:#8A3C0F}
+  .wkdemo-go{font-size:12px;line-height:1;transition:transform .15s}
+  .wkdemo:hover .wkdemo-go{transform:translate(1px,-1px)}
+  .wkdemo-s{display:none}
+  @media (prefers-reduced-motion:reduce){.wkdemo-go{transition:none}}
+
   .wkdev{flex:0 0 auto;display:inline-flex;align-items:center;gap:6px}
   .wkdev::before{content:"";position:absolute;left:-8px;top:9px;bottom:9px;width:1px;background:rgba(20,36,58,.14)}
 
@@ -169,8 +180,17 @@
   .wklang button[aria-selected="true"]:hover{background:var(--navy);color:#fff}
   .wklang button:focus-visible{outline:2px solid var(--orange);outline-offset:-2px}
 
+  /* the bar gives up its tag, then its gaps, then the demo's long label, so the
+     language switch leaves the screen later: the strip hides its scrollbar. The
+     tag's selector outranks the rules that show a .wk-zh span. A bar with no
+     JavaScript is wider, and gets the same steps sooner (nav()'s <noscript>). */
+  @media (max-width:1060px){.wknav .wkmark span.wk-en,.wknav .wkmark span.wk-zh{display:none}
+    .wknav-in{gap:8px}.wkdev::before{left:-5px}}
   @media (max-width:980px){.wknav-in{padding:0 22px}}
-  @media (max-width:780px){.wkmark span{display:none}}
+  @media (max-width:880px){.wknav .wkdemo{padding:5px 9px}.wkdemo-l{display:none}.wkdemo-s{display:inline}}
+  @media (max-width:800px){.wkrule,.wkdemo-go{display:none}
+    .wknav a,.wknav .wkmenu-btn{padding-left:7px;padding-right:7px}
+    .wknav a[aria-current="page"]::after,.wknav .wkmenu-btn.wk-cur::after{left:7px;right:7px}}
   @media print{.wknav,.wkskip,.wklang{display:none}}
 </style>
 
@@ -192,8 +212,9 @@
           <a href="performance.html"><span class="wk-en">Performance</span><span class="wk-zh">规则表现</span></a>
         </div></span>
       <span class="wkmenu-fb"><a href="rules.html"><span class="wk-en">The rules</span><span class="wk-zh">分拣规则</span></a><a href="gate.html"><span class="wk-en">RAG Gate</span><span class="wk-zh">RAG 闸门</span></a><a href="performance.html"><span class="wk-en">Performance</span><span class="wk-zh">规则表现</span></a></span>
-      <noscript><style>.wkmenu{display:none}.wkmenu-fb{display:contents}</style></noscript>
+      <noscript><style>.wkmenu{display:none}.wkmenu-fb{display:contents}@media (max-width:1160px){.wknav .wkmark span.wk-en,.wknav .wkmark span.wk-zh{display:none}.wknav-in{gap:8px}.wkdev::before{left:-5px}}@media (max-width:1000px){.wknav .wkdemo{padding:5px 9px}.wkdemo-l{display:none}.wkdemo-s{display:inline}}</style></noscript>
     </div>
+    <a class="wkdemo" href="https://console-production-bc17.up.railway.app/" target="_blank" rel="noopener"><span class="wk-en"><span class="wkdemo-l">Go to demo</span><span class="wkdemo-s">Demo</span></span><span class="wk-zh"><span class="wkdemo-l">进入演示</span><span class="wkdemo-s">演示</span></span><span class="wkdemo-go" aria-hidden="true">↗</span></a>
     <a class="wkdev" href="developer.html" aria-current="page"><span class="wk-en">Developer portal</span><span class="wk-zh">开发者门户</span></a>
     <div class="wklang" role="group" aria-label="Language">
       <button type="button" data-v="en" aria-selected="true">EN</button>
@@ -227,7 +248,33 @@
     }
   }
   window.aidpSetLang = function(v){ apply(v==="zh"?"zh":"en", false); };
-  apply(read(), true);
+  // The manual names its own language in its markup and keeps its own choice:
+  // a page whose <body> already names one is not handed the reader's.
+  var own=!!(document.body && document.body.hasAttribute("data-lang"));
+  if(!own) apply(read(), true);
+  // The language on show is whichever was set last, by the bar or by the page
+  // (the manual's chips, the Overview's ?lang=): the other two attributes and
+  // the switch follow it. Nothing here writes the choice the rest of the wiki
+  // reads.
+  function zh(el, at){ return /^zh/.test(el.getAttribute(at)||""); }
+  function follow(v){
+    var r=document.documentElement, b=document.body, z=v==="zh";
+    if(zh(r,"data-lang")!==z) r.setAttribute("data-lang", v);
+    if(zh(r,"lang")!==z) r.setAttribute("lang", z ? "zh-Hans" : "en");
+    if(zh(b,"data-lang")!==z) b.setAttribute("data-lang", v);
+    paint(v);
+  }
+  if(document.body){
+    if(own) follow(zh(document.body,"data-lang") ? "zh" : "en");
+    if(window.MutationObserver){
+      var mo=new MutationObserver(function(rs){
+        var last=rs[rs.length-1];
+        follow(zh(last.target, last.attributeName) ? "zh" : "en");
+      });
+      mo.observe(document.documentElement, {attributes:true, attributeFilter:["lang","data-lang"]});
+      mo.observe(document.body, {attributes:true, attributeFilter:["data-lang"]});
+    }
+  }
   document.addEventListener("click", function(e){
     var b=e.target && e.target.closest && e.target.closest(".wklang button");
     if(!b) return;
@@ -235,6 +282,20 @@
   });
   document.addEventListener("aidp:lang", function(e){
     if(e && e.detail) paint(e.detail==="zh"?"zh":"en");
+  });
+})();
+(function(){
+  // A control that takes focus is brought wholly into the strip: the strip hides
+  // its scrollbar, and the browser stops once a sliver of the control shows. The
+  // menu's panel hangs off the bar, not the strip, and is left to place().
+  var strip = document.querySelector(".wknav-in");
+  if(!strip) return;
+  strip.addEventListener("focusin", function(e){
+    var t = e.target;
+    if(!t || !t.getBoundingClientRect || (t.closest && t.closest("#wkmenu-p"))) return;
+    var b = t.getBoundingClientRect(), s = strip.getBoundingClientRect();
+    if(b.right > s.right) strip.scrollLeft += b.right - s.right + 4;
+    else if(b.left < s.left) strip.scrollLeft -= s.left - b.left + 4;
   });
 })();
 (function(){
@@ -485,7 +546,7 @@
     <span class="ic" aria-hidden="true">!</span>
     <div>
       <b>Keys and addresses are not published on this page</b>
-      <p>Everywhere a key or a host belongs you will find a placeholder such as <code>&lt;chat-host&gt;</code> or <span class="redact">see the internal note</span>. The real hosts, ports and keys live together in the internal API note on the project share, and in each stage's own gitignored config (<code>triage/llm_config.json</code>).</p>
+      <p>Everywhere a key or a host belongs you will find a placeholder such as <code>&lt;chat-host&gt;</code> or <span class="redact">see the internal note</span>. The real hosts, ports and keys are in the internal API note on the project share. The pipeline's gitignored config, <code>agent/triage/llm_config.json</code>, holds the two endpoints it calls: the chat model (<code>base_url</code>, <code>api_key</code>, <code>model</code>) and the vision model (<code>vl_base_url</code>, <code>vl_api_key</code>, <code>vl_model</code>). The second read and OCR share that one file. Start it from the committed <code>agent/triage/llm_config.example.json</code>, which carries the Mac Studio's reasoning switch and has no slot for <code>thinking_style</code>, <code>vl_base_url</code> or <code>vl_api_key</code>: add them by hand, and put the chat host's own switch in <code>extra_body</code> (for <code>:4000</code>, <code>reasoning_effort</code>), because a request sends <code>extra_body</code> and no other reasoning setting (<code>docs/LLM-ENDPOINT.md</code>, section 10). <code>$TPRE_LLM_CONFIG</code> names another file, and <code>TPRE_LLM_BASE_URL</code>, <code>TPRE_LLM_API_KEY</code> and <code>TPRE_LLM_MODEL</code> override its three required keys.</p>
       <p>These hosts are private company addresses. Keep the endpoints off any page that leaves the internal network, and never point a cloud provider at a production submission.</p>
     </div>
   </div>
@@ -688,28 +749,38 @@ print(resp.choices[0].message.content)</code></pre>
   -H "Authorization: Bearer $GEMMA_KEY"</code></pre>
 
   <h2 class="sec" id="stdlib">Stdlib-only call (no <code>openai</code> package)</h2>
-  <p class="sub">How this project actually calls the endpoint: a locked workstation cannot <code>pip install</code>, so the pipeline speaks the protocol with <code>urllib</code>, reading the host and key out of its own gitignored config.</p>
-<pre class="py"><code>import json, urllib.request
+  <p class="sub">How this project calls the endpoint: a locked workstation cannot <code>pip install</code>, so <code>agent/triage/recheck.py</code> speaks the protocol with <code>urllib</code> and reads the host and key from <code>agent/triage/llm_config.json</code>. It opens the request with no proxy: the workstation's system proxy cannot answer for an intranet host, and the call reads as a hang. It refuses redirects: urllib would copy the bearer token to whatever host the redirect names.</p>
+<pre class="py"><code>import json, urllib.error, urllib.request
 
-BASE = "http://&lt;chat-host&gt;:&lt;chat-port&gt;/v1"
-KEY = cfg["api_key"]                # triage/llm_config.json, gitignored
+cfg = json.load(open("agent/triage/llm_config.json", encoding="utf-8-sig"))   # gitignored
 
+class NoRedirect(urllib.request.HTTPRedirectHandler):
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        raise urllib.error.HTTPError(req.full_url, code, "redirect not followed", headers, fp)
+
+opener = urllib.request.build_opener(urllib.request.ProxyHandler({}), NoRedirect())
+
+body = {
+    "model": cfg["model"],
+    "messages": [{"role": "user", "content": "ping"}],
+    "temperature": 0,
+    "top_p": 1,
+    "max_tokens": cfg.get("max_tokens", 2048),
+}
+body.update(cfg.get("extra_body") or {})        # the reasoning switch lives here
 req = urllib.request.Request(
-    BASE + "/chat/completions",
-    data=json.dumps({
-        "model": "qwen3.8-27b",
-        "messages": [{"role": "user", "content": "ping"}],
-        "reasoning_effort": "low",
-    }).encode(),
+    cfg["base_url"].rstrip("/") + "/chat/completions",   # base_url ends in /v1
+    data=json.dumps(body).encode(),
     headers={
-        "Authorization": f"Bearer {KEY}",
+        "Authorization": "Bearer " + cfg["api_key"],
         "Content-Type": "application/json",
     },
     method="POST",
 )
-with urllib.request.urlopen(req, timeout=120) as resp:
-    body = json.loads(resp.read().decode())
-print(body["choices"][0]["message"]["content"])</code></pre>
+with opener.open(req, timeout=cfg.get("timeout_seconds", 120)) as resp:   # the example config: 600
+    reply = json.loads(resp.read().decode())
+print(reply["choices"][0]["message"]["content"])</code></pre>
+  <p class="sub">To test the configured endpoint, run <code>python agent/triage/recheck.py --ping</code>: one invented question, nothing written. Add <code>--reasoning low</code> to time it at low effort.</p>
 
   <h2 class="sec" id="gotchas">Gotchas</h2>
   <ul class="gotchas">
@@ -718,6 +789,8 @@ print(body["choices"][0]["message"]["content"])</code></pre>
     <li><b>TKO keys are per port.</b> The <code>:4000</code> key does not work on <code>:4001</code>, and the other way around.</li>
     <li><b>Mac Studio loads one model at a time.</b> A 404 or an unexpected reply usually means a different model is loaded than the one you named.</li>
     <li><b>Timeouts.</b> Hybrid models with reasoning on can take minutes. 120 s is often too short; 600 s is a safer ceiling.</li>
+    <li><b>The reasoning trace can be in the answer.</b> On Mac Studio, a Qwen3 hybrid model with <code>enable_thinking</code> on writes its trace into <code>message.content</code>, inside <code>&lt;think&gt;…&lt;/think&gt;</code>; often only the closing tag appears. The trace counts against <code>max_tokens</code> and can use it up before the answer arrives; the reply then ends with <code>finish_reason</code> <code>"length"</code>. On <code>:4000</code>, <code>low</code> is the lowest effort, not off. When reasoning is on, set <code>max_tokens</code> to 8192. Before you parse, drop a <code>&lt;think&gt;…&lt;/think&gt;</code> pair, everything up to a bare <code>&lt;/think&gt;</code>, and an unclosed <code>&lt;think&gt;</code> with all that follows it, as <code>strip_reasoning()</code> in <code>agent/triage/recheck.py</code> does. A reply cut off at <code>"length"</code> is partial: the second read fails it only when no answer parses, and OCR keeps the words it got.</li>
+    <li><b>Image formats.</b> Send PNG, JPEG or WebP: not every endpoint takes a TIFF, so the pipeline sends a TIFF (a fax page, or a <code>.tif</code> file's first page) as the PNG <code>agent/triage/tiff.py</code> decodes it to. A JPEG 2000 image (<code>image/jp2</code>) may be refused: files holding one have come back with HTTP 500. The pipeline asks about one page image per request, and refuses an image over 12 MB. Each page gets its own fixed ceiling of 4,000 tokens (<code>MAX_TOKENS</code> in <code>agent/triage/ocr.py</code>); the config's <code>max_tokens</code> sets the second read's ceiling only.</li>
     <li><b>Confidentiality.</b> These hosts are private company addresses. Do not point cloud providers at production submissions.</li>
   </ul>
 
