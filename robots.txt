@@ -1,0 +1,15 @@
+# This site is meant to be shared by link, not found by search.
+#
+# Every page carries <meta name="robots" content="noindex, nofollow, ...">, and
+# that tag is the thing that actually keeps a page out of the index. A crawler
+# has to fetch the page to read it, so crawling is deliberately ALLOWED here:
+# a "Disallow: /" would stop the fetch, the tag would never be seen, and a URL
+# someone links from elsewhere could still show up in results as a bare link.
+#
+# Do not add a Disallow rule for these pages without removing the meta tag
+# reasoning above first.
+
+User-agent: *
+Allow: /
+
+# No sitemap on purpose - nothing here is offered to a search engine.
